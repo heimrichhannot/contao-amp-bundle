@@ -1,0 +1,95 @@
+<!doctype html>
+<html amp lang="<?= $this->language ?>"<?php if ($this->isRTL): ?> dir="rtl"<?php endif; ?>>
+<head>
+  <?php $this->block('head'); ?>
+    <?php $this->block('meta'); ?>
+        <?= $this->meta; ?>
+    <?php $this->endblock(); ?>
+
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    <!-- head bundle -> viewport and canonical -->
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+
+    <style amp-custom>
+        /*custom styles*/
+    </style>
+    <?= $this->stylesheets ?>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,shrink-to-fit=no">
+  <?php $this->endblock(); ?>
+</head>
+<body id="top" class="{{ua::class}}<?php if ($this->class) echo ' ' . $this->class; ?>"<?php if ($this->onload): ?> onload="<?= $this->onload ?>"<?php endif; ?> itemscope itemtype="http://schema.org/WebPage">
+
+  <?php $this->block('body'); ?>
+    <?php $this->sections('top'); ?>
+
+    <div id="wrapper">
+
+      <?php $this->block('header'); ?>
+        <?php if ($this->header): ?>
+          <header id="header">
+            <div class="inside">
+              <?= $this->header ?>
+            </div>
+          </header>
+        <?php endif; ?>
+      <?php $this->endblock(); ?>
+
+      <?php $this->sections('before'); ?>
+
+      <?php $this->block('container'); ?>
+        <div id="container">
+
+          <?php $this->block('main'); ?>
+            <main id="main">
+              <div class="inside">
+                <?= $this->main ?>
+              </div>
+              <?php $this->sections('main'); ?>
+            </main>
+          <?php $this->endblock(); ?>
+
+          <?php $this->block('left'); ?>
+            <?php if ($this->left): ?>
+              <aside id="left">
+                <div class="inside">
+                  <?= $this->left ?>
+                </div>
+              </aside>
+            <?php endif; ?>
+          <?php $this->endblock(); ?>
+
+          <?php $this->block('right'); ?>
+            <?php if ($this->right): ?>
+              <aside id="right">
+                <div class="inside">
+                  <?= $this->right ?>
+                </div>
+              </aside>
+            <?php endif; ?>
+          <?php $this->endblock(); ?>
+
+        </div>
+      <?php $this->endblock(); ?>
+
+      <?php $this->sections('after'); ?>
+
+      <?php $this->block('footer'); ?>
+        <?php if ($this->footer): ?>
+          <footer id="footer">
+            <div class="inside">
+              <?= $this->footer ?>
+            </div>
+          </footer>
+        <?php endif; ?>
+      <?php $this->endblock(); ?>
+
+    </div>
+
+    <?php $this->sections('bottom'); ?>
+  <?php $this->endblock(); ?>
+
+  <?= $this->mootools ?>
+
+</body>
+</html>
