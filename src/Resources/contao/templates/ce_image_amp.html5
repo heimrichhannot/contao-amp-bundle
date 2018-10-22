@@ -2,6 +2,6 @@
 
 <?php $this->block('content'); ?>
 
-<?= System::getContainer()->get('twig')->render($this->Template->getName() . '.twig', $this->Template->getData()); ?>
+<?= System::getContainer()->get('twig')->render($this->Template->getName() . '.html.twig', $this->getData()); ?>
 
 <?php $this->endblock(); ?>
