@@ -1,1 +1,13 @@
 services:
+  _instanceof:
+    Contao\CoreBundle\Framework\FrameworkAwareInterface:
+      calls:
+      - ["setFramework", ["@contao.framework"]]
+    Symfony\Component\DependencyInjection\ContainerAwareInterface:
+      calls:
+      - ["setContainer", ["@service_container"]]
+
+  huh.amp.event_listener.hook_listener:
+    class: HeimrichHannot\AmpBundle\EventListener\HookListener
+    public: true
+    autowire: true
