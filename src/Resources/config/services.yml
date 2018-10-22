@@ -11,3 +11,8 @@ services:
     class: HeimrichHannot\AmpBundle\EventListener\HookListener
     public: true
     autowire: true
+
+  huh.amp.util.amp_util:
+    class: HeimrichHannot\AmpBundle\Util\AmpUtil
+    public: true
+    autowire: true

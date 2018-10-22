@@ -21,16 +21,17 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
     public function parseTemplate(Template $template)
     {
-        return;
-        $template->setName('foo.html5');
-        $supportedElements = $this->container->getParameter('huh.amp');
+        global $objPage;
 
-//        if (!isset($supportedElements['amp']['elements']) || !in_array($template, $supportedElements['amp']['elements']))
-//        {
-//            return $buffer;
-//        }
-//
-//        $element = new $strClass($row, $strColumn);
-//        return $element->generate();
+        if (null === ($layout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $objPage->layout)) ||
+            !$layout->addAmp) {
+            return;
+        }
+
+        if (!$this->container->get('huh.amp.util.amp_util')->isSupportedContentElement($template->getName())) {
+            return;
+        }
+
+        $template->setName($template->getName().'_amp');
     }
 }

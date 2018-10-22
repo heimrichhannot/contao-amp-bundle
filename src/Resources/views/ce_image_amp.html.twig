@@ -1,26 +1,15 @@
-<?php $this->extend('block_searchable'); ?>
+<figure class="image_container"{% if margin|default %} style="{{ margin }}"{% endif %}>
+    {% if href|default %}
+        <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes }}>
+    {% endif %}
 
-<?php $this->block('content'); ?>
+    <amp-img alt="{{ alt }}" src="{{ singleSRC }}" width="{{ width }}" height="{{ height }}" layout="responsive"></amp-img>
 
-<figure class="image_container"<?php if ($this->margin): ?> style="<?= $this->margin ?>"<?php endif; ?>>
-    <?php if ($this->href): ?>
-        <a href="<?= $this->href ?>"<?php if ($this->linkTitle): ?> title="<?= $this->linkTitle ?>"<?php endif; ?><?= $this->attributes ?>>
-    <?php endif; ?>
-
-    <amp-img alt="<?= $this->alt ?>"
-             src="<?= $this->singleSRC ?>"
-             width="<?= $this->width ?>"
-             height="<?= $this->height ?>"
-             layout="responsive">
-    </amp-img>
-
-    <?php if ($this->href): ?>
+    {% if href|default %}
         </a>
-    <?php endif; ?>
+    {% endif %}
 
-    <?php if ($this->caption): ?>
-        <figcaption class="caption"><?= $this->caption ?></figcaption>
-    <?php endif; ?>
+    {% if caption|default %}
+        <figcaption class="caption">{{ caption }}</figcaption>
+    {% endif %}
 </figure>
-
-<?php $this->endblock(); ?>

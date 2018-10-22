@@ -2,6 +2,7 @@
 
 <?php $this->block('content'); ?>
 
-<?= System::getContainer()->get('twig')->render($this->Template->getName() . '.html.twig', $this->getData()); ?>
+<?= System::getContainer()->get('twig')->render(System::getContainer()->get('huh.utils.template')->getTemplate($this->Template->getName()),
+    $this->getData()); ?>
 
 <?php $this->endblock(); ?>
