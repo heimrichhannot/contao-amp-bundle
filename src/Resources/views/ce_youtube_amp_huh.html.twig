@@ -1,0 +1,67 @@
+{% if youtube|default and youtube.video|default() %}
+    {% if addPreviewImage and youtube.data.previewImage.picture|default %}
+        {% set picture = youtube.data.previewImage.picture %}
+
+        {% if picture.sources|default %}
+            {% for source in picture.sources %}
+                <amp-youtube
+                        {% if source.media|default %}
+                            media="{{ source.media }}"
+                        {% endif %}
+                        data-videoid="{{ youtube.data.youtube }}"
+                        layout="responsive"
+                        width="1920"
+                        height="1080"
+                >
+                    <amp-img
+                            placeholder
+                            alt="{{ picture.alt }}"
+                            src="{{ source.src }}"
+                            width="{{ source.width }}"
+                            height="{{ source.height }}"
+                            layout="responsive"
+                            {% if source.srcset|default %}
+                                srcset="{{ source.srcset }}"
+                            {% endif %}
+                            {% if source.sizes|default %}
+                                sizes="{{ source.sizes }}"
+                            {% endif %}
+                    ></amp-img>
+                </amp-youtube>
+            {% endfor %}
+        {% elseif picture.img %}
+            <amp-youtube
+                    {% if source.media|default %}
+                        media="{{ source.media }}"
+                    {% endif %}
+                    data-videoid="{{ youtube.data.youtube }}"
+                    layout="responsive"
+                    width="1920"
+                    height="1080"
+            >
+                <amp-img
+                        placeholder
+                        alt="{{ picture.alt }}"
+                        src="{{ picture.img.src }}"
+                        width="{{ picture.img.width }}"
+                        height="{{ picture.img.height }}"
+                        layout="responsive"
+                        {% if picture.img.srcset|default %}
+                            srcset="{{ picture.img.srcset }}"
+                        {% endif %}
+                        {% if picture.img.sizes|default %}
+                            sizes="{{ picture.img.sizes }}"
+                        {% endif %}
+                ></amp-img>
+            </amp-youtube>
+        {% endif %}
+    {% else %}
+        <amp-youtube
+                data-videoid="{{ youtube.data.youtube }}"
+                layout="responsive"
+                width="1920"
+                height="1080"
+        >
+        </amp-youtube>
+    {% endif %}
+{% endif %}

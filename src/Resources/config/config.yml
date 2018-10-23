@@ -2,4 +2,6 @@ huh:
   amp:
     elements:
     - { name: ce_image, ampName: img }
-    - { name: ce_youtube, ampName: youtube, lib: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }
+    - { name: ce_youtube, ampName: youtube }
+    libraries:
+    - { ampName: youtube, url: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }

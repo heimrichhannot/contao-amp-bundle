@@ -1,0 +1,37 @@
+{% if sources|default %}
+    {% for source in sources %}
+        <amp-img
+                {% if placeholder|default %}
+                    placeholder
+                {% endif %}
+                {% if source.media|default %}
+                    media="{{ source.media }}"
+                {% endif %}
+                alt="{{ alt }}"
+                src="{{ source.src }}"
+                width="{{ source.width }}"
+                height="{{ source.height }}"
+                layout="responsive"
+                {% if source.srcset|default %}
+                    srcset="{{ source.srcset }}"
+                {% endif %}
+                {% if source.sizes|default %}
+                    sizes="{{ source.sizes }}"
+                {% endif %}
+        ></amp-img>
+    {% endfor %}
+{% elseif img %}
+    <amp-img
+            alt="{{ alt }}"
+            src="{{ img.src }}"
+            width="{{ img.width }}"
+            height="{{ img.height }}"
+            layout="responsive"
+            {% if img.srcset|default %}
+                srcset="{{ img.srcset }}"
+            {% endif %}
+            {% if img.sizes|default %}
+                sizes="{{ img.sizes }}"
+            {% endif %}
+    ></amp-img>
+{% endif %}

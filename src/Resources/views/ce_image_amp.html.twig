@@ -1,12 +1,12 @@
 <figure class="image_container"{% if margin|default %} style="{{ margin }}"{% endif %}>
     {% if href|default %}
-        <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes }}>
-    {% endif %}
+    <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes }}>
+        {% endif %}
 
-    <amp-img alt="{{ alt }}" src="{{ singleSRC }}" width="{{ width }}" height="{{ height }}" layout="responsive"></amp-img>
+        {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with picture %}
 
-    {% if href|default %}
-        </a>
+        {% if href|default %}
+    </a>
     {% endif %}
 
     {% if caption|default %}

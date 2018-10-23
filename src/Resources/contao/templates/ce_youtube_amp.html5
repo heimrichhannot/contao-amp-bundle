@@ -1,0 +1,13 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if($this->youtube && $this->youtube->video): ?>
+    <!-- heimrichhannot/contao-youtube-bundle -->
+    <?= System::getContainer()->get('huh.amp.util.amp_util')->renderTwigTemplate($this, $this->getName() . '_huh') ?>
+<?php else: ?>
+    <!-- contao/core-bundle -->
+    <?= System::getContainer()->get('huh.amp.util.amp_util')->renderTwigTemplate($this) ?>
+<?php endif; ?>
+
+<?php $this->endblock(); ?>

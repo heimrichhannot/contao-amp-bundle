@@ -12,6 +12,11 @@ services:
     public: true
     autowire: true
 
+  huh.amp.manager.amp_manager:
+    class: HeimrichHannot\AmpBundle\Manager\AmpManager
+    public: true
+    autowire: true
+
   huh.amp.util.amp_util:
     class: HeimrichHannot\AmpBundle\Util\AmpUtil
     public: true

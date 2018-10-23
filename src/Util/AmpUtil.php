@@ -28,10 +28,58 @@ class AmpUtil implements FrameworkAwareInterface, ContainerAwareInterface
      */
     public function isSupportedContentElement(string $template)
     {
-        $supportedElements = $this->container->getParameter('huh.amp');
+        $config = $this->container->getParameter('huh.amp');
 
-        return isset($supportedElements['amp']['elements']) && \in_array($template, array_map(function ($data) {
+        return isset($config['amp']['elements']) && \in_array($template, array_map(function ($data) {
             return $data['name'];
-        }, $supportedElements['amp']['elements']));
+        }, $config['amp']['elements']));
+    }
+
+    public function getAmpNameByContentElement(string $contentElement)
+    {
+        $config = $this->container->getParameter('huh.amp');
+
+        foreach ($config['amp']['elements'] as $lib) {
+            if ($lib['name'] === $contentElement) {
+                return $lib['ampName'];
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Renders the twig template.
+     *
+     * @param Template $template
+     *
+     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     *
+     * @return string
+     */
+    public function renderTwigTemplate(Template $template, string $templateName = '')
+    {
+        $buffer = $this->container->get('twig')->render(
+            $this->container->get('huh.utils.template')->getTemplate($templateName ?: $template->getName()),
+            $template->getData()
+        );
+
+        return $buffer;
+    }
+
+    public function getLibraryByAmpName(string $ampName)
+    {
+        $config = $this->container->getParameter('huh.amp');
+
+        foreach ($config['amp']['libraries'] as $lib) {
+            if ($lib['ampName'] === $ampName) {
+                return $lib['url'];
+            }
+        }
+
+        return false;
     }
 }
