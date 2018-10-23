@@ -14,9 +14,12 @@ Install via composer: `composer require heimrichhannot/contao-amp-bundle` and up
 
 ### Responsive images Contao vs. AMP
 
+Keep in mind: If you didn't specify image sizes in Contao, you can skip this chapter.
+
 In Contao responsive images are built with "archives" (`tl_image_size` and `tl_image_size_item`). In tl_image_size you can define a default
 image size and in `tl_image_size_item` instances more sizes depending on a given media query.
 
-In AMP on the other hand there's no such thing as a default case, so you need to create it **explicitly**.
+In AMP on the other hand there's no such thing as a default case, so you need to create it **explicitly**. Also you have to add media-queries for
+each and every `tl_image_size_item` so that you don't have duplicates.
 
 <TODO images>
