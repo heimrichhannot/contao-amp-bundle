@@ -1,1 +1,9 @@
-<!-- TODO -->
+<amp-youtube
+        data-videoid="{{ youtube }}"
+        layout="responsive"
+        {{ size|default|raw }}
+        {% if autoplay|default %}
+            autoplay
+        {% endif %}
+>
+</amp-youtube>

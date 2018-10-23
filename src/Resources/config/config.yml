@@ -1,7 +1,10 @@
 huh:
   amp:
     elements:
-    - { name: ce_image, ampName: img }
-    - { name: ce_youtube, ampName: youtube }
+    - { name: ce_image, ampTemplate: img }
+    - { name: ce_youtube, ampTemplate: youtube }
+    - { name: ce_player, ampTemplate: player }
     libraries:
     - { ampName: youtube, url: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }
+    - { ampName: audio, url: "https://cdn.ampproject.org/v0/amp-audio-0.1.js" }
+    - { ampName: video, url: "https://cdn.ampproject.org/v0/amp-video-0.1.js" }

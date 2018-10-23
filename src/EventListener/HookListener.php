@@ -10,6 +10,7 @@ namespace HeimrichHannot\AmpBundle\EventListener;
 
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\Environment;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
@@ -33,24 +34,55 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
         // prepare values for amp
         switch ($template->getName()) {
-            case 'ce_image':
+            case 'ce_player':
+                $files = [];
+
+                if (\is_array($template->files)) {
+                    foreach ($template->files as $file) {
+                        $files[] = [
+                            'mime' => $file->mime,
+                            'path' => Environment::get('url').'/'.$file->path,
+                            'title' => $file->title,
+                        ];
+                    }
+
+                    $template->files = $files;
+                }
+
                 break;
 
             default:
+                // TODO HOOK
                 break;
         }
 
         $util = $this->container->get('huh.amp.util.amp_util');
 
-        // switch template for amp
         if ($util->isSupportedContentElement($template->getName())) {
-            $ampName = $util->getAmpNameByContentElement($template->getName());
+            $ampTemplateName = $util->getAmpNameByContentElement($template->getName());
 
             // add the needed lib to the manager for fe_page.html5
-            if (false !== ($url = $util->getLibraryByAmpName($ampName))) {
-                $this->container->get('huh.amp.manager.amp_manager')::addLib($ampName, $url);
+            switch ($ampTemplateName) {
+                case 'player':
+                    // custom logic for Contao's hybrid media element
+                    if ($template->isVideo) {
+                        $ampTemplateName = 'video';
+                    } else {
+                        $ampTemplateName = 'audio';
+                    }
+
+                    break;
+
+                default:
+                    // TODO HOOK
+                    break;
             }
 
+            if (false !== ($url = $util->getLibraryByAmpName($ampTemplateName))) {
+                $this->container->get('huh.amp.manager.amp_manager')::addLib($ampTemplateName, $url);
+            }
+
+            // switch template for amp
             $template->setName($template->getName().'_amp');
         }
     }

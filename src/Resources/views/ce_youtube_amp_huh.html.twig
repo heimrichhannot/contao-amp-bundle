@@ -10,8 +10,14 @@
                         {% endif %}
                         data-videoid="{{ youtube.data.youtube }}"
                         layout="responsive"
-                        width="1920"
-                        height="1080"
+                        width="{{ source.width }}"
+                        height="{{ source.height }}"
+                        {% if autoplay|default %}
+                            autoplay
+                        {% endif %}
+                        data-param-rel={{ ytShowRelated|default ? 1 : 0 }}
+                        data-param-modestbranding={{ ytModestBranding|default ? 1 : 0 }}
+                        data-param-showinfo={{ ytShowInfo|default ? 1 : 0 }}
                 >
                     <amp-img
                             placeholder
@@ -36,8 +42,11 @@
                     {% endif %}
                     data-videoid="{{ youtube.data.youtube }}"
                     layout="responsive"
-                    width="1920"
-                    height="1080"
+                    width="{{ picture.img.width }}"
+                    height="{{ picture.img.height }}"
+                    {% if autoplay|default %}
+                        autoplay
+                    {% endif %}
             >
                 <amp-img
                         placeholder

@@ -1,0 +1,47 @@
+{% if isVideo|default %}
+    <amp-video
+            {{ size|raw }}
+            layout="responsive"
+            {% if autoplay|default %}
+                autoplay
+            {% endif %}
+            {% if poster|default %}
+                poster="{{ poster }}"
+            {% endif %}
+            controls
+    >
+        <div fallback>
+            <p>This browser does not support the video element.</p>
+        </div>
+
+        {% for file in files %}
+            <source type="{{ file.mime }}"
+                    src="{{ file.path }}"{% if title|default %} title="{{ title|raw }}"{% endif %}>
+        {% endfor %}
+    </amp-video>
+{% else %}
+    <amp-audio
+            {{ size|raw }}
+            {% if autoplay|default %}
+                autoplay
+            {% endif %}
+            controlsList
+    >
+        <div fallback>
+            <p>Your browser doesn't support HTML5 audio</p>
+        </div>
+
+        {% if poster|default %}
+            <amp-img
+                    {{ size|raw }}
+                    placeholder
+                    src="{{ poster }}"
+            ></amp-img>
+        {% endif %}
+
+        {% for file in files %}
+            <source type="{{ file.mime }}"
+                    src="{{ file.path }}"{% if title|default %} title="{{ title|raw }}"{% endif %}>
+        {% endfor %}
+    </amp-audio>
+{% endif %}

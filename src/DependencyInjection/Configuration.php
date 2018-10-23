@@ -31,7 +31,7 @@ class Configuration implements ConfigurationInterface
                                         ->isRequired()
                                         ->cannotBeEmpty()
                                     ->end()
-                                    ->scalarNode('ampName')
+                                    ->scalarNode('ampTemplate')
                                         ->cannotBeEmpty()
                                     ->end()
                                 ->end()
