@@ -1,0 +1,20 @@
+{# To use this script, please fill in your Google Analytics ID #}
+{% set uaNumber = 'UA-XXXXX-X' %}
+
+{% if uaNumber != 'UA-XXXXX-X' and not skip %}
+<amp-analytics type="googleanalytics">
+    <script type="application/json">
+        {
+            "vars": {
+                "account": "UA-XXXXX-X"
+            },
+            "triggers": {
+                "trackPageview": {
+                    "on": "visible",
+                    "request": "pageview"
+                }
+            }
+        }
+    </script>
+</amp-analytics>
+{% endif %}

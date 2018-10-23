@@ -93,6 +93,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             return;
         }
 
+        // add needed amp libs
         if (!empty($this->container->get('huh.amp.manager.amp_manager')::getLibs())) {
             $scripts = [];
 
@@ -103,6 +104,16 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             if (!empty($scripts)) {
                 $pageRegular->Template->ampScripts = implode("\n", $scripts);
             }
+        }
+
+        // add analytics support
+        if ($layout->addAmpAnalytics) {
+            $pageRegular->ampAnalytics = $this->container->get('twig')->render(
+                $this->container->get('huh.utils.template')->getTemplate($layout->ampAnalyticsTemplate),
+                [
+                    'skip' => $this->container->get('huh.amp.util.amp_util')->skipAnalyticsForBackend(),
+                ]
+            );
         }
     }
 }

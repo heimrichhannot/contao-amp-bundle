@@ -10,6 +10,8 @@ namespace HeimrichHannot\AmpBundle\Util;
 
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\Input;
+use Contao\System;
 use Contao\Template;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -81,5 +83,18 @@ class AmpUtil implements FrameworkAwareInterface, ContainerAwareInterface
         }
 
         return false;
+    }
+
+    public function skipAnalyticsForBackend()
+    {
+        if (BE_USER_LOGGED_IN) {
+            return true;
+        }
+
+        if (!isset($_COOKIE['BE_USER_AUTH'])) {
+            return false;
+        }
+
+        return Input::cookie('BE_USER_AUTH') == System::getSessionHash('BE_USER_AUTH');
     }
 }
