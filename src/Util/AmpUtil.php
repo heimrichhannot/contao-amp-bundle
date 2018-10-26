@@ -41,9 +41,9 @@ class AmpUtil implements FrameworkAwareInterface, ContainerAwareInterface
     {
         $config = $this->container->getParameter('huh.amp');
 
-        foreach ($config['amp']['elements'] as $lib) {
-            if ($lib['name'] === $contentElement) {
-                return $lib['ampTemplate'];
+        foreach ($config['amp']['elements'] as $element) {
+            if ($element['name'] === $contentElement) {
+                return $element['ampTemplate'];
             }
         }
 

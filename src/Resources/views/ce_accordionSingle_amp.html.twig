@@ -1,0 +1,24 @@
+{% if first|default %}
+<amp-accordion disable-session-states expand-single-section>
+    {% endif %}
+
+    <section{% if active|default %} expanded{% endif %}>
+        <h2>{{ headline|raw }}</h2>
+        <div>
+            {% if not addBefore|default %}
+                {{ text|raw }}
+            {% endif %}
+
+            {% if addImage|default %}
+                {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with picture %}
+            {% endif %}
+
+            {% if addBefore|default %}
+                {{ text|raw }}
+            {% endif %}
+        </div>
+    </section>
+
+    {% if last|default %}
+</amp-accordion>
+{% endif %}

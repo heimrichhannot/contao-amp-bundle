@@ -23,12 +23,26 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
     use FrameworkAwareTrait;
     use ContainerAwareTrait;
 
+    protected static $accordionCache = [];
+    protected static $accordionCacheBuilt = false;
+
+    public function getPageLayout(PageModel $page, LayoutModel &$layout, PageRegular $pageRegular)
+    {
+        if ($layout->addAmp && $this->container->get('huh.request')->getGet('amp') && null !== ($ampLayout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $layout->ampLayout))) {
+            $layout = $ampLayout;
+
+            global $objPage;
+
+            $objPage->layout = $layout->id;
+        }
+    }
+
     public function parseTemplate(Template $template)
     {
         global $objPage;
 
         if (null === ($layout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $objPage->layout)) ||
-            !$layout->addAmp) {
+            !$this->container->get('huh.amp.util.layout_util')->isAmpLayout($layout->id)) {
             return;
         }
 
@@ -47,6 +61,67 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                     }
 
                     $template->files = $files;
+                }
+
+                break;
+
+            case 'ce_accordionSingle':
+                if (!static::$accordionCacheBuilt) {
+                    if (null !== ($elements = $this->container->get('huh.utils.model')->findModelInstancesBy('tl_content', [
+                            'ptable=?',
+                            'tl_content.pid=?',
+                            'invisible!=1',
+                        ], [
+                            'tl_article',
+                            $template->pid,
+                        ], [
+                            'order' => 'sorting ASC',
+                        ]))) {
+                        $lastOneIsAccordionSingle = false;
+                        $elementGroup = [];
+
+                        foreach ($elements as $i => $element) {
+                            if ('accordionSingle' === $element->type) {
+                                $elementGroup[] = $element->row();
+                            }
+
+                            if ('accordionSingle' !== $element->type) {
+                                if ($lastOneIsAccordionSingle) {
+                                    static::$accordionCache[] = $elementGroup;
+                                    $elementGroup = [];
+                                }
+
+                                $lastOneIsAccordionSingle = false;
+
+                                continue;
+                            }
+
+                            $lastOneIsAccordionSingle = true;
+
+                            if ($i === \count($elements) - 1) {
+                                static::$accordionCache[] = $elementGroup;
+                                $elementGroup = [];
+                            }
+                        }
+
+                        static::$accordionCacheBuilt = true;
+                    }
+                }
+
+                foreach (static::$accordionCache as $elementGroup) {
+                    foreach ($elementGroup as $i => $element) {
+                        if ($template->id == $element['id']) {
+                            if (0 === $i) {
+                                $template->first = true;
+                            }
+
+                            if ($i === \count($elementGroup) - 1) {
+                                $template->last = true;
+                            }
+
+                            break 2;
+                        }
+                    }
                 }
 
                 break;
@@ -89,7 +164,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
     public function generatePage(PageModel $page, LayoutModel $layout, PageRegular $pageRegular)
     {
-        if (!$layout->addAmp) {
+        if (!$this->container->get('huh.amp.util.layout_util')->isAmpLayout($layout->id)) {
             return;
         }
 

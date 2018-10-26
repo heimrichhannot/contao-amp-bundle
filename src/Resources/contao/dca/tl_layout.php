@@ -3,6 +3,11 @@
 $dca = &$GLOBALS['TL_DCA']['tl_layout'];
 
 /**
+ * Callbacks
+ */
+$dca['config']['onload_callback'][] = ['huh.amp.util.layout_util', 'modifyDca'];
+
+/**
  * Palettes
  */
 $dca['palettes']['__selector__'][] = 'addAmp';
@@ -13,7 +18,7 @@ $dca['palettes']['default'] = str_replace('{sections_legend', '{amp_legend},addA
 /**
  * Subpalettes
  */
-$dca['subpalettes']['addAmp']          = 'addAmpAnalytics';
+$dca['subpalettes']['addAmp']          = 'ampLayout';
 $dca['subpalettes']['addAmpAnalytics'] = 'ampAnalyticsTemplate';
 
 /**
@@ -46,6 +51,25 @@ $fields = [
         },
         'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true],
         'sql'              => "varchar(64) NOT NULL default ''"
+    ],
+    'ampLayout' => [
+        'label'                   => &$GLOBALS['TL_LANG']['tl_layout']['ampLayout'],
+        'exclude'                 => true,
+        'filter'                  => true,
+        'inputType'               => 'select',
+        'options_callback' => function (\Contao\DataContainer $dc) {
+            return System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices([
+                'dataContainer' => 'tl_layout',
+                'columns' => [
+                    'tl_layout.id != ?'
+                ],
+                'values' => [
+                    $dc->id
+                ]
+            ]);
+        },
+        'eval'                    => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true],
+        'sql'                     => "varchar(64) NOT NULL default ''"
     ],
 ];
 

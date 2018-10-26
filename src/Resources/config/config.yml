@@ -4,7 +4,9 @@ huh:
     - { name: ce_image, ampTemplate: img }
     - { name: ce_player, ampTemplate: player }
     - { name: ce_youtube, ampTemplate: youtube }
+    - { name: ce_accordionSingle, ampTemplate: accordion }
     libraries:
+    - { ampName: accordion, url: "https://cdn.ampproject.org/v0/amp-accordion-0.1.js" }
     - { ampName: analytics, url: "https://cdn.ampproject.org/v0/amp-analytics-0.1.js" }
     - { ampName: audio, url: "https://cdn.ampproject.org/v0/amp-audio-0.1.js" }
     - { ampName: video, url: "https://cdn.ampproject.org/v0/amp-video-0.1.js" }

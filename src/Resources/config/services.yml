@@ -21,3 +21,8 @@ services:
     class: HeimrichHannot\AmpBundle\Util\AmpUtil
     public: true
     autowire: true
+
+  huh.amp.util.layout_util:
+    class: HeimrichHannot\AmpBundle\Util\LayoutUtil
+    public: true
+    autowire: true
