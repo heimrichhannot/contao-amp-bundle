@@ -28,7 +28,7 @@ TODO | $objTemplate, $arrItem, $objModule | Triggered just before FrontendTempla
 
 Contao content element | AMP component | Notes
 ---------------------- | ------------- | -----
-Accordion | accordion | –
+Accordion | accordion | single, start and stop
 Image | image | –
 YouTube | youtube | core content element or [heimrichhannot/contao-youtube-bundle](https://github.com/heimrichhannot/contao-youtube-bundle)
 Player | audio or video | aka "Audio/Video"; if `isVideo` is set in the template, the amp component "video" is used
@@ -55,7 +55,12 @@ image size and in `tl_image_size_item` instances more sizes depending on a given
 In AMP on the other hand there's no such thing as a default case, so you need to create it **explicitly**. Also you have to add media-queries for
 each and every `tl_image_size_item` so that you don't have duplicates.
 
-TODO: images
+So you have 2 options:
+
+1. Assign an image size with **no** child elements to your image, i.e. only `tl_image_size`.
+2. Create `tl_image_size_item` instances so that you have one for every situation that can happen. Example:
+
+![alt text](docs/image-sizes.png)
 
 ## Known limitations
 

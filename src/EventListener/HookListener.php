@@ -23,8 +23,11 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
     use FrameworkAwareTrait;
     use ContainerAwareTrait;
 
-    protected static $accordionCache = [];
-    protected static $accordionCacheBuilt = false;
+    protected static $accordionSingleCache = [];
+    protected static $accordionSingleCacheBuilt = false;
+
+    protected static $accordionStartStopCache = [];
+    protected static $accordionStartStopCacheBuilt = false;
 
     public function getPageLayout(PageModel $page, LayoutModel &$layout, PageRegular $pageRegular)
     {
@@ -66,63 +69,13 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 break;
 
             case 'ce_accordionSingle':
-                if (!static::$accordionCacheBuilt) {
-                    if (null !== ($elements = $this->container->get('huh.utils.model')->findModelInstancesBy('tl_content', [
-                            'ptable=?',
-                            'tl_content.pid=?',
-                            'invisible!=1',
-                        ], [
-                            'tl_article',
-                            $template->pid,
-                        ], [
-                            'order' => 'sorting ASC',
-                        ]))) {
-                        $lastOneIsAccordionSingle = false;
-                        $elementGroup = [];
+                $this->prepareAccordionSingle($template);
 
-                        foreach ($elements as $i => $element) {
-                            if ('accordionSingle' === $element->type) {
-                                $elementGroup[] = $element->row();
-                            }
+                break;
 
-                            if ('accordionSingle' !== $element->type) {
-                                if ($lastOneIsAccordionSingle) {
-                                    static::$accordionCache[] = $elementGroup;
-                                    $elementGroup = [];
-                                }
-
-                                $lastOneIsAccordionSingle = false;
-
-                                continue;
-                            }
-
-                            $lastOneIsAccordionSingle = true;
-
-                            if ($i === \count($elements) - 1) {
-                                static::$accordionCache[] = $elementGroup;
-                                $elementGroup = [];
-                            }
-                        }
-
-                        static::$accordionCacheBuilt = true;
-                    }
-                }
-
-                foreach (static::$accordionCache as $elementGroup) {
-                    foreach ($elementGroup as $i => $element) {
-                        if ($template->id == $element['id']) {
-                            if (0 === $i) {
-                                $template->first = true;
-                            }
-
-                            if ($i === \count($elementGroup) - 1) {
-                                $template->last = true;
-                            }
-
-                            break 2;
-                        }
-                    }
-                }
+            case 'ce_accordionStart':
+            case 'ce_accordionStop':
+                $this->prepareAccordionStartStop($template);
 
                 break;
 
@@ -145,6 +98,12 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                     } else {
                         $ampTemplateName = 'audio';
                     }
+
+                    break;
+
+                case 'ce_accordionStart':
+                case 'ce_accordionStop':
+                    $template->setName('ce_accordionStartStop_amp');
 
                     break;
 
@@ -189,6 +148,145 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                     'skip' => $this->container->get('huh.amp.util.amp_util')->skipAnalyticsForBackend(),
                 ]
             );
+        }
+    }
+
+    public function prepareAccordionSingle(Template $template)
+    {
+        if (!static::$accordionSingleCacheBuilt) {
+            if (null !== ($elements = $this->container->get('huh.utils.model')->findModelInstancesBy('tl_content', [
+                    'ptable=?',
+                    'tl_content.pid=?',
+                    'invisible!=1',
+                ], [
+                    'tl_article',
+                    $template->pid,
+                ], [
+                    'order' => 'sorting ASC',
+                ]))) {
+                $lastOneIsAccordionSingle = false;
+                $elementGroup = [];
+
+                foreach ($elements as $i => $element) {
+                    if ('accordionSingle' === $element->type) {
+                        $elementGroup[] = $element->row();
+                    } else {
+                        if ($lastOneIsAccordionSingle) {
+                            static::$accordionSingleCache[] = $elementGroup;
+                            $elementGroup = [];
+                        }
+
+                        $lastOneIsAccordionSingle = false;
+
+                        continue;
+                    }
+
+                    $lastOneIsAccordionSingle = true;
+
+                    if ($i === \count($elements) - 1) {
+                        static::$accordionSingleCache[] = $elementGroup;
+                        $elementGroup = [];
+                    }
+                }
+
+                static::$accordionSingleCacheBuilt = true;
+            }
+        }
+
+        foreach (static::$accordionSingleCache as $elementGroup) {
+            foreach ($elementGroup as $i => $element) {
+                if ($template->id == $element['id']) {
+                    if (0 === $i) {
+                        $template->first = true;
+                    }
+
+                    if ($i === \count($elementGroup) - 1) {
+                        $template->last = true;
+                    }
+
+                    break 2;
+                }
+            }
+        }
+    }
+
+    public function prepareAccordionStartStop(Template $template)
+    {
+        if (!static::$accordionStartStopCacheBuilt) {
+            if (null !== ($elements = $this->container->get('huh.utils.model')->findModelInstancesBy('tl_content', [
+                    'tl_content.ptable=?',
+                    'tl_content.pid=?',
+                    'tl_content.invisible!=1',
+                ], [
+                    'tl_article',
+                    $template->pid,
+                ], [
+                    'order' => 'sorting ASC',
+                ]))) {
+                $lastOneIsAccordionStop = false;
+
+                foreach ($elements as $i => $element) {
+                    if ('accordionStart' === $element->type) {
+                        if (\count(static::$accordionStartStopCache) < 1) {
+                            static::$accordionStartStopCache[] = [];
+                        }
+
+                        if ($lastOneIsAccordionStop) {
+                            static::$accordionStartStopCache[\count(static::$accordionStartStopCache) - 1][] = $element->row();
+                        } else {
+                            static::$accordionStartStopCache[\count(static::$accordionStartStopCache) - 1][] = $element->row();
+                        }
+
+                        $lastOneIsAccordionStop = false;
+                    } elseif ('accordionStop' === $element->type) {
+                        static::$accordionStartStopCache[\count(static::$accordionStartStopCache) - 1][] = $element->row();
+
+                        $lastOneIsAccordionStop = true;
+
+                        continue;
+                    } elseif ($lastOneIsAccordionStop) {
+                        static::$accordionStartStopCache[] = [];
+                        $lastOneIsAccordionStop = false;
+                    }
+                }
+
+                // remove trailing empty arrays
+                $cleaned = [];
+
+                foreach (static::$accordionStartStopCache as $elementGroup) {
+                    if (!empty($elementGroup)) {
+                        $cleaned[] = $elementGroup;
+                    }
+                }
+
+                static::$accordionStartStopCache = $cleaned;
+
+                static::$accordionStartStopCacheBuilt = true;
+            }
+        }
+
+        foreach (static::$accordionStartStopCache as $elementGroup) {
+            foreach ($elementGroup as $i => $element) {
+                if ($template->id == $element['id']) {
+                    if (0 === $i) {
+                        $template->first = true;
+                    }
+
+                    if ('accordionStart' == $element['type']) {
+                        $template->startSection = true;
+                    }
+
+                    if ('accordionStop' == $element['type']) {
+                        $template->stopSection = true;
+                    }
+
+                    if ($i === \count($elementGroup) - 1) {
+                        $template->last = true;
+                    }
+
+                    break 2;
+                }
+            }
         }
     }
 }

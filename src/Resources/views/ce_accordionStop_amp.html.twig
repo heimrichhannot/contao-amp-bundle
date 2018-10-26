@@ -1,0 +1,18 @@
+{% if first|default %}
+<amp-accordion disable-session-states expand-single-section>
+    {% endif %}
+
+    {% if startSection|default %}
+    <section{% if active|default %} expanded{% endif %}>
+        <h2>{{ headline|raw }}</h2>
+        <div>
+            {% endif %}
+
+            {% if stopSection|default %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if last|default %}
+</amp-accordion>
+{% endif %}
