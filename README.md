@@ -29,7 +29,7 @@ TODO | $objTemplate, $arrItem, $objModule | Triggered just before FrontendTempla
 
 Contao content element | AMP component | Notes
 ---------------------- | ------------- | -----
-`ContentAccordion` | accordion |
+`ContentAccordion` | accordion | single element accordions
 `ContentAccordionStart` | accordion |
 `ContentAccordionStop` | accordion |
 `ContentImage` | image |
