@@ -27,15 +27,15 @@ TODO | $objTemplate, $arrItem, $objModule | Triggered just before FrontendTempla
 
 ## Supported content elements
 
-Contao content element | AMP component | Notes
----------------------- | ------------- | -----
-`ContentAccordion` | accordion | single element accordions
-`ContentAccordionStart` | accordion |
-`ContentAccordionStop` | accordion |
-`ContentImage` | image |
-`ContentMedia` | audio or video | aka "Audio/Video", template is `ce_player`; if `isVideo` is set in the template, the amp component "video" is used
-`ContentYouTube` | youtube | core content element or [heimrichhannot/contao-youtube-bundle](https://github.com/heimrichhannot/contao-youtube-bundle)
-`ContentSlick` | carousel | [heimrichhannot/contao-slick-bundle](https://github.com/heimrichhannot/contao-slick-bundle)
+Contao content element | Contao template | AMP component | AMP template | Notes
+---------------------- | --------------- | ------------- | ------------ | -----
+`ContentAccordion` | `ce_accordionSingle.html5` | accordion | `ce_accordionSingle_amp.html.twig` | single element accordions
+`ContentAccordionStart` | `ce_accordionStart.html5` | accordion | `ce_accordionStart_amp.html.twig` |
+`ContentAccordionStop` | `ce_accordionStop.html5` | accordion | `ce_accordionStop_amp.html.twig` |
+`ContentImage` | `ce_image.html5` | image | `ce_image_amp.html.twig` |
+`ContentMedia` | `ce_player.html5` | audio or video | `ce_player_amp.html.twig` | aka "Audio/Video"; if `isVideo` is set in the template, the amp component "video" is used
+`ContentYouTube` | `ce_youtube.html5` | youtube | `ce_youtube_amp.html.twig` or `ce_youtube_amp_huh.html.twig` | core content element or [heimrichhannot/contao-youtube-bundle](https://github.com/heimrichhannot/contao-youtube-bundle)
+`ContentSlick` | `ce_slick.html5` | carousel | `ce_slick_amp.html.twig` | [heimrichhannot/contao-slick-bundle](https://github.com/heimrichhannot/contao-slick-bundle)
 
 ## Things to know
 
@@ -48,6 +48,19 @@ The meta tags are handled using [heimrichhannot/contao-head-bundle](https://gith
     <?= $this->meta; ?>
 <?php $this->endblock(); ?>
 ```
+
+*Hint: If you use `fe_page_amp.html5` in your AMP layout, you won't have to take care of this.*
+
+### Override templates
+
+#### HTML5 templates
+
+These can be overridden as usual by putting a file with the same name into your project's `templates` directory or in the `templates` directory of one of your modules.
+
+#### Twig templates
+
+These can be overridden by putting a file with the same name into your project's `app/Resources/views` directory or in the `src/Resources/views` directory of one of
+your bundles (these bundles must load after the `contao-amp-bundle`; you can specify this in your bundle's `Plugin.php`).
 
 ### Responsive images: Contao vs. AMP
 
