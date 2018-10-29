@@ -1,6 +1,6 @@
 <figure class="image_container"{% if margin|default %} style="{{ margin }}"{% endif %}>
     {% if href|default %}
-    <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes }}>
+    <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
         {% endif %}
 
         {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with picture %}

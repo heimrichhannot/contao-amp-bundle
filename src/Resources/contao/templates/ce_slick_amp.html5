@@ -1,0 +1,7 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?= System::getContainer()->get('huh.amp.util.amp_util')->renderTwigTemplate($this) ?>
+
+<?php $this->endblock(); ?>

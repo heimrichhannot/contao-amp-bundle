@@ -97,4 +97,9 @@ class AmpUtil implements FrameworkAwareInterface, ContainerAwareInterface
 
         return Input::cookie('BE_USER_AUTH') == System::getSessionHash('BE_USER_AUTH');
     }
+
+    public function removeTrailingAmp(string $string)
+    {
+        return preg_replace('@(^.*)_amp$@i', '$1', $string);
+    }
 }

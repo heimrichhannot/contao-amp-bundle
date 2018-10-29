@@ -49,8 +49,12 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             return;
         }
 
+        $util = $this->container->get('huh.amp.util.amp_util');
+
+        $templateName = $util->removeTrailingAmp($template->getName());
+
         // prepare values for amp
-        switch ($template->getName()) {
+        switch ($templateName) {
             case 'ce_player':
                 $files = [];
 
@@ -79,15 +83,18 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
                 break;
 
+            case 'ce_slick':
+                $this->prepareSlick($template);
+
+                break;
+
             default:
                 // TODO HOOK
                 break;
         }
 
-        $util = $this->container->get('huh.amp.util.amp_util');
-
-        if ($util->isSupportedContentElement($template->getName())) {
-            $ampTemplateName = $util->getAmpNameByContentElement($template->getName());
+        if ($util->isSupportedContentElement($templateName)) {
+            $ampTemplateName = $util->getAmpNameByContentElement($templateName);
 
             // add the needed lib to the manager for fe_page.html5
             switch ($ampTemplateName) {
@@ -117,7 +124,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             }
 
             // switch template for amp
-            $template->setName($template->getName().'_amp');
+            $template->setName($templateName.'_amp');
         }
     }
 
@@ -288,5 +295,54 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 }
             }
         }
+    }
+
+    public function prepareSlick(Template $template)
+    {
+        if (!$this->container->get('huh.utils.container')->isBundleActive('HeimrichHannot\SlickBundle\HeimrichHannotContaoSlickBundle')) {
+            return;
+        }
+
+        if (!\is_array($template->body)) {
+            return;
+        }
+
+        $images = [];
+        $template->ampCarouselWidth = 0;
+        $template->ampCarouselHeight = 0;
+
+        foreach ($template->body as $item) {
+            if (!$item->addImage) {
+                continue;
+            }
+
+            if (isset($item->picture['sources']) && !empty($item->picture['sources'])) {
+                $template->sourcesMode = true;
+
+                foreach ($item->picture['sources'] as $source) {
+                    if (!isset($images[$source['media']])) {
+                        $images[$source['media']] = [
+                            'width' => $source['width'],
+                            'height' => $source['height'],
+                            'images' => [],
+                        ];
+                    }
+
+                    $images[$source['media']]['images'][] = $source;
+                }
+            } elseif (isset($item->picture['img'])) {
+                $images[] = $item->picture['img'];
+
+                if (!$template->ampCarouselWidth || $item->picture['img']['width'] > $template->ampCarouselWidth) {
+                    $template->ampCarouselWidth = $item->picture['img']['width'];
+                }
+
+                if (!$template->ampCarouselHeight || $item->picture['img']['height'] > $template->ampCarouselHeight) {
+                    $template->ampCarouselHeight = $item->picture['img']['height'];
+                }
+            }
+        }
+
+        $template->ampImages = $images;
     }
 }

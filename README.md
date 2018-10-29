@@ -6,6 +6,7 @@ This bundle offers functionality concerning \"Accelerated Mobile Pages\" (AMP) f
 
 - offer an alternative AMP version for an ordinary Contao page (GET-Parameter `amp=1` must be set)
 - offer AMP templates for the supported content elements
+- encore integration
 
 ## Installation
 
@@ -28,10 +29,13 @@ TODO | $objTemplate, $arrItem, $objModule | Triggered just before FrontendTempla
 
 Contao content element | AMP component | Notes
 ---------------------- | ------------- | -----
-Accordion | accordion | single, start and stop
-Image | image | –
-YouTube | youtube | core content element or [heimrichhannot/contao-youtube-bundle](https://github.com/heimrichhannot/contao-youtube-bundle)
-Player | audio or video | aka "Audio/Video"; if `isVideo` is set in the template, the amp component "video" is used
+`ContentAccordion` | accordion |
+`ContentAccordionStart` | accordion |
+`ContentAccordionStop` | accordion |
+`ContentImage` | image |
+`ContentMedia` | audio or video | aka "Audio/Video", template is `ce_player`; if `isVideo` is set in the template, the amp component "video" is used
+`ContentYouTube` | youtube | core content element or [heimrichhannot/contao-youtube-bundle](https://github.com/heimrichhannot/contao-youtube-bundle)
+`ContentSlick` | carousel | [heimrichhannot/contao-slick-bundle](https://github.com/heimrichhannot/contao-slick-bundle)
 
 ## Things to know
 
@@ -45,7 +49,7 @@ The meta tags are handled using [heimrichhannot/contao-head-bundle](https://gith
 <?php $this->endblock(); ?>
 ```
 
-### Responsive images Contao vs. AMP
+### Responsive images: Contao vs. AMP
 
 Keep in mind: If you didn't specify image sizes in Contao, you can skip this chapter.
 

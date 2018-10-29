@@ -10,7 +10,21 @@
             {% endif %}
 
             {% if addImage|default %}
-                {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with picture %}
+                <figure class="image_container"{% if margin|default %} style="{{ margin }}"{% endif %}>
+                    {% if href|default %}
+                    <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
+                        {% endif %}
+
+                        {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with picture %}
+
+                        {% if href|default %}
+                    </a>
+                    {% endif %}
+
+                    {% if caption|default %}
+                        <figcaption class="caption">{{ caption }}</figcaption>
+                    {% endif %}
+                </figure>
             {% endif %}
 
             {% if addBefore|default %}
