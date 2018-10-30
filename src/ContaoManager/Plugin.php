@@ -24,8 +24,14 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
      */
     public function getBundles(ParserInterface $parser)
     {
+        $loadAfter = [ContaoCoreBundle::class];
+
+        if (class_exists('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
+            $loadAfter[] = 'HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle';
+        }
+
         return [
-            BundleConfig::create(HeimrichHannotContaoAmpBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
+            BundleConfig::create(HeimrichHannotContaoAmpBundle::class)->setLoadAfter($loadAfter),
         ];
     }
 
