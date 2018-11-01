@@ -1,38 +1,40 @@
 {% if first|default %}
-<amp-accordion disable-session-states expand-single-section>
-    {% endif %}
+<div class="{{ class }} ce_accordion ce_text block"{{ cssID }}{% if style|default %} style="{{ style }}"{% endif %}>
+    <amp-accordion disable-session-states expand-single-section>
+        {% endif %}
 
-    <section{% if active|default %} expanded{% endif %}>
-        <h2>{{ headline|raw }}</h2>
-        <div>
-            {% if not addBefore|default %}
-                {{ text|raw }}
-            {% endif %}
+        <section{% if active|default %} expanded{% endif %}>
+            <h2>{{ headline|raw }}</h2>
+            <div>
+                {% if not addBefore|default %}
+                    {{ text|raw }}
+                {% endif %}
 
-            {% if addImage|default %}
-                <figure class="image_container"{% if margin|default %} style="{{ margin }}"{% endif %}>
-                    {% if href|default %}
-                    <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
+                {% if addImage|default %}
+                    <figure class="image_container"{% if margin|default %} style="{{ margin }}"{% endif %}>
+                        {% if href|default %}
+                        <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
+                            {% endif %}
+
+                            {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with picture %}
+
+                            {% if href|default %}
+                        </a>
                         {% endif %}
 
-                        {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with picture %}
+                        {% if caption|default %}
+                            <figcaption class="caption">{{ caption }}</figcaption>
+                        {% endif %}
+                    </figure>
+                {% endif %}
 
-                        {% if href|default %}
-                    </a>
-                    {% endif %}
+                {% if addBefore|default %}
+                    {{ text|raw }}
+                {% endif %}
+            </div>
+        </section>
 
-                    {% if caption|default %}
-                        <figcaption class="caption">{{ caption }}</figcaption>
-                    {% endif %}
-                </figure>
-            {% endif %}
-
-            {% if addBefore|default %}
-                {{ text|raw }}
-            {% endif %}
-        </div>
-    </section>
-
-    {% if last|default %}
-</amp-accordion>
+        {% if last|default %}
+    </amp-accordion>
+</div>
 {% endif %}

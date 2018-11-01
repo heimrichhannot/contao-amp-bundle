@@ -1,18 +1,10 @@
 {% if first|default %}
-<amp-accordion disable-session-states expand-single-section>
-    {% endif %}
+<div class="{{ class }} ce_accordion block"{{ cssID }}{% if style|default %} style="{{ style }}"{% endif %}>
+    <amp-accordion disable-session-states expand-single-section>
+        {% endif %}
 
-    {% if startSection|default %}
-    <section{% if active|default %} expanded{% endif %}>
-        <h2>{{ headline|raw }}</h2>
-        <div>
-            {% endif %}
-
-            {% if stopSection|default %}
-        </div>
-    </section>
-    {% endif %}
-
-    {% if last|default %}
-</amp-accordion>
-{% endif %}
+        {% if startSection|default %}
+        <section{% if active|default %} expanded{% endif %}>
+            <h2>{{ headline|raw }}</h2>
+            <div>
+                {% endif %}

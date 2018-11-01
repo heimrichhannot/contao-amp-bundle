@@ -1,17 +1,22 @@
 huh:
   amp:
-    elements:
-    - { name: ce_accordionSingle, ampTemplate: accordion }
-    - { name: ce_accordionStart, ampTemplate: accordion }
-    - { name: ce_accordionStop, ampTemplate: accordion }
-    - { name: ce_image, ampTemplate: img }
-    - { name: ce_player, ampTemplate: player }
-    - { name: ce_slick, ampTemplate: carousel }
-    - { name: ce_youtube, ampTemplate: youtube }
+    ui_elements:
+    - { template: ce_accordionSingle, ampName: accordion }
+    - { template: ce_accordionStart, ampName: accordion }
+    - { template: ce_accordionStop, ampName: accordion }
+    - { template: ce_image, ampName: img }
+    - { template: ce_player, ampName: player }
+    - { template: ce_slick, ampName: carousel }
+    - { template: ce_youtube, ampName: youtube }
+    - { template: mod_customnav, ampName: navigation }
+    - { template: mod_navigation, ampName: navigation }
+    - { template: slick_default }
+    - { template: nav_default }
     libraries:
     - { ampName: accordion, url: "https://cdn.ampproject.org/v0/amp-accordion-0.1.js" }
     - { ampName: analytics, url: "https://cdn.ampproject.org/v0/amp-analytics-0.1.js" }
     - { ampName: audio, url: "https://cdn.ampproject.org/v0/amp-audio-0.1.js" }
     - { ampName: carousel, url: "https://cdn.ampproject.org/v0/amp-carousel-0.1.js" }
+    - { ampName: sidebar, url: "https://cdn.ampproject.org/v0/amp-sidebar-0.1.js" }
     - { ampName: video, url: "https://cdn.ampproject.org/v0/amp-video-0.1.js" }
     - { ampName: youtube, url: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }

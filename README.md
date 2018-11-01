@@ -1,12 +1,15 @@
 # Contao AMP Bundle
 
-This bundle offers functionality concerning \"Accelerated Mobile Pages\" (AMP) for the Contao CMS.
+This bundle offers functionality concerning [Accelerated Mobile Pages (AMP)](https://www.ampproject.org) for the Contao CMS.
 
 ## Features
 
 - offer an alternative AMP version for an ordinary Contao page (GET-Parameter `amp=1` must be set)
-- offer AMP templates for the supported content elements
-- encore integration
+- offer AMP templates for the supported content elements and modules
+- custom inline CSS can be added via...
+    - static file
+    - webpack/encore integration via [heimrichhannot/contao-encore-bundle](https://github.com/heimrichhannot/contao-encore-bundle)
+    - manually in fe_page_amp.html5
 
 ## Installation
 
@@ -19,13 +22,13 @@ Install via composer: `composer require heimrichhannot/contao-amp-bundle` and up
 3. Assign the layout created in step 2 to your page.
 4. In order to show your website in AMP mode simply append the GET parameter `amp=1` to your URL, i.e. `https://www.example.org/article` -> `https://www.example.org/article?amp=1`
 
-## Events
+### Events
 
 Name | Arguments | Description
 ---- | --------- | -----------
 TODO | $objTemplate, $arrItem, $objModule | Triggered just before FrontendTemplate::parse() is called
 
-## Supported content elements
+### Supported content elements
 
 Contao content element | Contao template | AMP component | AMP template | Notes
 ---------------------- | --------------- | ------------- | ------------ | -----
@@ -37,7 +40,20 @@ Contao content element | Contao template | AMP component | AMP template | Notes
 `ContentYouTube` | `ce_youtube.html5` | youtube | `ce_youtube_amp.html.twig` or `ce_youtube_amp_huh.html.twig` | core content element or [heimrichhannot/contao-youtube-bundle](https://github.com/heimrichhannot/contao-youtube-bundle)
 `ContentSlick` | `ce_slick.html5` | carousel | `ce_slick_amp.html.twig` | [heimrichhannot/contao-slick-bundle](https://github.com/heimrichhannot/contao-slick-bundle)
 
-## Things to know
+### Supported modules
+
+Contao module | Contao template | AMP component | AMP template | Notes
+---------------------- | --------------- | ------------- | ------------ | -----
+`ModuleNavigation` | `mod_navigation.html5` | sidebar + accordion | `mod_navigation_amp.html.twig` |
+
+### AMP Validation
+
+You can validate your AMP page by appending `#development=1` to your url.
+
+Things to consider:
+
+- If you do that in dev mode (by using `app_dev.php`), you'll get validation errors concerning the position of custom CSS tag and that custom JS is not allowed. Both of the errors are due to the symfony debug toolbar and should disappear in production mode.
+- When developing a website you might do that in localhost or some kind of custom domain. So you can ignore the error "The attribute 'href' in tag 'base' is set to the invalid value [...]" becuase in production mode it will disappear.
 
 ### Meta-Tag handling in fe_page
 
@@ -78,6 +94,14 @@ So you have 2 options:
 2. Create `tl_image_size_item` instances so that you have one for every situation that can happen. Example:
 
 ![alt text](docs/image-sizes.png)
+
+### Usage with heimrichhannot/contao-encore-bundle
+
+This bundle supports the integration of webpack encore using [heimrichhannot/contao-encore-bundle](https://github.com/heimrichhannot/contao-encore-bundle).
+
+For this you can simply add a new webpack entry in your `config.yml` as you would normally within `contao-encore-bundle` and assign it to your AMP layout.
+
+The code in the generated file then automatically gets rendered to the `<style amp-custom>` element. Simple as that :-)
 
 ## Known limitations
 

@@ -53,7 +53,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
         $templateName = $util->removeTrailingAmp($template->getName());
 
-        // prepare values for amp
+        // prepare template data for amp
         switch ($templateName) {
             case 'ce_player':
                 $files = [];
@@ -83,7 +83,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
                 break;
 
-            case 'ce_slick':
+            case 'slick_default':
                 $this->prepareSlick($template);
 
                 break;
@@ -93,34 +93,42 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 break;
         }
 
-        if ($util->isSupportedContentElement($templateName)) {
-            $ampTemplateName = $util->getAmpNameByContentElement($templateName);
+        if ($util->isSupportedUiElement($templateName)) {
+            $libsToLoad = [];
+            $ampName = $util->getAmpNameByUiElement($templateName);
 
             // add the needed lib to the manager for fe_page.html5
-            switch ($ampTemplateName) {
+            switch ($ampName) {
                 case 'player':
                     // custom logic for Contao's hybrid media element
                     if ($template->isVideo) {
-                        $ampTemplateName = 'video';
+                        $libsToLoad[] = 'video';
                     } else {
-                        $ampTemplateName = 'audio';
+                        $libsToLoad[] = 'audio';
                     }
 
                     break;
 
-                case 'ce_accordionStart':
-                case 'ce_accordionStop':
-                    $template->setName('ce_accordionStartStop_amp');
+                case 'navigation':
+                    // custom logic for Contao's navigation element
+                    $libsToLoad[] = 'sidebar';
+                    $libsToLoad[] = 'accordion';
 
                     break;
 
                 default:
+                    if ($ampName) {
+                        $libsToLoad[] = $ampName;
+                    }
+
                     // TODO HOOK
                     break;
             }
 
-            if (false !== ($url = $util->getLibraryByAmpName($ampTemplateName))) {
-                $this->container->get('huh.amp.manager.amp_manager')::addLib($ampTemplateName, $url);
+            foreach ($libsToLoad as $lib) {
+                if (false !== ($url = $util->getLibraryByAmpName($lib))) {
+                    $this->container->get('huh.amp.manager.amp_manager')::addLib($lib, $url);
+                }
             }
 
             // switch template for amp

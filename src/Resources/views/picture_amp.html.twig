@@ -7,7 +7,9 @@
                 {% if source.media|default %}
                     media="{{ source.media }}"
                 {% endif %}
-                alt="{{ alt }}"
+                {% if alt|default %}
+                    alt="{{ alt }}"
+                {% endif %}
                 src="{{ source.src }}"
                 width="{{ source.width }}"
                 height="{{ source.height }}"
@@ -22,7 +24,9 @@
     {% endfor %}
 {% elseif img %}
     <amp-img
-            alt="{{ alt }}"
+            {% if alt|default %}
+                alt="{{ alt }}"
+            {% endif %}
             src="{{ img.src }}"
             width="{{ img.width }}"
             height="{{ img.height }}"

@@ -1,0 +1,21 @@
+<ul class="{{ level }}">
+    {% for item in items %}
+        {% if isActive|default %}
+            <li class="{{ item.class }}">
+                <strong class="{{ item.class }}"{% if item.subitems is not empty %} aria-haspopup="true"{% endif %} itemprop="name">
+                    {{ link }}
+                </strong>
+                {{ item.subitems|raw }}
+            </li>
+        {% else %}
+            <li{% if item.class|default %} class="{{ item.class }}"{% endif %}>
+                <a href="{{ item.href|default ? item.href : './' }}" title="{{ item.pageTitle|default ? item.pageTitle : item.title }}"{% if item.class|default %} class="{{ item.class }}"{% endif %}{% if item.accesskey is not same as('') %} accesskey="{{ item.accesskey }}"{% endif %}{% if item.tabindex|default %} tabindex="{{ item.tabindex }}"{% endif %}{% if item.nofollow|default %} rel="nofollow"{% endif %}{{ item.target }}{% if item.subitems is not empty %} aria-haspopup="true"{% endif %} itemprop="url">
+                    <span itemprop="name">
+                        {{ item.link }}
+                    </span>
+                </a>
+                {{ item.subitems|raw }}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>

@@ -22,28 +22,28 @@ class AmpUtil implements FrameworkAwareInterface, ContainerAwareInterface
     use ContainerAwareTrait;
 
     /**
-     * Checks whether an AMP-equivalent is available for a given content element's template.
+     * Checks whether an AMP-equivalent is available for a given ui element's template.
      *
      * @param string $template
      *
      * @return bool
      */
-    public function isSupportedContentElement(string $template)
+    public function isSupportedUiElement(string $template)
     {
         $config = $this->container->getParameter('huh.amp');
 
-        return isset($config['amp']['elements']) && \in_array($template, array_map(function ($data) {
-            return $data['name'];
-        }, $config['amp']['elements']));
+        return isset($config['amp']['ui_elements']) && \in_array($template, array_map(function ($data) {
+            return $data['template'];
+        }, $config['amp']['ui_elements']));
     }
 
-    public function getAmpNameByContentElement(string $contentElement)
+    public function getAmpNameByUiElement(string $uiElement)
     {
         $config = $this->container->getParameter('huh.amp');
 
-        foreach ($config['amp']['elements'] as $element) {
-            if ($element['name'] === $contentElement) {
-                return $element['ampTemplate'];
+        foreach ($config['amp']['ui_elements'] as $element) {
+            if ($element['template'] === $uiElement) {
+                return $element['ampName'];
             }
         }
 

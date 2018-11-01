@@ -1,0 +1,32 @@
+{% if ampImages|default %}
+    {% if sourcesMode|default %}
+        {% for media, imageData in ampImages %}
+            <amp-carousel
+                    width="{{ imageData.width }}"
+                    height="{{ imageData.height }}"
+                    layout="responsive"
+                    type="slides"
+                    media="{{ media }}"
+            >
+                {% for image in imageData.images %}
+                    {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with {
+                        img: image
+                    } %}
+                {% endfor %}
+            </amp-carousel>
+        {% endfor %}
+    {% else %}
+        <amp-carousel
+                width="{{ ampCarouselWidth }}"
+                height="{{ ampCarouselHeight }}"
+                layout="responsive"
+                type="slides"
+        >
+            {% for image in ampImages %}
+                {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with {
+                    img: image
+                } %}
+            {% endfor %}
+        </amp-carousel>
+    {% endif %}
+{% endif %}

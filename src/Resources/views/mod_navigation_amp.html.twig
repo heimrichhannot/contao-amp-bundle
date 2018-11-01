@@ -1,0 +1,27 @@
+<!-- indexer::stop -->
+<div class="{{ class }} block"{{ cssID }}{% if style|default %} style="{{ style }}"{% endif %} itemscope
+     itemtype="http://schema.org/SiteNavigationElement">
+    <header>
+        <div role="button" on="tap:sidebar{{ id }}.toggle" tabindex="0" class="hamburger">☰</div>
+    </header>
+
+    <amp-sidebar id="sidebar{{ id }}" layout="nodisplay" side="left">
+        <div role="button" aria-label="close sidebar" on="tap:sidebar{{ id }}.toggle" tabindex="0"
+             class="close-sidebar">✕
+        </div>
+
+        {% if headline|default %}
+        <{{ hl }}>{{ headline }}</{{ hl }}>
+    {% endif %}
+
+    <a href="{{ request }}#{{ skipId }}" class="invisible">{{ skipNavigation }}</a>
+
+    {{ items|raw }}
+
+    <a id="{{ skipId }}" class="invisible">&nbsp;</a>
+    </amp-sidebar>
+
+    <div id="target-element"></div>
+</div>
+
+<!-- indexer::continue -->
