@@ -3,7 +3,7 @@
         {% if item.subitems is not empty %}
             <amp-accordion disable-session-states animate>
                 <section
-                        class="{{ item.class }}"{% if item.isActive|default or item.isTrail|default %} expanded{% endif %}>
+                        class="{{ item.class }} {{ level }}"{% if item.isActive|default or item.isTrail|default %} expanded{% endif %}>
                     <h2>{{ item.link }}</h2>
                     <div>
                         {{ item.subitems|raw }}
