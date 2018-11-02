@@ -4,7 +4,9 @@
 
 <?php if($this->youtube && $this->youtube->video): ?>
     <!-- heimrichhannot/contao-youtube-bundle -->
-    <?= System::getContainer()->get('huh.amp.util.amp_util')->renderTwigTemplate($this, $this->getName() . '_huh') ?>
+    <?= System::getContainer()->get('huh.amp.util.amp_util')->renderTwigTemplate($this,
+        preg_replace('@(.+)_amp$@i', '$1' . '_huh_amp', $this->getName())
+    ) ?>
 <?php else: ?>
     <!-- contao/core-bundle -->
     <?= System::getContainer()->get('huh.amp.util.amp_util')->renderTwigTemplate($this) ?>

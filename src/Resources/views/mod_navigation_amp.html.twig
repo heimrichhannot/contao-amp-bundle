@@ -16,7 +16,11 @@
 
     <a href="{{ request }}#{{ skipId }}" class="invisible">{{ skipNavigation }}</a>
 
-    {{ items|raw }}
+    {% if ampRenderSubItemsAsAccordions|default %}
+        {{ items|raw }}
+    {% else %}
+        {{ items|raw }}
+    {% endif %}
 
     <a id="{{ skipId }}" class="invisible">&nbsp;</a>
     </amp-sidebar>

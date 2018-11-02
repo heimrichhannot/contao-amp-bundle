@@ -88,6 +88,11 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
                 break;
 
+            case 'nav_default':
+                $this->prepareNavItems($template);
+
+                break;
+
             default:
                 // TODO HOOK
                 break;
@@ -142,19 +147,6 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             return;
         }
 
-        // add needed amp libs
-        if (!empty($this->container->get('huh.amp.manager.amp_manager')::getLibs())) {
-            $scripts = [];
-
-            foreach ($this->container->get('huh.amp.manager.amp_manager')::getLibs() as $ampName => $url) {
-                $scripts[] = '<script async custom-element="amp-'.$ampName.'" src="'.$url.'"></script>';
-            }
-
-            if (!empty($scripts)) {
-                $pageRegular->Template->ampScripts = implode("\n", $scripts);
-            }
-        }
-
         // add analytics support
         if ($layout->addAmpAnalytics) {
             $pageRegular->Template->ampAnalytics = $this->container->get('twig')->render(
@@ -169,6 +161,30 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         if ($this->container->get('huh.utils.container')->isBundleActive('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
             $this->container->get('huh.encore.listener.hooks')->doAddEncore($page, $layout, $pageRegular, 'encoreEntriesAmp', true);
         }
+    }
+
+    public function modifyFrontendPage(string $buffer, string $template)
+    {
+        global $objPage;
+
+        if (!$this->container->get('huh.amp.util.layout_util')->isAmpLayout($objPage->layout)) {
+            return $buffer;
+        }
+
+        // add needed amp libs
+        if (!empty($this->container->get('huh.amp.manager.amp_manager')::getLibs())) {
+            $scripts = [];
+
+            foreach ($this->container->get('huh.amp.manager.amp_manager')::getLibs() as $ampName => $url) {
+                $scripts[] = '<script async custom-element="amp-'.$ampName.'" src="'.$url.'"></script>';
+            }
+
+            if (!empty($scripts)) {
+                return str_replace('<!-- ##ampScripts## -->', implode("\n", $scripts), $buffer);
+            }
+        }
+
+        return $buffer;
     }
 
     public function prepareAccordionSingle(Template $template)
@@ -357,5 +373,44 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         }
 
         $template->ampImages = $images;
+    }
+
+    public function prepareNavItems(Template $template)
+    {
+        // update active property
+        $items = $template->items;
+
+        if (!\is_array($items)) {
+            return;
+        }
+
+        global $objPage;
+
+        foreach ($items as &$item) {
+            $trail = \in_array($item['id'], $objPage->trail);
+
+            if (($objPage->id == $item['id'] || ('forward' == $item['type'] && $objPage->id == $item['jumpTo'])) && $item['href'] == $this->container->get('huh.utils.url')->removeQueryString(['amp'], \Environment::get('request'))) {
+                // Mark active forward pages (see #4822)
+                $strClass = (('forward' == $item['type'] && $objPage->id == $item['jumpTo']) ? 'forward'.($trail ? ' trail' : '') : 'active').(('' != $item['subitems']) ? ' submenu' : '').($item['protected'] ? ' protected' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
+
+                $item['isActive'] = true;
+                $item['isTrail'] = false;
+            } // Regular page
+            else {
+                $strClass = (('' != $item['subitems']) ? 'submenu' : '').($item['protected'] ? ' protected' : '').($trail ? ' trail' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
+
+                // Mark pages on the same level (see #2419)
+                if ($item['pid'] == $objPage->pid) {
+                    $strClass .= ' sibling';
+                }
+
+                $item['isActive'] = false;
+                $item['isTrail'] = $trail;
+            }
+
+            $item['class'] = trim($strClass);
+        }
+
+        $template->items = $items;
     }
 }

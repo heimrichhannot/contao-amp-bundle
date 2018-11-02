@@ -7,11 +7,6 @@ services:
       calls:
       - ["setContainer", ["@service_container"]]
 
-  huh.amp.event_listener.hook_listener:
-    class: HeimrichHannot\AmpBundle\EventListener\HookListener
-    public: true
-    autowire: true
-
   huh.amp.manager.amp_manager:
     class: HeimrichHannot\AmpBundle\Manager\AmpManager
     public: true
