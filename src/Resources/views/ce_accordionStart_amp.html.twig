@@ -3,8 +3,6 @@
     <amp-accordion disable-session-states expand-single-section animate>
         {% endif %}
 
-        {% if accordion_startSection|default %}
         <section{% if active|default %} expanded{% endif %}>
             <h2>{{ headline|raw }}</h2>
             <div>
-                {% endif %}
