@@ -4,12 +4,12 @@
 
 <?php if($this->youtube && $this->youtube->video): ?>
     <!-- heimrichhannot/contao-youtube-bundle -->
-    <?= System::getContainer()->get('huh.amp.util.amp_util')->renderTwigTemplate($this,
-        preg_replace('@(.+)_amp$@i', '$1' . '_huh_amp', $this->getName())
-    ) ?>
+    <?= System::getContainer()->get('huh.utils.template')->renderTwigTemplate(
+        preg_replace('@(.+)_amp$@i', '$1' . '_huh_amp', $this->getName()), $this->getData()
+    ); ?>
 <?php else: ?>
     <!-- contao/core-bundle -->
-    <?= System::getContainer()->get('huh.amp.util.amp_util')->renderTwigTemplate($this) ?>
+    <?= System::getContainer()->get('huh.utils.template')->renderTwigTemplate($this->getName(), $this->getData()); ?>
 <?php endif; ?>
 
 <?php $this->endblock(); ?>

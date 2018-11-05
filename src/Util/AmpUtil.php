@@ -50,28 +50,6 @@ class AmpUtil implements FrameworkAwareInterface, ContainerAwareInterface
         return false;
     }
 
-    /**
-     * Renders the twig template.
-     *
-     * @param Template $template
-     *
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
-     *
-     * @return string
-     */
-    public function renderTwigTemplate(Template $template, string $templateName = '')
-    {
-        $buffer = $this->container->get('twig')->render(
-            $this->container->get('huh.utils.template')->getTemplate($templateName ?: $template->getName()),
-            $template->getData()
-        );
-
-        return $buffer;
-    }
-
     public function getLibraryByAmpName(string $ampName)
     {
         $config = $this->container->getParameter('huh.amp');
