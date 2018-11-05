@@ -147,12 +147,16 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             return;
         }
 
+        $ampUtil = $this->container->get('huh.amp.util.amp_util');
+
         // add analytics support
         if ($layout->addAmpAnalytics) {
+            $this->container->get('huh.amp.manager.amp_manager')::addLib('analytics', $ampUtil->getLibraryByAmpName('analytics'));
+
             $pageRegular->Template->ampAnalytics = $this->container->get('twig')->render(
                 $this->container->get('huh.utils.template')->getTemplate($layout->ampAnalyticsTemplate),
                 [
-                    'skip' => $this->container->get('huh.amp.util.amp_util')->skipAnalyticsForBackend(),
+                    'skip' => $ampUtil->skipAnalyticsForBackend(),
                 ]
             );
         }
