@@ -1,4 +1,4 @@
-{% if first|default %}
+{% if accordion_first|default %}
 <div class="{{ class }} ce_accordion ce_text block"{{ cssID }}{% if style|default %} style="{{ style }}"{% endif %}>
     <amp-accordion disable-session-states expand-single-section animate>
         {% endif %}
@@ -34,7 +34,7 @@
             </div>
         </section>
 
-        {% if last|default %}
+        {% if accordion_last|default %}
     </amp-accordion>
 </div>
 {% endif %}

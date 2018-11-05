@@ -1,9 +1,9 @@
-{% if first|default %}
+{% if accordion_first|default %}
 <div class="{{ class }} ce_accordion block"{{ cssID }}{% if style|default %} style="{{ style }}"{% endif %}>
     <amp-accordion disable-session-states expand-single-section animate>
         {% endif %}
 
-        {% if startSection|default %}
+        {% if accordion_startSection|default %}
         <section{% if active|default %} expanded{% endif %}>
             <h2>{{ headline|raw }}</h2>
             <div>
