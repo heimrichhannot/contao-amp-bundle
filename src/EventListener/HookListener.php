@@ -23,12 +23,6 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
     use FrameworkAwareTrait;
     use ContainerAwareTrait;
 
-    protected static $accordionSingleCache = [];
-    protected static $accordionSingleCacheBuilt = false;
-
-    protected static $accordionStartStopCache = [];
-    protected static $accordionStartStopCacheBuilt = false;
-
     public function getPageLayout(PageModel $page, LayoutModel &$layout, PageRegular $pageRegular)
     {
         if ($layout->addAmp && $this->container->get('huh.request')->getGet('amp') && null !== ($ampLayout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $layout->ampLayout))) {
@@ -73,13 +67,21 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 break;
 
             case 'ce_accordionSingle':
-                $this->prepareAccordionSingle($template);
+                $data = $template->getData();
+
+                $this->container->get('huh.utils.accordion')->structureAccordionSingle($data);
+
+                $template->setData($data);
 
                 break;
 
             case 'ce_accordionStart':
             case 'ce_accordionStop':
-                $this->prepareAccordionStartStop($template);
+                $data = $template->getData();
+
+                $this->container->get('huh.utils.accordion')->structureAccordionStartStop($data);
+
+                $template->setData($data);
 
                 break;
 
@@ -189,145 +191,6 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         }
 
         return $buffer;
-    }
-
-    public function prepareAccordionSingle(Template $template)
-    {
-        if (!static::$accordionSingleCacheBuilt) {
-            if (null !== ($elements = $this->container->get('huh.utils.model')->findModelInstancesBy('tl_content', [
-                    'ptable=?',
-                    'tl_content.pid=?',
-                    'invisible!=1',
-                ], [
-                    'tl_article',
-                    $template->pid,
-                ], [
-                    'order' => 'sorting ASC',
-                ]))) {
-                $lastOneIsAccordionSingle = false;
-                $elementGroup = [];
-
-                foreach ($elements as $i => $element) {
-                    if ('accordionSingle' === $element->type) {
-                        $elementGroup[] = $element->row();
-                    } else {
-                        if ($lastOneIsAccordionSingle) {
-                            static::$accordionSingleCache[] = $elementGroup;
-                            $elementGroup = [];
-                        }
-
-                        $lastOneIsAccordionSingle = false;
-
-                        continue;
-                    }
-
-                    $lastOneIsAccordionSingle = true;
-
-                    if ($i === \count($elements) - 1) {
-                        static::$accordionSingleCache[] = $elementGroup;
-                        $elementGroup = [];
-                    }
-                }
-
-                static::$accordionSingleCacheBuilt = true;
-            }
-        }
-
-        foreach (static::$accordionSingleCache as $elementGroup) {
-            foreach ($elementGroup as $i => $element) {
-                if ($template->id == $element['id']) {
-                    if (0 === $i) {
-                        $template->first = true;
-                    }
-
-                    if ($i === \count($elementGroup) - 1) {
-                        $template->last = true;
-                    }
-
-                    break 2;
-                }
-            }
-        }
-    }
-
-    public function prepareAccordionStartStop(Template $template)
-    {
-        if (!static::$accordionStartStopCacheBuilt) {
-            if (null !== ($elements = $this->container->get('huh.utils.model')->findModelInstancesBy('tl_content', [
-                    'tl_content.ptable=?',
-                    'tl_content.pid=?',
-                    'tl_content.invisible!=1',
-                ], [
-                    'tl_article',
-                    $template->pid,
-                ], [
-                    'order' => 'sorting ASC',
-                ]))) {
-                $lastOneIsAccordionStop = false;
-
-                foreach ($elements as $i => $element) {
-                    if ('accordionStart' === $element->type) {
-                        if (\count(static::$accordionStartStopCache) < 1) {
-                            static::$accordionStartStopCache[] = [];
-                        }
-
-                        if ($lastOneIsAccordionStop) {
-                            static::$accordionStartStopCache[\count(static::$accordionStartStopCache) - 1][] = $element->row();
-                        } else {
-                            static::$accordionStartStopCache[\count(static::$accordionStartStopCache) - 1][] = $element->row();
-                        }
-
-                        $lastOneIsAccordionStop = false;
-                    } elseif ('accordionStop' === $element->type) {
-                        static::$accordionStartStopCache[\count(static::$accordionStartStopCache) - 1][] = $element->row();
-
-                        $lastOneIsAccordionStop = true;
-
-                        continue;
-                    } elseif ($lastOneIsAccordionStop) {
-                        static::$accordionStartStopCache[] = [];
-                        $lastOneIsAccordionStop = false;
-                    }
-                }
-
-                // remove trailing empty arrays
-                $cleaned = [];
-
-                foreach (static::$accordionStartStopCache as $elementGroup) {
-                    if (!empty($elementGroup)) {
-                        $cleaned[] = $elementGroup;
-                    }
-                }
-
-                static::$accordionStartStopCache = $cleaned;
-
-                static::$accordionStartStopCacheBuilt = true;
-            }
-        }
-
-        foreach (static::$accordionStartStopCache as $elementGroup) {
-            foreach ($elementGroup as $i => $element) {
-                if ($template->id == $element['id']) {
-                    if (0 === $i) {
-                        $template->first = true;
-                    }
-
-                    if ('accordionStart' == $element['type']) {
-                        $template->startSection = true;
-                    }
-
-                    if ('accordionStop' == $element['type']) {
-                        $template->stopSection = true;
-                    }
-
-                    if ($i === \count($elementGroup) - 1) {
-                        $template->last = true;
-                    }
-
-                    break 2;
-                }
-            }
-        }
     }
 
     public function prepareSlick(Template $template)
