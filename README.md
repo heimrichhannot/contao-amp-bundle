@@ -26,7 +26,8 @@ Install via composer: `composer require heimrichhannot/contao-amp-bundle` and up
 
 Name | Arguments | Description
 ---- | --------- | -----------
-TODO | $objTemplate, $arrItem, $objModule | Triggered just before FrontendTemplate::parse() is called
+`AfterPrepareUiElementEvent` | $template, $layout | Can be used for custom element preparation
+`ModifyLibrariesToLoadEvent` | $ampName, $librariesToLoad, $template, $layout | Can be used for adding amp libraries based on a custom logic
 
 ### Supported content elements
 

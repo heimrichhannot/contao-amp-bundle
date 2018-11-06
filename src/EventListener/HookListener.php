@@ -15,6 +15,8 @@ use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
 use Contao\Template;
+use HeimrichHannot\AmpBundle\Event\AfterPrepareUiElementEvent;
+use HeimrichHannot\AmpBundle\Event\ModifyLibrariesToLoadEvent;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
@@ -94,14 +96,13 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 $this->prepareNavItems($template);
 
                 break;
-
-            default:
-                // TODO HOOK
-                break;
         }
 
+        $event = $this->container->get('event_dispatcher')->dispatch(AfterPrepareUiElementEvent::NAME, new AfterPrepareUiElementEvent($template, $layout));
+        $template = $event->getTemplate();
+
         if ($util->isSupportedUiElement($templateName)) {
-            $libsToLoad = [];
+            $librariesToLoad = [];
             $ampName = $util->getAmpNameByUiElement($templateName);
 
             // add the needed lib to the manager for fe_page.html5
@@ -109,30 +110,32 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 case 'player':
                     // custom logic for Contao's hybrid media element
                     if ($template->isVideo) {
-                        $libsToLoad[] = 'video';
+                        $librariesToLoad[] = 'video';
                     } else {
-                        $libsToLoad[] = 'audio';
+                        $librariesToLoad[] = 'audio';
                     }
 
                     break;
 
                 case 'navigation':
                     // custom logic for Contao's navigation element
-                    $libsToLoad[] = 'sidebar';
-                    $libsToLoad[] = 'accordion';
+                    $librariesToLoad[] = 'sidebar';
+                    $librariesToLoad[] = 'accordion';
 
                     break;
 
                 default:
                     if ($ampName) {
-                        $libsToLoad[] = $ampName;
+                        $librariesToLoad[] = $ampName;
                     }
 
-                    // TODO HOOK
                     break;
             }
 
-            foreach ($libsToLoad as $lib) {
+            $event = $this->container->get('event_dispatcher')->dispatch(ModifyLibrariesToLoadEvent::NAME, new ModifyLibrariesToLoadEvent($ampName, $librariesToLoad, $template, $layout));
+            $librariesToLoad = $event->getLibrariesToLoad();
+
+            foreach ($librariesToLoad as $lib) {
                 if (false !== ($url = $util->getLibraryByAmpName($lib))) {
                     $this->container->get('huh.amp.manager.amp_manager')::addLib($lib, $url);
                 }
