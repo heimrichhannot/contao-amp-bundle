@@ -5,9 +5,7 @@ $dca = &$GLOBALS['TL_DCA']['tl_module'];
 /**
  * Palettes
  */
-$dca['palettes']['navigation']     = str_replace('{template_legend', '{amp_legend},ampRenderSubItemsAsAccordions;{template_legend', $dca['palettes']['navigation']);
-$dca['palettes']['navigation_amp'] = $dca['palettes']['navigation'];
-$dca['palettes']['customnav']      = str_replace('{template_legend', '{amp_legend},ampRenderSubItemsAsAccordions;{template_legend', $dca['palettes']['customnav']);
+$dca['palettes']['navigation_amp']     = str_replace('{template_legend', '{amp_legend},ampRenderSubItemsAsAccordions;{template_legend', $dca['palettes']['navigation']);
 
 /**
  * Fields
