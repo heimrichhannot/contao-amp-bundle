@@ -11,6 +11,8 @@ $lang['addAmpAnalytics'][0]      = 'Activate AMP-Analytics';
 $lang['addAmpAnalytics'][1]      = 'Choose this option if you\'d like to add an analytics tool (e.g. Google Analytics).';
 $lang['ampAnalyticsTemplate'][0] = 'Analytics-Template';
 $lang['ampAnalyticsTemplate'][1] = 'Choose a template here or create a new one with the prefix "analytics_amp_".';
+$lang['ampLayout'][0]            = 'AMP layout';
+$lang['ampLayout'][1]            = 'Choose a layout here.';
 
 /**
  * Legends

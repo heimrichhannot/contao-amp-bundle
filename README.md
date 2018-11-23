@@ -55,6 +55,7 @@ Things to consider:
 
 - If you do that in dev mode (by using `app_dev.php`), you'll get validation errors concerning the position of custom CSS tag and that custom JS is not allowed. Both of the errors are due to the symfony debug toolbar and should disappear in production mode.
 - When developing a website you might do that in localhost or some kind of custom domain. So you can ignore the error "The attribute 'href' in tag 'base' is set to the invalid value [...]" becuase in production mode it will disappear.
+- Take care of your generated CSS: it shouldn't contain any source map files, because these will significantly increase the size of the CSS
 
 ### Meta-Tag handling in fe_page
 
