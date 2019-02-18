@@ -21,3 +21,8 @@ services:
     class: HeimrichHannot\AmpBundle\Util\LayoutUtil
     public: true
     autowire: true
+
+  huh.head.tag.link_amp:
+    class: HeimrichHannot\AmpBundle\Tag\Link\LinkAmp
+    arguments: ['@huh.head.tag_manager']
+    public: true

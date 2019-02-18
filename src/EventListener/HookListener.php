@@ -27,12 +27,20 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
     public function getPageLayout(PageModel $page, LayoutModel &$layout, PageRegular $pageRegular)
     {
-        if ($layout->addAmp && $this->container->get('huh.request')->getGet('amp') && null !== ($ampLayout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $layout->ampLayout))) {
-            $layout = $ampLayout;
+        if ($layout->addAmp && null !== ($ampLayout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $layout->ampLayout))) {
 
+            /**
+             * @var $objPage PageModel
+             */
             global $objPage;
 
-            $objPage->layout = $layout->id;
+            if ($this->container->get('huh.request')->getGet('amp')) {
+                $layout = $ampLayout;
+
+                $objPage->layout = $layout->id;
+            } else {
+                $this->container->get('huh.head.tag.link_amp')->setContent($this->container->get('huh.utils.url')->addQueryString('amp=1'.($this->container->getParameter('kernel.debug') ? '#development=1' : ''), $objPage->getAbsoluteUrl()));
+            }
         }
     }
 
@@ -40,8 +48,8 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
     {
         global $objPage;
 
-        if (null === ($layout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $objPage->layout)) ||
-            !$this->container->get('huh.amp.util.layout_util')->isAmpLayout($layout->id)) {
+        if (null === ($layout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $objPage->layout))
+            || !$this->container->get('huh.amp.util.layout_util')->isAmpLayout($layout->id)) {
             return;
         }
 
@@ -57,8 +65,8 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 if (\is_array($template->files)) {
                     foreach ($template->files as $file) {
                         $files[] = [
-                            'mime' => $file->mime,
-                            'path' => Environment::get('url').'/'.$file->path,
+                            'mime'  => $file->mime,
+                            'path'  => Environment::get('url').'/'.$file->path,
                             'title' => $file->title,
                         ];
                     }
@@ -98,12 +106,12 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 break;
         }
 
-        $event = $this->container->get('event_dispatcher')->dispatch(AfterPrepareUiElementEvent::NAME, new AfterPrepareUiElementEvent($template, $layout));
+        $event    = $this->container->get('event_dispatcher')->dispatch(AfterPrepareUiElementEvent::NAME, new AfterPrepareUiElementEvent($template, $layout));
         $template = $event->getTemplate();
 
         if ($util->isSupportedUiElement($templateName)) {
             $librariesToLoad = [];
-            $ampName = $util->getAmpNameByUiElement($templateName);
+            $ampName         = $util->getAmpNameByUiElement($templateName);
 
             // add the needed lib to the manager for fe_page.html5
             switch ($ampName) {
@@ -132,7 +140,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                     break;
             }
 
-            $event = $this->container->get('event_dispatcher')->dispatch(ModifyLibrariesToLoadEvent::NAME, new ModifyLibrariesToLoadEvent($ampName, $librariesToLoad, $template, $layout));
+            $event           = $this->container->get('event_dispatcher')->dispatch(ModifyLibrariesToLoadEvent::NAME, new ModifyLibrariesToLoadEvent($ampName, $librariesToLoad, $template, $layout));
             $librariesToLoad = $event->getLibrariesToLoad();
 
             foreach ($librariesToLoad as $lib) {
@@ -206,8 +214,8 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             return;
         }
 
-        $images = [];
-        $template->ampCarouselWidth = 0;
+        $images                      = [];
+        $template->ampCarouselWidth  = 0;
         $template->ampCarouselHeight = 0;
 
         foreach ($template->body as $item) {
@@ -221,7 +229,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 foreach ($item->picture['sources'] as $source) {
                     if (!isset($images[$source['media']])) {
                         $images[$source['media']] = [
-                            'width' => $source['width'],
+                            'width'  => $source['width'],
                             'height' => $source['height'],
                             'images' => [],
                         ];
@@ -264,7 +272,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 $strClass = (('forward' == $item['type'] && $objPage->id == $item['jumpTo']) ? 'forward'.($trail ? ' trail' : '') : 'active').(('' != $item['subitems']) ? ' submenu' : '').($item['protected'] ? ' protected' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
 
                 $item['isActive'] = true;
-                $item['isTrail'] = false;
+                $item['isTrail']  = false;
             } // Regular page
             else {
                 $strClass = (('' != $item['subitems']) ? 'submenu' : '').($item['protected'] ? ' protected' : '').($trail ? ' trail' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
@@ -275,7 +283,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 }
 
                 $item['isActive'] = false;
-                $item['isTrail'] = $trail;
+                $item['isTrail']  = $trail;
             }
 
             $item['class'] = trim($strClass);

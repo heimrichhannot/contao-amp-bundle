@@ -12,6 +12,7 @@ huh:
     - { template: mod_navigation, ampName: navigation }
     - { template: slick_default }
     - { template: nav_default }
+    - { template: cookiebar }
     libraries:
     - { ampName: accordion, url: "https://cdn.ampproject.org/v0/amp-accordion-0.1.js" }
     - { ampName: analytics, url: "https://cdn.ampproject.org/v0/amp-analytics-0.1.js" }

@@ -25,6 +25,10 @@
   <?php $this->endblock(); ?>
 </head>
 <body id="top" class="{{ua::class}}<?php if ($this->class) echo ' ' . $this->class; ?>"<?php if ($this->onload): ?> onload="<?= $this->onload ?>"<?php endif; ?> itemscope itemtype="http://schema.org/WebPage">
+<?php if ($this->sections['bodyStart']): ?>
+    <?= $this->sections['bodyStart']; ?>
+<?php endif; ?>
+
   <?= $this->ampAnalytics ?>
 
   <?php $this->block('body'); ?>

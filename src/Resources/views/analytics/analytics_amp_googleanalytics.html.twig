@@ -1,12 +1,12 @@
 {# To use this script, please fill in your Google Analytics ID #}
 {% set uaNumber = 'UA-XXXXX-X' %}
 
-{% if uaNumber != 'UA-XXXXX-X' and not skip %}
+{% if uaNumber != 'UA-XXXXX-X' and not skip|default(false) %}
 <amp-analytics type="googleanalytics">
     <script type="application/json">
         {
             "vars": {
-                "account": "UA-XXXXX-X"
+                "account": "{{ uaNumber }}"
             },
             "triggers": {
                 "trackPageview": {
