@@ -29,14 +29,14 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
         $layout = $modelUtil->findModelInstanceByPk('tl_layout', $dc->id);
         $dca    = &$GLOBALS['TL_DCA']['tl_layout'];
 
-        if (null !== $layout && !$layout->ampLayout && $this->isAmpLayout($dc->id)) {
-            $dca['palettes']['default'] = str_replace('addAmp', 'addAmpAnalytics', $dca['palettes']['default']);
+        if (null !== $layout && true === (bool)$layout->addAmp) {
+            $dca['palettes']['default'] = str_replace('addAmp', 'addAmp,addAmpAnalytics', $dca['palettes']['default']);
         }
     }
 
     public function isAmpLayout(int $id)
     {
-        return null !== System::getContainer()->get('huh.utils.model')->findModelInstancesBy('tl_layout', ['ampLayout=?'], [$id]);
+        return null !== System::getContainer()->get('huh.utils.model')->findModelInstancesBy('tl_layout', ['tl_layout.addAmp=1', 'tl_layout.id = ?'], [$id]);
     }
 
     /**

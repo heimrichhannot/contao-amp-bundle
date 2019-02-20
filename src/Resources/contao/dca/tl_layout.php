@@ -10,7 +10,6 @@ $dca['config']['onload_callback'][] = ['huh.amp.util.layout_util', 'modifyDca'];
 /**
  * Palettes
  */
-$dca['palettes']['__selector__'][] = 'addAmp';
 $dca['palettes']['__selector__'][] = 'addAmpAnalytics';
 
 $dca['palettes']['default'] = str_replace('{sections_legend', '{amp_legend},addAmp;{sections_legend', $dca['palettes']['default']);
@@ -18,7 +17,6 @@ $dca['palettes']['default'] = str_replace('{sections_legend', '{amp_legend},addA
 /**
  * Subpalettes
  */
-$dca['subpalettes']['addAmp']          = 'ampLayout';
 $dca['subpalettes']['addAmpAnalytics'] = 'ampAnalyticsTemplate';
 
 /**
@@ -36,7 +34,7 @@ $fields = [
         'label'     => &$GLOBALS['TL_LANG']['tl_layout']['addAmpAnalytics'],
         'exclude'   => true,
         'inputType' => 'checkbox',
-        'eval'      => ['tl_class' => 'w50'],
+        'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
         'sql'       => "char(1) NOT NULL default ''"
     ],
     'ampAnalyticsTemplate' => [
@@ -51,25 +49,6 @@ $fields = [
         },
         'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true],
         'sql'              => "varchar(64) NOT NULL default ''"
-    ],
-    'ampLayout' => [
-        'label'                   => &$GLOBALS['TL_LANG']['tl_layout']['ampLayout'],
-        'exclude'                 => true,
-        'filter'                  => true,
-        'inputType'               => 'select',
-        'options_callback' => function (\Contao\DataContainer $dc) {
-            return System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices([
-                'dataContainer' => 'tl_layout',
-                'columns' => [
-                    'tl_layout.id != ?'
-                ],
-                'values' => [
-                    $dc->id
-                ]
-            ]);
-        },
-        'eval'                    => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true],
-        'sql'                     => "varchar(64) NOT NULL default ''"
     ],
 ];
 
