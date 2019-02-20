@@ -27,21 +27,22 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
     public function getPageLayout(PageModel $page, LayoutModel &$layout, PageRegular $pageRegular)
     {
-        if ($layout->addAmp && null !== ($ampLayout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $layout->ampLayout))) {
+        /**
+         * @var $objPage PageModel
+         */
+        global $objPage;
 
-            /**
-             * @var $objPage PageModel
-             */
-            global $objPage;
-
-            if ($this->container->get('huh.request')->getGet('amp')) {
-                $layout = $ampLayout;
-
-                $objPage->layout = $layout->id;
-            } else {
-                $this->container->get('huh.head.tag.link_amp')->setContent($this->container->get('huh.utils.url')->addQueryString('amp=1'.($this->container->getParameter('kernel.debug') ? '#development=1' : ''), $objPage->getAbsoluteUrl()));
-            }
+        if (null == ($ampLayout = $this->container->get('huh.amp.util.layout_util')->getAmpLayoutForCurrentPage($objPage))) {
+            return;
         }
+
+        if ($this->container->get('huh.request')->getGet('amp')) {
+            $layout          = $ampLayout;
+            $objPage->layout = $layout->id;
+            return;
+        }
+
+        $this->container->get('huh.head.tag.link_amp')->setContent($this->container->get('huh.utils.url')->addQueryString('amp=1'.($this->container->getParameter('kernel.debug') ? '#development=1' : ''), $objPage->getAbsoluteUrl()));
     }
 
     public function parseTemplate(Template $template)

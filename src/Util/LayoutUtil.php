@@ -11,6 +11,8 @@ namespace HeimrichHannot\AmpBundle\Util;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\DataContainer;
+use Contao\LayoutModel;
+use Contao\PageModel;
 use Contao\System;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -25,7 +27,7 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
         $modelUtil = System::getContainer()->get('huh.utils.model');
 
         $layout = $modelUtil->findModelInstanceByPk('tl_layout', $dc->id);
-        $dca = &$GLOBALS['TL_DCA']['tl_layout'];
+        $dca    = &$GLOBALS['TL_DCA']['tl_layout'];
 
         if (null !== $layout && !$layout->ampLayout && $this->isAmpLayout($dc->id)) {
             $dca['palettes']['default'] = str_replace('addAmp', 'addAmpAnalytics', $dca['palettes']['default']);
@@ -35,5 +37,38 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
     public function isAmpLayout(int $id)
     {
         return null !== System::getContainer()->get('huh.utils.model')->findModelInstancesBy('tl_layout', ['ampLayout=?'], [$id]);
+    }
+
+    /**
+     * Get amp page layout based on current page
+     *
+     * @param PageModel $page
+     *
+     * @return LayoutModel|null
+     */
+    public function getAmpLayoutForCurrentPage(PageModel $page): ?LayoutModel
+    {
+        // page has no amp support
+        if ('inactive' === $page->amp) {
+            return null;
+        }
+
+
+        // page has amp support with custom amp layout
+        if ('active' === $page->amp) {
+
+            if ($page->ampLayout > 0) {
+                return $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $page->ampLayout);
+            }
+
+            return null;
+        }
+
+        // get amp layout from parent amp layouts
+        if (null !== ($layout = $this->getAmpLayoutForCurrentPage($this->container->get('huh.utils.model')->findModelInstanceByPk('tl_page', $page->pid)))) {
+            return $layout;
+        }
+
+        return null;
     }
 }

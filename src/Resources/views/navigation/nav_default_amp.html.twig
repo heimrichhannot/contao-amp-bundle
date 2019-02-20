@@ -1,6 +1,6 @@
 {% if moduleData.ampRenderSubItemsAsAccordions|default %}
     {% for item in items %}
-        {% if item.subitems is not empty %}
+        {% if item.subitems|default() %}
             <amp-accordion disable-session-states animate>
                 <section
                         class="{{ item.class }} {{ level }}"{% if item.isActive|default or item.isTrail|default %} expanded{% endif %}>
@@ -12,13 +12,13 @@
             </amp-accordion>
         {% else %}
             {% if item.isActive|default %}
-                <strong class="{{ item.class }}"{% if item.subitems is not empty %} aria-haspopup="true"{% endif %}
+                <strong class="{{ item.class }}"{% if item.subitems|default() %} aria-haspopup="true"{% endif %}
                         itemprop="name">
                     {{ item.link }}
                 </strong>
             {% else %}
                 <a href="{{ item.href|default ? item.href : './' }}"
-                   title="{{ item.pageTitle|default ? item.pageTitle : item.title }}"{% if item.class|default %} class="{{ item.class }}"{% endif %}{% if item.accesskey is not same as('') %} accesskey="{{ item.accesskey }}"{% endif %}{% if item.tabindex|default %} tabindex="{{ item.tabindex }}"{% endif %}{% if item.nofollow|default %} rel="nofollow"{% endif %}{{ item.target }}{% if item.subitems is not empty %} aria-haspopup="true"{% endif %}
+                   title="{{ item.pageTitle|default ? item.pageTitle : item.title }}"{% if item.class|default %} class="{{ item.class }}"{% endif %}{% if item.accesskey is not same as('') %} accesskey="{{ item.accesskey }}"{% endif %}{% if item.tabindex|default %} tabindex="{{ item.tabindex }}"{% endif %}{% if item.nofollow|default %} rel="nofollow"{% endif %}{{ item.target }}{% if item.subitems|default() %} aria-haspopup="true"{% endif %}
                    itemprop="url">
         <span itemprop="name">
             {{ item.link }}
@@ -32,22 +32,26 @@
         {% for item in items %}
             {% if item.isActive|default %}
                 <li class="{{ item.class }}">
-                    <strong class="{{ item.class }}"{% if item.subitems is not empty %} aria-haspopup="true"{% endif %}
+                    <strong class="{{ item.class }}"{% if item.subitems|default() %} aria-haspopup="true"{% endif %}
                             itemprop="name">
                         {{ item.link }}
                     </strong>
-                    {{ item.subitems|raw }}
+                    {% if item.subitems|default() %}
+                        {{ item.subitems|raw }}
+                    {% endif %}
                 </li>
             {% else %}
                 <li{% if item.class|default %} class="{{ item.class }}"{% endif %}>
                     <a href="{{ item.href|default ? item.href : './' }}"
-                       title="{{ item.pageTitle|default ? item.pageTitle : item.title }}"{% if item.class|default %} class="{{ item.class }}"{% endif %}{% if item.accesskey is not same as('') %} accesskey="{{ item.accesskey }}"{% endif %}{% if item.tabindex|default %} tabindex="{{ item.tabindex }}"{% endif %}{% if item.nofollow|default %} rel="nofollow"{% endif %}{{ item.target }}{% if item.subitems is not empty %} aria-haspopup="true"{% endif %}
+                       title="{{ item.pageTitle|default ? item.pageTitle : item.title }}"{% if item.class|default %} class="{{ item.class }}"{% endif %}{% if item.accesskey is not same as('') %} accesskey="{{ item.accesskey }}"{% endif %}{% if item.tabindex|default %} tabindex="{{ item.tabindex }}"{% endif %}{% if item.nofollow|default %} rel="nofollow"{% endif %}{{ item.target }}{% if item.subitems|default() %} aria-haspopup="true"{% endif %}
                        itemprop="url">
                     <span itemprop="name">
                         {{ item.link }}
                     </span>
                     </a>
-                    {{ item.subitems|raw }}
+                    {% if item.subitems|default() %}
+                        {{ item.subitems|raw }}
+                    {% endif %}
                 </li>
             {% endif %}
         {% endfor %}
