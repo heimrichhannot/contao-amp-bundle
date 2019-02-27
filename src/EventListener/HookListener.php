@@ -27,18 +27,20 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
     public function getPageLayout(PageModel $page, LayoutModel &$layout, PageRegular $pageRegular)
     {
+        if (null == ($ampLayout = $this->container->get('huh.amp.util.layout_util')->getAmpLayoutForCurrentPage($page))) {
+            return;
+        }
+
         /**
          * @var $objPage PageModel
          */
         global $objPage;
 
-        if (null == ($ampLayout = $this->container->get('huh.amp.util.layout_util')->getAmpLayoutForCurrentPage($objPage))) {
-            return;
-        }
-
         if ($this->container->get('huh.request')->getGet('amp')) {
             $layout          = $ampLayout;
             $objPage->layout = $layout->id;
+            $this->container->get('huh.amp.manager.amp_manager')->setAmpActive(true);
+
             return;
         }
 
@@ -58,98 +60,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
         $templateName = $util->removeTrailingAmp($template->getName());
 
-        // prepare template data for amp
-        switch ($templateName) {
-            case 'ce_player':
-                $files = [];
-
-                if (\is_array($template->files)) {
-                    foreach ($template->files as $file) {
-                        $files[] = [
-                            'mime'  => $file->mime,
-                            'path'  => Environment::get('url').'/'.$file->path,
-                            'title' => $file->title,
-                        ];
-                    }
-
-                    $template->files = $files;
-                }
-
-                break;
-
-            case 'ce_accordionSingle':
-                $data = $template->getData();
-
-                $this->container->get('huh.utils.accordion')->structureAccordionSingle($data);
-
-                $template->setData($data);
-
-                break;
-
-            case 'ce_accordionStart':
-            case 'ce_accordionStop':
-                $data = $template->getData();
-
-                $this->container->get('huh.utils.accordion')->structureAccordionStartStop($data);
-
-                $template->setData($data);
-
-                break;
-
-            case 'slick_default':
-                $this->prepareSlick($template);
-
-                break;
-
-            case 'nav_default':
-                $this->prepareNavItems($template);
-
-                break;
-        }
-
-        $event    = $this->container->get('event_dispatcher')->dispatch(AfterPrepareUiElementEvent::NAME, new AfterPrepareUiElementEvent($template, $layout));
-        $template = $event->getTemplate();
-
         if ($util->isSupportedUiElement($templateName)) {
-            $librariesToLoad = [];
-            $ampName         = $util->getAmpNameByUiElement($templateName);
-
-            // add the needed lib to the manager for fe_page.html5
-            switch ($ampName) {
-                case 'player':
-                    // custom logic for Contao's hybrid media element
-                    if ($template->isVideo) {
-                        $librariesToLoad[] = 'video';
-                    } else {
-                        $librariesToLoad[] = 'audio';
-                    }
-
-                    break;
-
-                case 'navigation':
-                    // custom logic for Contao's navigation element
-                    $librariesToLoad[] = 'sidebar';
-                    $librariesToLoad[] = 'accordion';
-
-                    break;
-
-                default:
-                    if ($ampName) {
-                        $librariesToLoad[] = $ampName;
-                    }
-
-                    break;
-            }
-
-            $event           = $this->container->get('event_dispatcher')->dispatch(ModifyLibrariesToLoadEvent::NAME, new ModifyLibrariesToLoadEvent($ampName, $librariesToLoad, $template, $layout));
-            $librariesToLoad = $event->getLibrariesToLoad();
-
-            foreach ($librariesToLoad as $lib) {
-                if (false !== ($url = $util->getLibraryByAmpName($lib))) {
-                    $this->container->get('huh.amp.manager.amp_manager')::addLib($lib, $url);
-                }
-            }
-
             // switch template for amp
             $template->setName($templateName.'_amp');
         }
@@ -203,93 +114,5 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         }
 
         return $buffer;
-    }
-
-    public function prepareSlick(Template $template)
-    {
-        if (!$this->container->get('huh.utils.container')->isBundleActive('HeimrichHannot\SlickBundle\HeimrichHannotContaoSlickBundle')) {
-            return;
-        }
-
-        if (!\is_array($template->body)) {
-            return;
-        }
-
-        $images                      = [];
-        $template->ampCarouselWidth  = 0;
-        $template->ampCarouselHeight = 0;
-
-        foreach ($template->body as $item) {
-            if (!$item->addImage) {
-                continue;
-            }
-
-            if (isset($item->picture['sources']) && !empty($item->picture['sources'])) {
-                $template->sourcesMode = true;
-
-                foreach ($item->picture['sources'] as $source) {
-                    if (!isset($images[$source['media']])) {
-                        $images[$source['media']] = [
-                            'width'  => $source['width'],
-                            'height' => $source['height'],
-                            'images' => [],
-                        ];
-                    }
-
-                    $images[$source['media']]['images'][] = $source;
-                }
-            } elseif (isset($item->picture['img'])) {
-                $images[] = $item->picture['img'];
-
-                if (!$template->ampCarouselWidth || $item->picture['img']['width'] > $template->ampCarouselWidth) {
-                    $template->ampCarouselWidth = $item->picture['img']['width'];
-                }
-
-                if (!$template->ampCarouselHeight || $item->picture['img']['height'] > $template->ampCarouselHeight) {
-                    $template->ampCarouselHeight = $item->picture['img']['height'];
-                }
-            }
-        }
-
-        $template->ampImages = $images;
-    }
-
-    public function prepareNavItems(Template $template)
-    {
-        // update active property
-        $items = $template->items;
-
-        if (!\is_array($items)) {
-            return;
-        }
-
-        global $objPage;
-
-        foreach ($items as &$item) {
-            $trail = \in_array($item['id'], $objPage->trail);
-
-            if (($objPage->id == $item['id'] || ('forward' == $item['type'] && $objPage->id == $item['jumpTo'])) && $item['href'] == $this->container->get('huh.utils.url')->removeQueryString(['amp'], \Environment::get('request'))) {
-                // Mark active forward pages (see #4822)
-                $strClass = (('forward' == $item['type'] && $objPage->id == $item['jumpTo']) ? 'forward'.($trail ? ' trail' : '') : 'active').(('' != $item['subitems']) ? ' submenu' : '').($item['protected'] ? ' protected' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
-
-                $item['isActive'] = true;
-                $item['isTrail']  = false;
-            } // Regular page
-            else {
-                $strClass = (('' != $item['subitems']) ? 'submenu' : '').($item['protected'] ? ' protected' : '').($trail ? ' trail' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
-
-                // Mark pages on the same level (see #2419)
-                if ($item['pid'] == $objPage->pid) {
-                    $strClass .= ' sibling';
-                }
-
-                $item['isActive'] = false;
-                $item['isTrail']  = $trail;
-            }
-
-            $item['class'] = trim($strClass);
-        }
-
-        $template->items = $items;
     }
 }

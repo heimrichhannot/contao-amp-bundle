@@ -16,7 +16,7 @@
 
         {% for file in files %}
             <source type="{{ file.mime }}"
-                    src="{{ file.path }}"{% if title|default %} title="{{ title|raw }}"{% endif %}>
+                    src="{{ file.path|replace({'http://' : '//'}) }}"{% if title|default %} title="{{ title|raw }}"{% endif %}>
         {% endfor %}
     </amp-video>
 {% else %}

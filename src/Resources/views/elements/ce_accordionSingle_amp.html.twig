@@ -16,7 +16,7 @@
                         <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
                             {% endif %}
 
-                            {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with picture %}
+                            {% include '@ContaoAmp/picture/picture_amp.html.twig' with picture %}
 
                             {% if href|default %}
                         </a>

@@ -97,6 +97,19 @@ So you have 2 options:
 
 ![alt text](docs/image-sizes.png)
 
+### SVG images
+
+If you use svg-images ensure that they have assigned `width` and `height` attributes on the `<svg>` element. Otherwise they wont have dimensions in their amp-version and the lazy loading component requires width and height for aspect ratio padding.
+
+For non-amp version simply add the following css rules and attach `.img-fluid` css class to make svg responsive again:
+
+```
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+```
+
 ### Usage with heimrichhannot/contao-encore-bundle
 
 This bundle supports the integration of webpack encore using [heimrichhannot/contao-encore-bundle](https://github.com/heimrichhannot/contao-encore-bundle).

@@ -1,6 +1,7 @@
-<header>
-    <div role="button" on="tap:sidebar{{ id }}.toggle" tabindex="0" class="hamburger">☰</div>
-</header>
+{% if ampRenderSubItemsAsAccordions|default %}
+    <header>
+        <div role="button" on="tap:sidebar{{ id }}.toggle" tabindex="0" class="hamburger">☰</div>
+    </header>
 
 <amp-sidebar id="sidebar{{ id }}" layout="nodisplay" side="left">
     <div role="button" aria-label="close sidebar" on="tap:sidebar{{ id }}.toggle" tabindex="0"
@@ -8,9 +9,9 @@
     </div>
 
     {% if headline|default %}
-    <{{ hl }}>{{ headline }}</{{ hl }}>
+        <{{ hl }}>{{ headline }}</{{ hl }}>
+    {% endif %}
 {% endif %}
-
 <a href="{{ request }}#{{ skipId }}" class="invisible">{{ skipNavigation }}</a>
 
 {% if ampRenderSubItemsAsAccordions|default %}

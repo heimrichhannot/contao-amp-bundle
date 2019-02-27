@@ -11,6 +11,7 @@ namespace HeimrichHannot\AmpBundle\Module;
 use Contao\FrontendTemplate;
 use Contao\ModuleSitemap;
 use Contao\PageModel;
+use Contao\System;
 
 /**
  * Nearly a copy of the core module. Simply adds moduleData to item template rendering process.
@@ -28,7 +29,7 @@ class ModuleNavigation extends \Contao\ModuleNavigation
             return '';
         }
 
-        $items = [];
+        $items  = [];
         $groups = [];
 
         // Get all groups of the current front end user
@@ -45,8 +46,8 @@ class ModuleNavigation extends \Contao\ModuleNavigation
         /** @var FrontendTemplate|object $objTemplate */
         $objTemplate = new \FrontendTemplate($this->navigationTpl);
 
-        $objTemplate->pid = $pid;
-        $objTemplate->type = \get_class($this);
+        $objTemplate->pid   = $pid;
+        $objTemplate->type  = \get_class($this);
         $objTemplate->cssID = $this->cssID; // see #4897
         $objTemplate->level = 'level_'.$level++;
 
@@ -61,7 +62,7 @@ class ModuleNavigation extends \Contao\ModuleNavigation
             }
 
             $subitems = '';
-            $_groups = \StringUtil::deserialize($objSubpage->groups);
+            $_groups  = \StringUtil::deserialize($objSubpage->groups);
 
             // Override the domain (see #3765)
             if (null !== $host) {
@@ -113,7 +114,11 @@ class ModuleNavigation extends \Contao\ModuleNavigation
                         break;
                 }
 
-                $row = $objSubpage->row();
+
+                // stay in amp context
+                $href = System::getContainer()->get('huh.utils.url')->addQueryString('amp=1'.(System::getContainer()->getParameter('kernel.debug') ? '#development=1' : ''), $href);
+
+                $row   = $objSubpage->row();
                 $trail = \in_array($objSubpage->id, $objPage->trail);
 
                 // Active page
@@ -122,7 +127,7 @@ class ModuleNavigation extends \Contao\ModuleNavigation
                     $strClass = (('forward' == $objSubpage->type && $objPage->id == $objSubpage->jumpTo) ? 'forward'.($trail ? ' trail' : '') : 'active').(('' != $subitems) ? ' submenu' : '').($objSubpage->protected ? ' protected' : '').(('' != $objSubpage->cssClass) ? ' '.$objSubpage->cssClass : '');
 
                     $row['isActive'] = true;
-                    $row['isTrail'] = false;
+                    $row['isTrail']  = false;
                 } // Regular page
                 else {
                     $strClass = (('' != $subitems) ? 'submenu' : '').($objSubpage->protected ? ' protected' : '').($trail ? ' trail' : '').(('' != $objSubpage->cssClass) ? ' '.$objSubpage->cssClass : '');
@@ -133,17 +138,17 @@ class ModuleNavigation extends \Contao\ModuleNavigation
                     }
 
                     $row['isActive'] = false;
-                    $row['isTrail'] = $trail;
+                    $row['isTrail']  = $trail;
                 }
 
-                $row['subitems'] = $subitems;
-                $row['class'] = trim($strClass);
-                $row['title'] = \StringUtil::specialchars($objSubpage->title, true);
-                $row['pageTitle'] = \StringUtil::specialchars($objSubpage->pageTitle, true);
-                $row['link'] = $objSubpage->title;
-                $row['href'] = $href;
-                $row['nofollow'] = (0 === strncmp($objSubpage->robots, 'noindex,nofollow', 16));
-                $row['target'] = '';
+                $row['subitems']    = $subitems;
+                $row['class']       = trim($strClass);
+                $row['title']       = \StringUtil::specialchars($objSubpage->title, true);
+                $row['pageTitle']   = \StringUtil::specialchars($objSubpage->pageTitle, true);
+                $row['link']        = $objSubpage->title;
+                $row['href']        = $href;
+                $row['nofollow']    = (0 === strncmp($objSubpage->robots, 'noindex,nofollow', 16));
+                $row['target']      = '';
                 $row['description'] = str_replace(["\n", "\r"], [' ', ''], $objSubpage->description);
 
                 // Override the link target
@@ -159,13 +164,14 @@ class ModuleNavigation extends \Contao\ModuleNavigation
         if (!empty($items)) {
             $last = \count($items) - 1;
 
-            $items[0]['class'] = trim($items[0]['class'].' first');
+            $items[0]['class']     = trim($items[0]['class'].' first');
             $items[$last]['class'] = trim($items[$last]['class'].' last');
         }
 
         $objTemplate->items = $items;
         // HHFIX
         $objTemplate->moduleData = $this->arrData;
+
         // HHENDFIX
 
         return !empty($items) ? $objTemplate->parse() : '';

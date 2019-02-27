@@ -20,6 +20,25 @@ class AmpManager implements FrameworkAwareInterface, ContainerAwareInterface
 
     protected static $libs = [];
 
+    private $ampActive = false;
+
+    /**
+     * @return bool
+     */
+    public function isAmpActive(): bool
+    {
+        return $this->ampActive;
+    }
+
+    /**
+     * @param bool $ampActive
+     */
+    public function setAmpActive(bool $ampActive): void
+    {
+        $this->ampActive = $ampActive;
+    }
+
+
     public static function addLib(string $ampName, string $url)
     {
         if (!isset(static::$libs[$ampName])) {

@@ -1,4 +1,4 @@
-{% if sources|default %}
+{% if sources|default() %}
     {% for source in sources %}
         <amp-img
                 {% if placeholder|default %}
@@ -20,22 +20,32 @@
                 {% if source.sizes|default %}
                     sizes="{{ source.sizes }}"
                 {% endif %}
+                {% if class|default() or img.class|default() %}
+                    class="{{ class|default() ? class|trim : '' }} {{ img.class|default() ? img.class|trim : '' }}"
+                {% endif %}
         ></amp-img>
     {% endfor %}
-{% elseif img %}
+{% elseif img|default() %}
     <amp-img
             {% if alt|default %}
                 alt="{{ alt }}"
             {% endif %}
             src="{{ img.src }}"
-            width="{{ img.width }}"
-            height="{{ img.height }}"
-            layout="responsive"
-            {% if img.srcset|default %}
+            {% if img.width|default() and img.height|default() %}
+                width="{{ img.width|default() ? img.width : ratio }}"
+                height="{{ img.height|default() ? img.height : 1 }}"
+                layout="responsive"
+            {% else %}
+                layout="fill"
+            {% endif %}
+            {% if img.srcset|default and img.width|default() %}
                 srcset="{{ img.srcset }}"
             {% endif %}
             {% if img.sizes|default %}
                 sizes="{{ img.sizes }}"
+            {% endif %}
+            {% if class|default() or img.class|default() %}
+                class="{{ class|default() ? class|trim : '' }} {{ img.class|default() ? img.class|trim : '' }}"
             {% endif %}
     ></amp-img>
 {% endif %}

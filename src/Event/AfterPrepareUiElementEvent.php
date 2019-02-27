@@ -17,7 +17,7 @@ class AfterPrepareUiElementEvent extends Event
     const NAME = 'huh.amp.event.after_prepare_ui_element';
 
     /**
-     * @var Template
+     * @var string
      */
     protected $template;
 
@@ -27,27 +27,27 @@ class AfterPrepareUiElementEvent extends Event
     protected $layout;
 
     /**
-     * @param Template    $template
+     * @param string      $template
      * @param LayoutModel $layout
      */
-    public function __construct(Template $template, LayoutModel $layout)
+    public function __construct(string $template, LayoutModel $layout)
     {
         $this->template = $template;
-        $this->layout = $layout;
+        $this->layout   = $layout;
     }
 
     /**
-     * @return Template
+     * @return string
      */
-    public function getTemplate(): Template
+    public function getTemplate(): string
     {
         return $this->template;
     }
 
     /**
-     * @param Template $template
+     * @param string $template
      */
-    public function setTemplate(Template $template): void
+    public function setTemplate(string $template): void
     {
         $this->template = $template;
     }

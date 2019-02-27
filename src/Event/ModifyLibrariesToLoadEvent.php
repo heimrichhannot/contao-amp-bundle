@@ -27,7 +27,7 @@ class ModifyLibrariesToLoadEvent extends Event
     protected $librariesToLoad;
 
     /**
-     * @var Template
+     * @var string
      */
     protected $template;
 
@@ -39,15 +39,15 @@ class ModifyLibrariesToLoadEvent extends Event
     /**
      * @param string      $ampName
      * @param array       $librariesToLoad
-     * @param Template    $template
+     * @param string      $template
      * @param LayoutModel $layout
      */
-    public function __construct(?string $ampName, array $librariesToLoad, Template $template, LayoutModel $layout)
+    public function __construct(?string $ampName, array $librariesToLoad, string $template, LayoutModel $layout)
     {
-        $this->ampName = $ampName;
+        $this->ampName         = $ampName;
         $this->librariesToLoad = $librariesToLoad;
-        $this->template = $template;
-        $this->layout = $layout;
+        $this->template        = $template;
+        $this->layout          = $layout;
     }
 
     /**
@@ -83,20 +83,21 @@ class ModifyLibrariesToLoadEvent extends Event
     }
 
     /**
-     * @return Template
+     * @return string
      */
-    public function getTemplate(): Template
+    public function getTemplate(): string
     {
         return $this->template;
     }
 
     /**
-     * @param Template $template
+     * @param string $template
      */
-    public function setTemplate(Template $template): void
+    public function setTemplate(string $template): void
     {
         $this->template = $template;
     }
+
 
     /**
      * @return LayoutModel

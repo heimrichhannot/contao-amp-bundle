@@ -11,3 +11,6 @@ services:
     class: HeimrichHannot\AmpBundle\EventListener\HookListener
     public: true
     autowire: true
+  HeimrichHannot\AmpBundle\EventListener\RenderTwigTemplateListener:
+    tags:
+      - { name: kernel.event_listener, event: huh.utils.template.render, method: onRenderTemplate }

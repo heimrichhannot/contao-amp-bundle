@@ -1,0 +1,15 @@
+<figure class="image_container{{ floatClass|default('') }}{{ picture.img.class|default() ? ((' figure-') ~ (picture.img.class|trim|split(' ')|join(' figure-'))) : '' }}"{% if margin|default %} style="{{ margin }}"{% endif %}>
+    {% if href|default %}
+    <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
+        {% endif %}
+
+        {% include '@ContaoAmp/picture/picture_amp.html.twig' with picture %}
+
+        {% if href|default %}
+    </a>
+    {% endif %}
+
+    {% if caption|default %}
+        <figcaption class="caption">{{ caption }}</figcaption>
+    {% endif %}
+</figure>

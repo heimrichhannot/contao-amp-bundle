@@ -9,7 +9,7 @@
                     media="{{ media }}"
             >
                 {% for image in imageData.images %}
-                    {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with {
+                    {% include '@ContaoAmp/picture/picture_amp.html.twig' with {
                         img: image
                     } %}
                 {% endfor %}
@@ -23,7 +23,7 @@
                 type="slides"
         >
             {% for image in ampImages %}
-                {% include '@HeimrichHannotContaoAmp/picture_amp.html.twig' with {
+                {% include '@ContaoAmp/picture/picture_amp.html.twig' with {
                     img: image
                 } %}
             {% endfor %}

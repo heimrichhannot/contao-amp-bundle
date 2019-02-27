@@ -34,5 +34,6 @@ class AmpExtension extends Extension
 
         $loader->load('services.yml');
         $loader->load('listeners.yml');
+        $loader->load('datacontainers.yml');
     }
 }

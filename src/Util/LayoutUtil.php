@@ -65,7 +65,7 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
         }
 
         // get amp layout from parent amp layouts
-        if (null !== ($layout = $this->getAmpLayoutForCurrentPage($this->container->get('huh.utils.model')->findModelInstanceByPk('tl_page', $page->pid)))) {
+        if (null !== ($parent = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_page', $page->pid)) && null !== ($layout = $this->getAmpLayoutForCurrentPage($parent))) {
             return $layout;
         }
 

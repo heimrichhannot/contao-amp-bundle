@@ -14,7 +14,7 @@ use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
-use HeimrichHannot\AmpBundle\HeimrichHannotContaoAmpBundle;
+use HeimrichHannot\AmpBundle\ContaoAmpBundle;
 use HeimrichHannot\HeadBundle\HeimrichHannotContaoHeadBundle;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 
@@ -32,7 +32,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
         }
 
         return [
-            BundleConfig::create(HeimrichHannotContaoAmpBundle::class)->setLoadAfter($loadAfter),
+            BundleConfig::create(ContaoAmpBundle::class)->setLoadAfter($loadAfter),
         ];
     }
 
