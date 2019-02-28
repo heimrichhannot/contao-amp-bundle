@@ -3,7 +3,7 @@
 <head>
   <?php $this->block('head'); ?>
     <?php $this->block('meta'); ?>
-        <?= $this->meta(['huh.head.tag.base']); ?>
+        <?= $this->meta(['huh.head.tag.pwa.link_manifest', 'huh.head.tag.pwa.meta_themecolor', 'huh.head.tag.pwa.script']); ?>
     <?php $this->endblock(); ?>
 
     <script async src="https://cdn.ampproject.org/v0.js"></script>

@@ -39,6 +39,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         if ($this->container->get('huh.request')->getGet('amp')) {
             $layout          = $ampLayout;
             $objPage->layout = $layout->id;
+            $this->container->get('huh.head.tag.base')->setContent('/');
             $this->container->get('huh.amp.manager.amp_manager')->setAmpActive(true);
 
             return;
