@@ -3,7 +3,7 @@
 <head>
   <?php $this->block('head'); ?>
     <?php $this->block('meta'); ?>
-        <?= $this->meta; ?>
+        <?= $this->meta(['huh.head.tag.base']); ?>
     <?php $this->endblock(); ?>
 
     <script async src="https://cdn.ampproject.org/v0.js"></script>
