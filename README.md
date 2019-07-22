@@ -2,6 +2,7 @@
 
 This bundle offers functionality concerning [Accelerated Mobile Pages (AMP)](https://www.ampproject.org) for the Contao CMS.
 
+
 ## Features
 
 - offer an alternative AMP version for an ordinary Contao page (GET-Parameter `amp=1` must be set)
@@ -11,16 +12,21 @@ This bundle offers functionality concerning [Accelerated Mobile Pages (AMP)](htt
     - webpack/encore integration via [heimrichhannot/contao-encore-bundle](https://github.com/heimrichhannot/contao-encore-bundle)
     - manually in fe_page_amp.html5
 
-## Installation
+
+## Setup
+
+### Installation
 
 Install via composer: `composer require heimrichhannot/contao-amp-bundle` and update your database.
 
-## Configuration
+### First steps
 
-1. Create an ordinary layout and assign `fe_page_amp.html5` as template. Don't click `Add AMP support` here, we'll do that in the next step ;-)
-2. Navigate to your existing layout or create a new one for the page that should support both AMP and non-AMP. Click `Add AMP support` and choose the layout we just created in step 1.
-3. Assign the layout created in step 2 to your page.
-4. In order to show your website in AMP mode simply append the GET parameter `amp=1` to your URL, i.e. `https://www.example.org/article` -> `https://www.example.org/article?amp=1`
+1. Create an ordinary layout and assign `fe_page_amp.html5` as template. Click `Add AMP support`.
+1. Navigation to the root page where you want to add AMP support, set AMP support to active and choose the layout created in step 1.
+1. In order to show your website in AMP mode simply append the GET parameter `amp=1` to your URL, i.e. `https://www.example.org/article` → `https://www.example.org/article?amp=1`
+
+
+## Developers
 
 ### Events
 
