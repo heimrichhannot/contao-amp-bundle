@@ -12,12 +12,16 @@ This bundle offers functionality concerning [Accelerated Mobile Pages (AMP)](htt
     - webpack/encore integration via [heimrichhannot/contao-encore-bundle](https://github.com/heimrichhannot/contao-encore-bundle)
     - manually in fe_page_amp.html5
 
+> Currently only works with [Contao Twig Templates Bundle](https://github.com/heimrichhannot/contao-twig-templates-bundle)
+
 
 ## Setup
 
 ### Installation
 
-Install via composer: `composer require heimrichhannot/contao-amp-bundle` and update your database.
+1. Install via composer: `composer require heimrichhannot/contao-amp-bundle` 
+1. Update your database.
+1. Prepare your page template for [Contao Head Bundle](https://github.com/heimrichhannot/contao-head-bundle) (needed for the amphtml link element).
 
 ### First steps
 
@@ -48,6 +52,7 @@ Since amp-sidebar must sit directly within the body element, put the navigation 
 
 If you need more control, use the [`PrepareAmpTemplateEvent`](#events). If the template will be only used in amp context, you can set `ampTemplate` to true, see [configuration](#configuration) section.
 
+
 ## Developers
 
 ### Events
@@ -55,7 +60,6 @@ If you need more control, use the [`PrepareAmpTemplateEvent`](#events). If the t
 Class | Name | Description
 ----- | ---- | -----------
 PrepareAmpTemplateEvent | huh.amp.event.prepare_amp_template | Prepare template, add/change amp components, change the template name.
-
 
 ### Supported content elements
 
@@ -170,6 +174,9 @@ huh_amp:
     youtube:   { url: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }
 ```
 
+
 ## Known limitations
 
 - currently AMP pages without a non-AMP layout are not supported
+- currently only works with twig template bundle
+- currently amp can only added to complete page trees
