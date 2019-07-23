@@ -38,11 +38,7 @@
 
       <?php $this->block('header'); ?>
         <?php if ($this->header): ?>
-          <header id="header">
-            <div class="inside">
-              <?= $this->header ?>
-            </div>
-          </header>
+          <?= $this->header ?>
         <?php endif; ?>
       <?php $this->endblock(); ?>
 

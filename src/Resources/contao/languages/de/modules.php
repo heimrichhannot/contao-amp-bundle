@@ -1,3 +1,3 @@
 <?php
 
-$GLOBALS['TL_LANG']['FMD']['navigation_amp'] = ['Navigationsmenü (AMP)', ''];
+$GLOBALS['TL_LANG']['FMD'][\HeimrichHannot\AmpBundle\FrontendModule\AmpNavigationModule::TYPE] = ['Navigationsmenü (AMP)', ''];

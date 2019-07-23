@@ -5,7 +5,7 @@ $dca = &$GLOBALS['TL_DCA']['tl_module'];
 /**
  * Palettes
  */
-$dca['palettes']['navigation_amp']     = str_replace('{template_legend', '{amp_legend},ampRenderSubItemsAsAccordions;{template_legend', $dca['palettes']['navigation']);
+$dca['palettes'][\HeimrichHannot\AmpBundle\FrontendModule\AmpNavigationModule::TYPE]     = str_replace('{template_legend', '{amp_legend},ampRenderSubItemsAsAccordions;{template_legend', $dca['palettes']['navigation']);
 
 /**
  * Fields

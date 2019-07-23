@@ -10,13 +10,10 @@ namespace HeimrichHannot\AmpBundle\EventListener;
 
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
-use Contao\Environment;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
 use Contao\Template;
-use HeimrichHannot\AmpBundle\Event\AfterPrepareUiElementEvent;
-use HeimrichHannot\AmpBundle\Event\ModifyLibrariesToLoadEvent;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
@@ -31,21 +28,19 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             return;
         }
 
-        /**
-         * @var $objPage PageModel
-         */
-        global $objPage;
-
         if ($this->container->get('huh.request')->getGet('amp')) {
             $layout          = $ampLayout;
-            $objPage->layout = $layout->id;
+            $page->layout = $layout->id;
             $this->container->get('huh.head.tag.base')->setContent('/');
             $this->container->get('huh.amp.manager.amp_manager')->setAmpActive(true);
 
+            if (isset($GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle'])) {
+                unset($GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle']);
+            }
             return;
         }
 
-        $this->container->get('huh.head.tag.link_amp')->setContent($this->container->get('huh.utils.url')->addQueryString('amp=1'.($this->container->getParameter('kernel.debug') ? '#development=1' : ''), $objPage->getAbsoluteUrl()));
+        $this->container->get('huh.head.tag.link_amp')->setContent($this->container->get('huh.utils.url')->addQueryString('amp=1'.($this->container->getParameter('kernel.debug') ? '#development=1' : ''), $page->getAbsoluteUrl()));
     }
 
     public function parseTemplate(Template $template)
@@ -62,14 +57,17 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         $templateName = $util->removeTrailingAmp($template->getName());
 
         if ($util->isSupportedUiElement($templateName)) {
-            // switch template for amp
-            $template->setName($templateName.'_amp');
+            if (!$this->container->getParameter('huh_amp')['templates'][$templateName]['ampTemplate'])
+            {
+                // switch template for amp
+                $template->setName($templateName . '_amp');
+            }
         }
     }
 
     public function generatePage(PageModel $page, LayoutModel $layout, PageRegular $pageRegular)
     {
-        if (!$this->container->get('huh.amp.util.layout_util')->isAmpLayout($layout->id)) {
+        if (!$layout->addAmp) {
             return;
         }
 
@@ -77,7 +75,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
         // add analytics support
         if ($layout->addAmpAnalytics) {
-            $this->container->get('huh.amp.manager.amp_manager')::addLib('analytics', $ampUtil->getLibraryByAmpName('analytics'));
+            $this->container->get('huh.amp.manager.amp_manager')::addLib('analytics', $ampUtil->getLibraryUrlByAmpName('analytics'));
 
             $pageRegular->Template->ampAnalytics = $this->container->get('twig')->render(
                 $this->container->get('huh.utils.template')->getTemplate($layout->ampAnalyticsTemplate),
@@ -89,7 +87,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
         // encore
         if ($this->container->get('huh.utils.container')->isBundleActive('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
-            $this->container->get('huh.encore.listener.hooks')->doAddEncore($page, $layout, $pageRegular, 'encoreEntriesAmp', true);
+            $this->container->get('huh.encore.listener.hooks')->doAddEncore($page, $layout, $pageRegular, 'encoreEntries', true);
         }
     }
 

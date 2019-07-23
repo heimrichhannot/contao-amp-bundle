@@ -1,1 +1,1 @@
-<?php $this->extend('mod_navigation_amp');
+<?php $this->extend('mod_amp_navigation');

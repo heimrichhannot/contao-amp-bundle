@@ -1,1 +1,1 @@
-<?= System::getContainer()->get('huh.utils.template')->renderTwigTemplate($this->getName(), $this->getData()); ?>
+<?php $this->extend('mod_amp_navigation');

@@ -1,6 +1,22 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2019-07-22
+
+#### Added
+* missing english translations
+
+#### Changed
+* renamed ModuleNavigation to AmpNavigationModule
+* moved AmpNavigationModule to FrontendModule namespace
+* [BC BREAK] renamed AmpNavigationModule type to ampnavigation
+* [BC BREAK] changed bundle configuration, please see readme
+* unset `$GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle` if amp page (don't call doAddEncore() twice)
+* updated README
+
+#### Fixed
+* menu not renders as sidebar when ampRenderSubItemsAsAccordions not checked
+
 ## [0.1.2] - 2019-02-28
 
 #### Fixed

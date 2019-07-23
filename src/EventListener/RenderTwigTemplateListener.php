@@ -14,11 +14,26 @@ use HeimrichHannot\AmpBundle\Event\ModifyLibrariesToLoadEvent;
 use HeimrichHannot\UtilsBundle\Event\RenderTwigTemplateEvent;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class RenderTwigTemplateListener implements ContainerAwareInterface
+class RenderTwigTemplateListener
 {
-    use ContainerAwareTrait;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->container = $container;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
 
     public function onRenderTemplate(RenderTwigTemplateEvent $event, string $eventName, EventDispatcherInterface $dispatcher)
     {
@@ -39,52 +54,49 @@ class RenderTwigTemplateListener implements ContainerAwareInterface
         $template              = $eventPrepareUiElement->getTemplate();
 
         if ($util->isSupportedUiElement($template)) {
-            $librariesToLoad = [];
-            $ampName         = $util->getAmpNameByUiElement($template);
 
-            // add the needed lib to the manager for fe_page.html5
-            switch ($ampName) {
-                case 'player':
-                    // custom logic for Contao's hybrid media element
-                    if ($context['isVideo']) {
-                        $librariesToLoad[] = 'video';
-                    } else {
-                        $librariesToLoad[] = 'audio';
+            $librariesToLoad      = $util->getLibrariesByTemplateName($template);
+            $customConfigurations = $util->getCustomConfigurationByTemplateName($template);
+
+            if (!empty($customConfigurations))
+            {
+                foreach ($customConfigurations as $customConfiguration)
+                {
+                    switch ($customConfiguration)
+                    {
+                        case 'player':
+                            // custom logic for Contao's hybrid media element
+                            if ($context['isVideo'])
+                            {
+                                $librariesToLoad[] = 'video';
+                            } else
+                            {
+                                $librariesToLoad[] = 'audio';
+                            }
+                            break;
                     }
-
-                    break;
-
-                case 'navigation':
-                    // custom logic for Contao's navigation element
-                    $librariesToLoad[] = 'sidebar';
-                    $librariesToLoad[] = 'accordion';
-
-                    break;
-
-                default:
-                    if ($ampName) {
-                        $librariesToLoad[] = $ampName;
-                    }
-
-                    break;
+                    $eventModifyLibraries = $this->eventDispatcher->dispatch(
+                        ModifyLibrariesToLoadEvent::NAME, new ModifyLibrariesToLoadEvent($customConfiguration, $librariesToLoad, $template, $layout)
+                    );
+                    $librariesToLoad      = $eventModifyLibraries->getLibrariesToLoad();
+                }
             }
 
-            $eventModifyLibraries = $this->container->get('event_dispatcher')->dispatch(ModifyLibrariesToLoadEvent::NAME, new ModifyLibrariesToLoadEvent($ampName, $librariesToLoad, $template, $layout));
-            $librariesToLoad      = $eventModifyLibraries->getLibrariesToLoad();
-
             foreach ($librariesToLoad as $lib) {
-                if (false !== ($url = $util->getLibraryByAmpName($lib))) {
+                if ($url = $util->getLibraryUrlByAmpName($lib)) {
                     $this->container->get('huh.amp.manager.amp_manager')::addLib($lib, $url);
                 }
             }
 
-            // ignore template extension
-            if (false !== ($extensionStart = strpos($template, '.'))) {
-                $name      = substr($template, 0, $extensionStart);
-                $extension = substr($template, $extensionStart, strlen($template));
-                $event->setTemplate($name.'_amp'.$extension);
-            } else {
-                $event->setTemplate($template.'_amp');
+            if (!$util->isAmpTemplate($template)) {
+                if (false !== ($extensionStart = strpos($template, '.'))) {
+                    // ignore template extension
+                    $name      = substr($template, 0, $extensionStart);
+                    $extension = substr($template, $extensionStart, strlen($template));
+                    $event->setTemplate($name.'_amp'.$extension);
+                } else {
+                    $event->setTemplate($template.'_amp');
+                }
             }
 
         }

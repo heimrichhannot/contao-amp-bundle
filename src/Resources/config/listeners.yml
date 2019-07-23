@@ -1,4 +1,7 @@
 services:
+  _defaults:
+    autowire: true
+
   _instanceof:
     Contao\CoreBundle\Framework\FrameworkAwareInterface:
       calls:
@@ -10,7 +13,7 @@ services:
   huh.amp.event_listener.hook_listener:
     class: HeimrichHannot\AmpBundle\EventListener\HookListener
     public: true
-    autowire: true
+
   HeimrichHannot\AmpBundle\EventListener\RenderTwigTemplateListener:
     tags:
       - { name: kernel.event_listener, event: huh.utils.template.render, method: onRenderTemplate }

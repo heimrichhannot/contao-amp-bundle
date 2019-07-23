@@ -1,26 +1,39 @@
-huh:
-  amp:
-    ui_elements:
-      - { template: ce_accordionSingle, ampName: accordion }
-      - { template: ce_accordionStart, ampName: accordion }
-      - { template: ce_accordionStop, ampName: accordion }
-      - { template: ce_image, ampName: img }
-      - { template: image.html.twig, ampName: img }
-      - { template: ce_player, ampName: player }
-      - { template: ce_slick, ampName: carousel }
-      - { template: ce_youtube, ampName: youtube }
-      - { template: ce_youtube_huh, ampName: youtube }
-      - { template: mod_customnav, ampName: navigation }
-      - { template: mod_navigation, ampName: navigation }
-      - { template: slick_default }
-      - { template: nav_default }
-      - { template: cookiebar }
-    libraries:
-      - { ampName: accordion, url: "https://cdn.ampproject.org/v0/amp-accordion-0.1.js" }
-      - { ampName: analytics, url: "https://cdn.ampproject.org/v0/amp-analytics-0.1.js" }
-      - { ampName: audio, url: "https://cdn.ampproject.org/v0/amp-audio-0.1.js" }
-      - { ampName: carousel, url: "https://cdn.ampproject.org/v0/amp-carousel-0.1.js" }
-      - { ampName: sidebar, url: "https://cdn.ampproject.org/v0/amp-sidebar-0.1.js" }
-      - { ampName: video, url: "https://cdn.ampproject.org/v0/amp-video-0.1.js" }
-      - { ampName: youtube, url: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }
-      - { ampName: form, url: "https://cdn.ampproject.org/v0/amp-form-0.1.js" }
+huh_amp:
+  templates:
+    ce_accordionSingle:
+      libraries: ['accordion']
+    ce_accordionStart:
+      libraries: ['accordion']
+    ce_accordionStop:
+      libraries: ['accordion']
+    #    - { template: ce_image, ampName: img }
+    #    - { template: image.html.twig, ampName: img }
+    ce_player:
+      custom: ['player']
+    ce_slick:
+      libraries: ['carousel']
+    ce_youtube:
+      libraries: ['youtube']
+    ce_youtube_huh:
+      libraries: ['youtube']
+    mod_customnav:
+      libraries: ['sidebar','accordion']
+    mod_navigation:
+      libraries: ['sidebar','accordion']
+    mod_ampnavigation:
+      libraries: ['sidebar','accordion']
+      ampTemplate: true
+    mod_customnav_amp:
+      libraries: ['sidebar','accordion']
+    slick_default: ~
+    nav_default: ~
+    cookiebar: ~
+  libraries:
+    accordion: { url: "https://cdn.ampproject.org/v0/amp-accordion-0.1.js" }
+    analytics: { url: "https://cdn.ampproject.org/v0/amp-analytics-0.1.js" }
+    audio:     { url: "https://cdn.ampproject.org/v0/amp-audio-0.1.js" }
+    carousel:  { url: "https://cdn.ampproject.org/v0/amp-carousel-0.1.js" }
+    sidebar:   { url: "https://cdn.ampproject.org/v0/amp-sidebar-0.1.js" }
+    video:     { url: "https://cdn.ampproject.org/v0/amp-video-0.1.js" }
+    youtube:   { url: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }
+    form:      { url: "https://cdn.ampproject.org/v0/amp-form-0.1.js" }

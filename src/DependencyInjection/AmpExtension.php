@@ -28,7 +28,7 @@ class AmpExtension extends Extension
         $configuration = new Configuration();
         $processedConfig = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('huh.amp', $processedConfig);
+        $container->setParameter('huh_amp', $processedConfig);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 

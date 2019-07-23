@@ -1,0 +1,24 @@
+<header>
+    <div role="button" on="tap:sidebar{{ id }}.toggle" tabindex="0" class="hamburger">☰</div>
+</header>
+
+<amp-sidebar id="sidebar{{ id }}" layout="nodisplay" side="left">
+<div role="button" aria-label="close sidebar" on="tap:sidebar{{ id }}.toggle" tabindex="0"
+     class="close-sidebar">✕
+</div>
+
+{% if headline|default %}
+    <{{ hl }}>{{ headline }}</{{ hl }}>
+{% endif %}
+<a href="{{ request }}#{{ skipId }}" class="invisible">{{ skipNavigation }}</a>
+
+{% if ampRenderSubItemsAsAccordions|default %}
+    {{ items|raw }}
+{% else %}
+    {{ items|raw }}
+{% endif %}
+
+<a id="{{ skipId }}" class="invisible">&nbsp;</a>
+</amp-sidebar>
+
+<div id="target-element"></div>

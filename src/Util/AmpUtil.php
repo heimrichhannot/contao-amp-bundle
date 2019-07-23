@@ -8,18 +8,21 @@
 
 namespace HeimrichHannot\AmpBundle\Util;
 
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Input;
 use Contao\System;
-use Contao\Template;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class AmpUtil implements FrameworkAwareInterface, ContainerAwareInterface
+class AmpUtil
 {
-    use FrameworkAwareTrait;
-    use ContainerAwareTrait;
+    /**
+     * @var array
+     */
+    private $ampBundleConfig;
+
+    public function __construct(array $ampBundleConfig)
+    {
+        $this->ampBundleConfig = $ampBundleConfig;
+    }
+
 
     /**
      * Checks whether an AMP-equivalent is available for a given ui element's template.
@@ -30,37 +33,74 @@ class AmpUtil implements FrameworkAwareInterface, ContainerAwareInterface
      */
     public function isSupportedUiElement(string $template)
     {
-        $config = $this->container->getParameter('huh.amp');
-
-        return isset($config['amp']['ui_elements']) && \in_array($template, array_map(function ($data) {
-            return $data['template'];
-        }, $config['amp']['ui_elements']));
+        return isset($this->ampBundleConfig['templates'][$template]);
     }
 
-    public function getAmpNameByUiElement(string $uiElement)
+    /**
+     * Check if given template is already amp prepared
+     *
+     * @param string $template
+     * @return bool
+     */
+    public function isAmpTemplate(string $template): bool
     {
-        $config = $this->container->getParameter('huh.amp');
-
-        foreach ($config['amp']['ui_elements'] as $element) {
-            if ($element['template'] === $uiElement) {
-                return $element['ampName'];
-            }
+        if (isset($this->ampBundleConfig['templates'][$template]['ampTemplate'])) {
+            return true === $this->ampBundleConfig['templates'][$template]['ampTemplate'];
         }
-
         return false;
     }
 
-    public function getLibraryByAmpName(string $ampName)
+    /**
+     * Return the library url by library name
+     *
+     * @param string $ampName
+     * @return string|null
+     */
+    public function getLibraryUrlByAmpName(string $ampName): ?string
     {
-        $config = $this->container->getParameter('huh.amp');
+        if (isset($this->ampBundleConfig['libraries'][$ampName]['url'])) {
+            return $this->ampBundleConfig['libraries'][$ampName]['url'];
+        }
+        return null;
+    }
 
-        foreach ($config['amp']['libraries'] as $lib) {
-            if ($lib['ampName'] === $ampName) {
-                return $lib['url'];
+    /**
+     * Return the libraries use by the template
+     *
+     * @param string $templateName
+     * @return array
+     */
+    public function getLibrariesByTemplateName(string $templateName): array
+    {
+        $libraries = [];
+        if (isset($this->ampBundleConfig['templates'][$templateName]['libraries']) &&
+            !empty($this->ampBundleConfig['templates'][$templateName]['libraries']))
+        {
+            $libraryNames = $this->ampBundleConfig['templates'][$templateName]['libraries'];
+            foreach ($libraryNames as $libraryName)
+            {
+                if (isset($this->ampBundleConfig['libraries'][$libraryName])) {
+                    $libraries[] = $libraryName;
+                }
             }
         }
+        return $libraries;
+    }
 
-        return false;
+    /**
+     * Return custom config names for the template
+     *
+     * @param string $templateName
+     * @return array
+     */
+    public function getCustomConfigurationByTemplateName(string $templateName): array
+    {
+        if (isset($this->ampBundleConfig['templates'][$templateName]['custom']) &&
+            !empty($this->ampBundleConfig['templates'][$templateName]['custom']))
+        {
+            return $this->ampBundleConfig['templates'][$templateName]['custom'];
+        }
+        return [];
     }
 
     public function skipAnalyticsForBackend()

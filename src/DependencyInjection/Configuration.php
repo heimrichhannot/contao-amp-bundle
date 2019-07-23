@@ -17,41 +17,37 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
 
-        $rootNode = $treeBuilder->root('huh');
+        $rootNode = $treeBuilder->root('huh_amp');
 
         $rootNode
-            ->children()
-                ->arrayNode('amp')
-                    ->addDefaultsIfNotSet()
+        ->children()
+            ->arrayNode('templates')
+                ->useAttributeAsKey('name')
+                ->arrayPrototype()
                     ->children()
-                        ->arrayNode('ui_elements')
-                            ->arrayPrototype()
-                                ->children()
-                                    ->scalarNode('template')
-                                        ->isRequired()
-                                        ->cannotBeEmpty()
-                                    ->end()
-                                    ->scalarNode('ampName')
-                                    ->end()
-                                ->end()
-                            ->end()
+                        ->arrayNode('libraries') // ampName
+                            ->defaultValue([])
+                            ->scalarPrototype()->end()
                         ->end()
-                        ->arrayNode('libraries')
-                            ->arrayPrototype()
-                                ->children()
-                                    ->scalarNode('ampName')
-                                        ->isRequired()
-                                        ->cannotBeEmpty()
-                                    ->end()
-                                    ->scalarNode('url')
-                                        ->cannotBeEmpty()
-                                    ->end()
-                                ->end()
-                            ->end()
+                        ->arrayNode('custom')
+                            ->defaultValue([])
+                            ->scalarPrototype()->end()
+                        ->end()
+                        ->booleanNode('ampTemplate')->defaultFalse()->end()
+                    ->end()
+                ->end()
+            ->end()
+            ->arrayNode('libraries')
+                ->useAttributeAsKey('name')
+                ->arrayPrototype()
+                    ->children()
+                        ->scalarNode('url')
+                            ->cannotBeEmpty()
                         ->end()
                     ->end()
                 ->end()
-            ->end();
+            ->end()
+        ;
 
         return $treeBuilder;
     }

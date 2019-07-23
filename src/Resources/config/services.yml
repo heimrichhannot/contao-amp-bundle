@@ -1,4 +1,11 @@
 services:
+
+  _defaults:
+    public: true
+    autowire: true
+    bind:
+      $ampBundleConfig: '%huh_amp%'
+
   _instanceof:
     Contao\CoreBundle\Framework\FrameworkAwareInterface:
       calls:

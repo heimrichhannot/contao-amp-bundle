@@ -13,5 +13,5 @@ $GLOBALS['TL_HOOKS']['modifyFrontendPage']['amp'] = ['huh.amp.event_listener.hoo
  */
 System::getContainer()->get('huh.utils.array')->insertInArrayByName(
     $GLOBALS['FE_MOD']['navigationMenu'], 'navigation',
-    ['navigation_amp' => '\HeimrichHannot\AmpBundle\Module\ModuleNavigation'], 1
+    [\HeimrichHannot\AmpBundle\FrontendModule\AmpNavigationModule::TYPE => \HeimrichHannot\AmpBundle\FrontendModule\AmpNavigationModule::class], 1
 );

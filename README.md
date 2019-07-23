@@ -26,6 +26,12 @@ Install via composer: `composer require heimrichhannot/contao-amp-bundle` and up
 1. In order to show your website in AMP mode simply append the GET parameter `amp=1` to your URL, i.e. `https://www.example.org/article` → `https://www.example.org/article?amp=1`
 
 
+## Usage
+
+### Menu/Navigation
+
+This bundle comes with an custom frontend module for navigation. It renders the menu as sidebar and add the option to render sub pages as accordions. We recommend to use it for the navigation on your amp page.
+
 ## Developers
 
 ### Events
@@ -123,6 +129,25 @@ This bundle supports the integration of webpack encore using [heimrichhannot/con
 For this you can simply add a new webpack entry in your `config.yml` as you would normally within `contao-encore-bundle` and assign it to your AMP layout.
 
 The code in the generated file then automatically gets rendered to the `<style amp-custom>` element. Simple as that :-)
+
+### Configuration
+
+```yaml
+huh_amp:
+  ui_elements:
+    - { template: ce_accordionSingle, ampName: accordion }
+    - { template: ce_image, ampName: img }
+    - { template: ce_youtube, ampName: youtube }
+  libraries:
+    - { ampName: accordion, url: "https://cdn.ampproject.org/v0/amp-accordion-0.1.js" }
+    - { ampName: analytics, url: "https://cdn.ampproject.org/v0/amp-analytics-0.1.js" }
+    - { ampName: audio, url: "https://cdn.ampproject.org/v0/amp-audio-0.1.js" }
+    - { ampName: carousel, url: "https://cdn.ampproject.org/v0/amp-carousel-0.1.js" }
+    - { ampName: sidebar, url: "https://cdn.ampproject.org/v0/amp-sidebar-0.1.js" }
+    - { ampName: video, url: "https://cdn.ampproject.org/v0/amp-video-0.1.js" }
+    - { ampName: youtube, url: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }
+    - { ampName: form, url: "https://cdn.ampproject.org/v0/amp-form-0.1.js" }
+```
 
 ## Known limitations
 

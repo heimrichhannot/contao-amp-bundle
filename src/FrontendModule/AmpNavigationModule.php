@@ -6,9 +6,10 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\AmpBundle\Module;
+namespace HeimrichHannot\AmpBundle\FrontendModule;
 
 use Contao\FrontendTemplate;
+use Contao\ModuleNavigation;
 use Contao\ModuleSitemap;
 use Contao\PageModel;
 use Contao\System;
@@ -18,8 +19,12 @@ use Contao\System;
  *
  * Class ModuleNavigation
  */
-class ModuleNavigation extends \Contao\ModuleNavigation
+class AmpNavigationModule extends ModuleNavigation
 {
+    protected $strTemplate = 'mod_ampnavigation';
+
+    const TYPE = 'ampnavigation';
+
     protected function renderNavigation($pid, $level = 1, $host = null, $language = null)
     {
         // Get all active subpages
