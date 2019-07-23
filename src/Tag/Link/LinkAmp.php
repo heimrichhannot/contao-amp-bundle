@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\AmpBundle\Tag\Link;
-
 
 use HeimrichHannot\HeadBundle\Head\AbstractLinkTag;
 

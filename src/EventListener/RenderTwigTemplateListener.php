@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\AmpBundle\EventListener;
-
 
 use HeimrichHannot\AmpBundle\Event\PrepareAmpTemplateEvent;
 use HeimrichHannot\UtilsBundle\Event\RenderTwigTemplateEvent;
@@ -31,7 +30,6 @@ class RenderTwigTemplateListener
         $this->eventDispatcher = $eventDispatcher;
     }
 
-
     public function onRenderTemplate(RenderTwigTemplateEvent $event, string $eventName, EventDispatcherInterface $dispatcher)
     {
         global $objPage;
@@ -48,14 +46,12 @@ class RenderTwigTemplateListener
         $context = $this->prepareBaseContext($template, $context);
 
         if ($util->isSupportedUiElement($template)) {
-
-            $componentsToLoad      = $util->getComponentsByTemplateName($template);
+            $componentsToLoad = $util->getComponentsByTemplateName($template);
 
             /** @var PrepareAmpTemplateEvent $prepareAmpTemplateEvent */
             $prepareAmpTemplateEvent = $this->eventDispatcher->dispatch(
                 PrepareAmpTemplateEvent::NAME,
                 new PrepareAmpTemplateEvent($template, $context, $componentsToLoad, $layout)
-
             );
             $componentsToLoad = $prepareAmpTemplateEvent->getComponentsToLoad();
             $context = $prepareAmpTemplateEvent->getContext();
@@ -70,8 +66,8 @@ class RenderTwigTemplateListener
             if (!$util->isAmpTemplate($template)) {
                 if (false !== ($extensionStart = strpos($template, '.'))) {
                     // ignore template extension
-                    $name      = substr($template, 0, $extensionStart);
-                    $extension = substr($template, $extensionStart, strlen($template));
+                    $name = substr($template, 0, $extensionStart);
+                    $extension = substr($template, $extensionStart, \strlen($template));
                     $event->setTemplate($name.'_amp'.$extension);
                 } else {
                     $event->setTemplate($template.'_amp');
@@ -82,65 +78,7 @@ class RenderTwigTemplateListener
     }
 
     /**
-     * Prepare context for default elements
-     *
-     * @param string $template
-     * @param array  $context
-     *
-     * @return array
-     */
-    protected function prepareBaseContext(string $template, array $context = []): array
-    {
-        // prepare template data for amp
-        switch ($template) {
-            case 'ce_image':
-                $data = [];
-                $this->container->get('huh.utils.image')->addToTemplateData('singleSRC', 'addImage', $data, $context);
-                $context = $data;
-                break;
-            case 'ce_player':
-                $files = [];
-
-                if (\is_array($context['files'])) {
-                    foreach ($context['files'] as $file) {
-                        $files[] = [
-                            'mime'  => $file->mime,
-                            'path'  => $this->container->get('request_stack')->getCurrentRequest()->getUriForPath($file->path),
-                            'title' => $file->title,
-                        ];
-                    }
-
-                    $context['files'] = $files;
-                }
-
-                break;
-
-            case 'ce_accordionSingle':
-                $this->container->get('huh.utils.accordion')->structureAccordionSingle($context);
-
-                break;
-
-            case 'ce_accordionStart':
-            case 'ce_accordionStop':
-                $this->container->get('huh.utils.accordion')->structureAccordionStartStop($context);
-                break;
-
-            case 'slick_default':
-                $context = $this->prepareSlickContext($context);
-
-                break;
-
-            case 'nav_default':
-                $context = $this->prepareNavItemsContext($context);
-
-                break;
-        }
-
-        return $context;
-    }
-
-    /**
-     * Prepare slick context
+     * Prepare slick context.
      *
      * @param array $context
      *
@@ -156,8 +94,8 @@ class RenderTwigTemplateListener
             return $context;
         }
 
-        $images                       = [];
-        $context['ampCarouselWidth']  = 0;
+        $images = [];
+        $context['ampCarouselWidth'] = 0;
         $context['ampCarouselHeight'] = 0;
 
         foreach ($context['body'] as $item) {
@@ -171,7 +109,7 @@ class RenderTwigTemplateListener
                 foreach ($item->picture['sources'] as $source) {
                     if (!isset($images[$source['media']])) {
                         $images[$source['media']] = [
-                            'width'  => $source['width'],
+                            'width' => $source['width'],
                             'height' => $source['height'],
                             'images' => [],
                         ];
@@ -198,7 +136,7 @@ class RenderTwigTemplateListener
     }
 
     /**
-     * Prepare nav item context
+     * Prepare nav item context.
      *
      * @param array $context
      *
@@ -220,7 +158,7 @@ class RenderTwigTemplateListener
                 $strClass = (('forward' == $item['type'] && $objPage->id == $item['jumpTo']) ? 'forward'.($trail ? ' trail' : '') : 'active').(('' != $item['subitems']) ? ' submenu' : '').($item['protected'] ? ' protected' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
 
                 $item['isActive'] = true;
-                $item['isTrail']  = false;
+                $item['isTrail'] = false;
             } // Regular page
             else {
                 $strClass = (('' != $item['subitems']) ? 'submenu' : '').($item['protected'] ? ' protected' : '').($trail ? ' trail' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
@@ -231,10 +169,71 @@ class RenderTwigTemplateListener
                 }
 
                 $item['isActive'] = false;
-                $item['isTrail']  = $trail;
+                $item['isTrail'] = $trail;
             }
 
             $item['class'] = trim($strClass);
+        }
+
+        return $context;
+    }
+
+    /**
+     * Prepare context for default elements.
+     *
+     * @param string $template
+     * @param array  $context
+     *
+     * @return array
+     */
+    protected function prepareBaseContext(string $template, array $context = []): array
+    {
+        // prepare template data for amp
+        switch ($template) {
+            case 'ce_image':
+                $data = [];
+                $this->container->get('huh.utils.image')->addToTemplateData('singleSRC', 'addImage', $data, $context);
+                $context = $data;
+
+                break;
+
+            case 'ce_player':
+                $files = [];
+
+                if (\is_array($context['files'])) {
+                    foreach ($context['files'] as $file) {
+                        $files[] = [
+                            'mime' => $file->mime,
+                            'path' => $this->container->get('request_stack')->getCurrentRequest()->getUriForPath($file->path),
+                            'title' => $file->title,
+                        ];
+                    }
+
+                    $context['files'] = $files;
+                }
+
+                break;
+
+            case 'ce_accordionSingle':
+                $this->container->get('huh.utils.accordion')->structureAccordionSingle($context);
+
+                break;
+
+            case 'ce_accordionStart':
+            case 'ce_accordionStop':
+                $this->container->get('huh.utils.accordion')->structureAccordionStartStop($context);
+
+                break;
+
+            case 'slick_default':
+                $context = $this->prepareSlickContext($context);
+
+                break;
+
+            case 'nav_default':
+                $context = $this->prepareNavItemsContext($context);
+
+                break;
         }
 
         return $context;

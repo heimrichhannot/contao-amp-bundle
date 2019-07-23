@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -23,7 +23,6 @@ class AmpUtil
         $this->ampBundleConfig = $ampBundleConfig;
     }
 
-
     /**
      * Checks whether an AMP-equivalent is available for a given ui element's template.
      *
@@ -37,9 +36,10 @@ class AmpUtil
     }
 
     /**
-     * Check if given template is already amp prepared
+     * Check if given template is already amp prepared.
      *
      * @param string $template
+     *
      * @return bool
      */
     public function isAmpTemplate(string $template): bool
@@ -47,13 +47,15 @@ class AmpUtil
         if (isset($this->ampBundleConfig['templates'][$template]['ampTemplate'])) {
             return true === $this->ampBundleConfig['templates'][$template]['ampTemplate'];
         }
+
         return false;
     }
 
     /**
-     * Return the components url by component name
+     * Return the components url by component name.
      *
      * @param string $ampName
+     *
      * @return string|null
      */
     public function getComponentUrlByAmpName(string $ampName): ?string
@@ -61,29 +63,32 @@ class AmpUtil
         if (isset($this->ampBundleConfig['components'][$ampName]['url'])) {
             return $this->ampBundleConfig['components'][$ampName]['url'];
         }
+
         return null;
     }
 
     /**
-     * Return the amp components use by the template
+     * Return the amp components use by the template.
      *
      * @param string $templateName
+     *
      * @return array
      */
     public function getComponentsByTemplateName(string $templateName): array
     {
         $components = [];
+
         if (isset($this->ampBundleConfig['templates'][$templateName]['components']) &&
-            !empty($this->ampBundleConfig['templates'][$templateName]['components']))
-        {
+            !empty($this->ampBundleConfig['templates'][$templateName]['components'])) {
             $componentNames = $this->ampBundleConfig['templates'][$templateName]['components'];
-            foreach ($componentNames as $componentName)
-            {
+
+            foreach ($componentNames as $componentName) {
                 if (isset($this->ampBundleConfig['components'][$componentName])) {
                     $components[] = $componentName;
                 }
             }
         }
+
         return $components;
     }
 

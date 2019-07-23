@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
- *
+
+/*
  * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\AmpBundle\Event;
-
 
 use Contao\LayoutModel;
 use Symfony\Component\EventDispatcher\Event;
@@ -38,10 +34,11 @@ class PrepareAmpTemplateEvent extends Event
 
     /**
      * PrepareAmpTemplate constructor.
-     * @param string $template Template name
-     * @param array $context Template context
-     * @param array $componentsToLoad AMP components to load for this template
-     * @param LayoutModel $layout The page layout
+     *
+     * @param string      $template         Template name
+     * @param array       $context          Template context
+     * @param array       $componentsToLoad AMP components to load for this template
+     * @param LayoutModel $layout           The page layout
      */
     public function __construct(string $template, array $context, array $componentsToLoad, LayoutModel $layout)
     {
@@ -106,6 +103,4 @@ class PrepareAmpTemplateEvent extends Event
     {
         $this->template = $template;
     }
-
-
 }

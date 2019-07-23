@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -29,7 +29,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         }
 
         if ($this->container->get('huh.request')->getGet('amp')) {
-            $layout          = $ampLayout;
+            $layout = $ampLayout;
             $page->layout = $layout->id;
             $this->container->get('huh.head.tag.base')->setContent('/');
             $this->container->get('huh.amp.manager.amp_manager')->setAmpActive(true);
@@ -37,6 +37,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             if (isset($GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle'])) {
                 unset($GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle']);
             }
+
             return;
         }
 
@@ -57,10 +58,9 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         $templateName = $util->removeTrailingAmp($template->getName());
 
         if ($util->isSupportedUiElement($templateName)) {
-            if (!$this->container->getParameter('huh_amp')['templates'][$templateName]['ampTemplate'])
-            {
+            if (!$this->container->getParameter('huh_amp')['templates'][$templateName]['ampTemplate']) {
                 // switch template for amp
-                $template->setName($templateName . '_amp');
+                $template->setName($templateName.'_amp');
             }
         }
     }

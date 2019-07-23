@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -27,9 +27,9 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
         $modelUtil = System::getContainer()->get('huh.utils.model');
 
         $layout = $modelUtil->findModelInstanceByPk('tl_layout', $dc->id);
-        $dca    = &$GLOBALS['TL_DCA']['tl_layout'];
+        $dca = &$GLOBALS['TL_DCA']['tl_layout'];
 
-        if (null !== $layout && true === (bool)$layout->addAmp) {
+        if (null !== $layout && true === (bool) $layout->addAmp) {
             $dca['palettes']['default'] = str_replace('addAmp', 'addAmp,addAmpAnalytics', $dca['palettes']['default']);
         }
     }
@@ -40,7 +40,7 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
     }
 
     /**
-     * Get amp page layout based on current page
+     * Get amp page layout based on current page.
      *
      * @param PageModel $page
      *
@@ -53,10 +53,8 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
             return null;
         }
 
-
         // page has amp support with custom amp layout
         if ('active' === $page->amp) {
-
             if ($page->ampLayout > 0) {
                 return $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $page->ampLayout);
             }

@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\AmpBundle\DataContainer;
-
 
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
@@ -17,12 +16,11 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class PageContainer implements ContainerAwareInterface, FrameworkAwareInterface
 {
-
     use FrameworkAwareTrait;
     use ContainerAwareTrait;
 
     /**
-     * Return all amp page layouts grouped by theme
+     * Return all amp page layouts grouped by theme.
      *
      * @return array
      */
@@ -34,12 +32,12 @@ class PageContainer implements ContainerAwareInterface, FrameworkAwareInterface
 
         $layouts = $qb->execute()->fetchAll();
 
-        $return = array();
+        $return = [];
 
-        foreach ($layouts as $layout){
+        foreach ($layouts as $layout) {
             $return[$layout['theme']][$layout['id']] = $layout['name'];
         }
 
-		return $return;
+        return $return;
     }
 }

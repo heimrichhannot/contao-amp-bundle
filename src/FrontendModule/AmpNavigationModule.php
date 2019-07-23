@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -21,9 +21,8 @@ use Contao\System;
  */
 class AmpNavigationModule extends ModuleNavigation
 {
-    protected $strTemplate = 'mod_ampnavigation';
-
     const TYPE = 'ampnavigation';
+    protected $strTemplate = 'mod_ampnavigation';
 
     protected function renderNavigation($pid, $level = 1, $host = null, $language = null)
     {
@@ -34,7 +33,7 @@ class AmpNavigationModule extends ModuleNavigation
             return '';
         }
 
-        $items  = [];
+        $items = [];
         $groups = [];
 
         // Get all groups of the current front end user
@@ -51,8 +50,8 @@ class AmpNavigationModule extends ModuleNavigation
         /** @var FrontendTemplate|object $objTemplate */
         $objTemplate = new \FrontendTemplate($this->navigationTpl);
 
-        $objTemplate->pid   = $pid;
-        $objTemplate->type  = \get_class($this);
+        $objTemplate->pid = $pid;
+        $objTemplate->type = \get_class($this);
         $objTemplate->cssID = $this->cssID; // see #4897
         $objTemplate->level = 'level_'.$level++;
 
@@ -67,7 +66,7 @@ class AmpNavigationModule extends ModuleNavigation
             }
 
             $subitems = '';
-            $_groups  = \StringUtil::deserialize($objSubpage->groups);
+            $_groups = \StringUtil::deserialize($objSubpage->groups);
 
             // Override the domain (see #3765)
             if (null !== $host) {
@@ -119,11 +118,10 @@ class AmpNavigationModule extends ModuleNavigation
                         break;
                 }
 
-
                 // stay in amp context
                 $href = System::getContainer()->get('huh.utils.url')->addQueryString('amp=1'.(System::getContainer()->getParameter('kernel.debug') ? '#development=1' : ''), $href);
 
-                $row   = $objSubpage->row();
+                $row = $objSubpage->row();
                 $trail = \in_array($objSubpage->id, $objPage->trail);
 
                 // Active page
@@ -132,7 +130,7 @@ class AmpNavigationModule extends ModuleNavigation
                     $strClass = (('forward' == $objSubpage->type && $objPage->id == $objSubpage->jumpTo) ? 'forward'.($trail ? ' trail' : '') : 'active').(('' != $subitems) ? ' submenu' : '').($objSubpage->protected ? ' protected' : '').(('' != $objSubpage->cssClass) ? ' '.$objSubpage->cssClass : '');
 
                     $row['isActive'] = true;
-                    $row['isTrail']  = false;
+                    $row['isTrail'] = false;
                 } // Regular page
                 else {
                     $strClass = (('' != $subitems) ? 'submenu' : '').($objSubpage->protected ? ' protected' : '').($trail ? ' trail' : '').(('' != $objSubpage->cssClass) ? ' '.$objSubpage->cssClass : '');
@@ -143,17 +141,17 @@ class AmpNavigationModule extends ModuleNavigation
                     }
 
                     $row['isActive'] = false;
-                    $row['isTrail']  = $trail;
+                    $row['isTrail'] = $trail;
                 }
 
-                $row['subitems']    = $subitems;
-                $row['class']       = trim($strClass);
-                $row['title']       = \StringUtil::specialchars($objSubpage->title, true);
-                $row['pageTitle']   = \StringUtil::specialchars($objSubpage->pageTitle, true);
-                $row['link']        = $objSubpage->title;
-                $row['href']        = $href;
-                $row['nofollow']    = (0 === strncmp($objSubpage->robots, 'noindex,nofollow', 16));
-                $row['target']      = '';
+                $row['subitems'] = $subitems;
+                $row['class'] = trim($strClass);
+                $row['title'] = \StringUtil::specialchars($objSubpage->title, true);
+                $row['pageTitle'] = \StringUtil::specialchars($objSubpage->pageTitle, true);
+                $row['link'] = $objSubpage->title;
+                $row['href'] = $href;
+                $row['nofollow'] = (0 === strncmp($objSubpage->robots, 'noindex,nofollow', 16));
+                $row['target'] = '';
                 $row['description'] = str_replace(["\n", "\r"], [' ', ''], $objSubpage->description);
 
                 // Override the link target
@@ -169,7 +167,7 @@ class AmpNavigationModule extends ModuleNavigation
         if (!empty($items)) {
             $last = \count($items) - 1;
 
-            $items[0]['class']     = trim($items[0]['class'].' first');
+            $items[0]['class'] = trim($items[0]['class'].' first');
             $items[$last]['class'] = trim($items[$last]['class'].' last');
         }
 
