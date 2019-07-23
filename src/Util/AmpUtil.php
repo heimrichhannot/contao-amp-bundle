@@ -51,56 +51,40 @@ class AmpUtil
     }
 
     /**
-     * Return the library url by library name
+     * Return the components url by component name
      *
      * @param string $ampName
      * @return string|null
      */
-    public function getLibraryUrlByAmpName(string $ampName): ?string
+    public function getComponentUrlByAmpName(string $ampName): ?string
     {
-        if (isset($this->ampBundleConfig['libraries'][$ampName]['url'])) {
-            return $this->ampBundleConfig['libraries'][$ampName]['url'];
+        if (isset($this->ampBundleConfig['components'][$ampName]['url'])) {
+            return $this->ampBundleConfig['components'][$ampName]['url'];
         }
         return null;
     }
 
     /**
-     * Return the libraries use by the template
+     * Return the amp components use by the template
      *
      * @param string $templateName
      * @return array
      */
-    public function getLibrariesByTemplateName(string $templateName): array
+    public function getComponentsByTemplateName(string $templateName): array
     {
-        $libraries = [];
-        if (isset($this->ampBundleConfig['templates'][$templateName]['libraries']) &&
-            !empty($this->ampBundleConfig['templates'][$templateName]['libraries']))
+        $components = [];
+        if (isset($this->ampBundleConfig['templates'][$templateName]['components']) &&
+            !empty($this->ampBundleConfig['templates'][$templateName]['components']))
         {
-            $libraryNames = $this->ampBundleConfig['templates'][$templateName]['libraries'];
-            foreach ($libraryNames as $libraryName)
+            $componentNames = $this->ampBundleConfig['templates'][$templateName]['components'];
+            foreach ($componentNames as $componentName)
             {
-                if (isset($this->ampBundleConfig['libraries'][$libraryName])) {
-                    $libraries[] = $libraryName;
+                if (isset($this->ampBundleConfig['components'][$componentName])) {
+                    $components[] = $componentName;
                 }
             }
         }
-        return $libraries;
-    }
-
-    /**
-     * Return custom config names for the template
-     *
-     * @param string $templateName
-     * @return array
-     */
-    public function getCustomConfigurationByTemplateName(string $templateName): array
-    {
-        if (isset($this->ampBundleConfig['templates'][$templateName]['custom']) &&
-            !empty($this->ampBundleConfig['templates'][$templateName]['custom']))
-        {
-            return $this->ampBundleConfig['templates'][$templateName]['custom'];
-        }
-        return [];
+        return $components;
     }
 
     public function skipAnalyticsForBackend()

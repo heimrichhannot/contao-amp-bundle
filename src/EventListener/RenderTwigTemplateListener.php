@@ -9,11 +9,8 @@
 namespace HeimrichHannot\AmpBundle\EventListener;
 
 
-use HeimrichHannot\AmpBundle\Event\AfterPrepareUiElementEvent;
-use HeimrichHannot\AmpBundle\Event\ModifyLibrariesToLoadEvent;
+use HeimrichHannot\AmpBundle\Event\PrepareAmpTemplateEvent;
 use HeimrichHannot\UtilsBundle\Event\RenderTwigTemplateEvent;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -45,45 +42,27 @@ class RenderTwigTemplateListener
         }
 
         $util = $this->container->get('huh.amp.util.amp_util');
-
-        $template = $util->removeTrailingAmp($event->getTemplate());
-        $event->setContext($this->prepareBaseContext($template, $event->getContext()));
         $context = $event->getContext();
+        $template = $util->removeTrailingAmp($event->getTemplate());
 
-        $eventPrepareUiElement = $this->container->get('event_dispatcher')->dispatch(AfterPrepareUiElementEvent::NAME, new AfterPrepareUiElementEvent($template, $layout));
-        $template              = $eventPrepareUiElement->getTemplate();
+        $context = $this->prepareBaseContext($template, $context);
 
         if ($util->isSupportedUiElement($template)) {
 
-            $librariesToLoad      = $util->getLibrariesByTemplateName($template);
-            $customConfigurations = $util->getCustomConfigurationByTemplateName($template);
+            $componentsToLoad      = $util->getComponentsByTemplateName($template);
 
-            if (!empty($customConfigurations))
-            {
-                foreach ($customConfigurations as $customConfiguration)
-                {
-                    switch ($customConfiguration)
-                    {
-                        case 'player':
-                            // custom logic for Contao's hybrid media element
-                            if ($context['isVideo'])
-                            {
-                                $librariesToLoad[] = 'video';
-                            } else
-                            {
-                                $librariesToLoad[] = 'audio';
-                            }
-                            break;
-                    }
-                    $eventModifyLibraries = $this->eventDispatcher->dispatch(
-                        ModifyLibrariesToLoadEvent::NAME, new ModifyLibrariesToLoadEvent($customConfiguration, $librariesToLoad, $template, $layout)
-                    );
-                    $librariesToLoad      = $eventModifyLibraries->getLibrariesToLoad();
-                }
-            }
+            /** @var PrepareAmpTemplateEvent $prepareAmpTemplateEvent */
+            $prepareAmpTemplateEvent = $this->eventDispatcher->dispatch(
+                PrepareAmpTemplateEvent::NAME,
+                new PrepareAmpTemplateEvent($template, $context, $componentsToLoad, $layout)
 
-            foreach ($librariesToLoad as $lib) {
-                if ($url = $util->getLibraryUrlByAmpName($lib)) {
+            );
+            $componentsToLoad = $prepareAmpTemplateEvent->getComponentsToLoad();
+            $context = $prepareAmpTemplateEvent->getContext();
+            $template = $prepareAmpTemplateEvent->getTemplate();
+
+            foreach ($componentsToLoad as $lib) {
+                if ($url = $util->getComponentUrlByAmpName($lib)) {
                     $this->container->get('huh.amp.manager.amp_manager')::addLib($lib, $url);
                 }
             }
@@ -98,8 +77,8 @@ class RenderTwigTemplateListener
                     $event->setTemplate($template.'_amp');
                 }
             }
-
         }
+        $event->setContext($context);
     }
 
     /**

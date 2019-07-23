@@ -25,7 +25,7 @@ class Configuration implements ConfigurationInterface
                 ->useAttributeAsKey('name')
                 ->arrayPrototype()
                     ->children()
-                        ->arrayNode('libraries') // ampName
+                        ->arrayNode('components')
                             ->defaultValue([])
                             ->scalarPrototype()->end()
                         ->end()
@@ -37,7 +37,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
-            ->arrayNode('libraries')
+            ->arrayNode('components')
                 ->useAttributeAsKey('name')
                 ->arrayPrototype()
                     ->children()

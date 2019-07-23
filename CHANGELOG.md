@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 * moved AmpNavigationModule to FrontendModule namespace
 * [BC BREAK] renamed AmpNavigationModule type to ampnavigation
 * [BC BREAK] changed bundle configuration, please see readme
+* [BC BREAK] Replaced ModifyLibrariesToLoadEvent and AfterPrepareUiElementEvent with PrepareAmpTemplateEvent
 * unset `$GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle` if amp page (don't call doAddEncore() twice)
 * updated README
 

@@ -30,16 +30,32 @@ Install via composer: `composer require heimrichhannot/contao-amp-bundle` and up
 
 ### Menu/Navigation
 
-This bundle comes with an custom frontend module for navigation. It renders the menu as sidebar and add the option to render sub pages as accordions. We recommend to use it for the navigation on your amp page.
+This bundle comes with an custom frontend module for navigation. It renders the menu as sidebar and add the option to render sub pages as accordions. We recommend to use it for the navigation on your amp page.   
+Since amp-sidebar must sit directly within the body element, put the navigation module into the header section of your template (we removed container elements for header section in our template).
+
+### Support custom templates
+
+1. Add the template to your bundle/project configuration. If your template should use amp components, add them 
+
+    ```yaml
+    huh_amp:
+      templates:
+        ce_my_content_element:
+          components: ['accordion','youtube']
+    ```
+    
+1. Create an amp template for this template and give it an _amp prefix (e.g. `ce_my_content_element_amp`)
+
+If you need more control, use the [`PrepareAmpTemplateEvent`](#events). If the template will be only used in amp context, you can set `ampTemplate` to true, see [configuration](#configuration) section.
 
 ## Developers
 
 ### Events
 
-Name | Arguments | Description
----- | --------- | -----------
-`AfterPrepareUiElementEvent` | $template, $layout | Can be used for custom element preparation
-`ModifyLibrariesToLoadEvent` | $ampName, $librariesToLoad, $template, $layout | Can be used for adding amp libraries based on a custom logic
+Class | Name | Description
+----- | ---- | -----------
+PrepareAmpTemplateEvent | huh.amp.event.prepare_amp_template | Prepare template, add/change amp components, change the template name.
+
 
 ### Supported content elements
 
@@ -133,20 +149,25 @@ The code in the generated file then automatically gets rendered to the `<style a
 ### Configuration
 
 ```yaml
+# src/Ressources/config/config.yml
 huh_amp:
-  ui_elements:
-    - { template: ce_accordionSingle, ampName: accordion }
-    - { template: ce_image, ampName: img }
-    - { template: ce_youtube, ampName: youtube }
-  libraries:
-    - { ampName: accordion, url: "https://cdn.ampproject.org/v0/amp-accordion-0.1.js" }
-    - { ampName: analytics, url: "https://cdn.ampproject.org/v0/amp-analytics-0.1.js" }
-    - { ampName: audio, url: "https://cdn.ampproject.org/v0/amp-audio-0.1.js" }
-    - { ampName: carousel, url: "https://cdn.ampproject.org/v0/amp-carousel-0.1.js" }
-    - { ampName: sidebar, url: "https://cdn.ampproject.org/v0/amp-sidebar-0.1.js" }
-    - { ampName: video, url: "https://cdn.ampproject.org/v0/amp-video-0.1.js" }
-    - { ampName: youtube, url: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }
-    - { ampName: form, url: "https://cdn.ampproject.org/v0/amp-form-0.1.js" }
+  # Add support for additional templates
+  templates:
+    my_custom_template:
+      components: ['accordion','youtube'] # amp components needed for this template
+      ampTemplate: false # set to true, if the template is already prepared for amp (don't add a _amp suffix)
+    # Examples:
+    ce_youtube:
+      components: ['youtube']
+    mod_ampnavigation:
+      components: ['sidebar','accordion']
+      ampTemplate: true
+    cookiebar: ~
+  # Add support for additional amp components
+  components:
+    accordion: { url: "https://cdn.ampproject.org/v0/amp-accordion-0.1.js" }
+    sidebar:   { url: "https://cdn.ampproject.org/v0/amp-sidebar-0.1.js" }
+    youtube:   { url: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }
 ```
 
 ## Known limitations

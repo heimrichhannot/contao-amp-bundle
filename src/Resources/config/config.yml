@@ -1,34 +1,33 @@
 huh_amp:
   templates:
     ce_accordionSingle:
-      libraries: ['accordion']
+      components: ['accordion']
     ce_accordionStart:
-      libraries: ['accordion']
+      components: ['accordion']
     ce_accordionStop:
-      libraries: ['accordion']
+      components: ['accordion']
     #    - { template: ce_image, ampName: img }
     #    - { template: image.html.twig, ampName: img }
-    ce_player:
-      custom: ['player']
+    ce_player: ~
     ce_slick:
-      libraries: ['carousel']
+      components: ['carousel']
     ce_youtube:
-      libraries: ['youtube']
+      components: ['youtube']
     ce_youtube_huh:
-      libraries: ['youtube']
+      components: ['youtube']
     mod_customnav:
-      libraries: ['sidebar','accordion']
+      components: ['sidebar','accordion']
     mod_navigation:
-      libraries: ['sidebar','accordion']
+      components: ['sidebar','accordion']
     mod_ampnavigation:
-      libraries: ['sidebar','accordion']
+      components: ['sidebar','accordion']
       ampTemplate: true
     mod_customnav_amp:
-      libraries: ['sidebar','accordion']
+      components: ['sidebar','accordion']
     slick_default: ~
     nav_default: ~
     cookiebar: ~
-  libraries:
+  components:
     accordion: { url: "https://cdn.ampproject.org/v0/amp-accordion-0.1.js" }
     analytics: { url: "https://cdn.ampproject.org/v0/amp-analytics-0.1.js" }
     audio:     { url: "https://cdn.ampproject.org/v0/amp-audio-0.1.js" }

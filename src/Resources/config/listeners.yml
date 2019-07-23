@@ -17,3 +17,6 @@ services:
   HeimrichHannot\AmpBundle\EventListener\RenderTwigTemplateListener:
     tags:
       - { name: kernel.event_listener, event: huh.utils.template.render, method: onRenderTemplate }
+  HeimrichHannot\AmpBundle\EventListener\PrepareAmpTemplateListener:
+    tags:
+      - { name: kernel.event_listener, event: huh.amp.event.prepare_amp_template }

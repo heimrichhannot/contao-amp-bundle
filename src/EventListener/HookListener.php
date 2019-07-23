@@ -75,7 +75,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
         // add analytics support
         if ($layout->addAmpAnalytics) {
-            $this->container->get('huh.amp.manager.amp_manager')::addLib('analytics', $ampUtil->getLibraryUrlByAmpName('analytics'));
+            $this->container->get('huh.amp.manager.amp_manager')::addLib('analytics', $ampUtil->getComponentUrlByAmpName('analytics'));
 
             $pageRegular->Template->ampAnalytics = $this->container->get('twig')->render(
                 $this->container->get('huh.utils.template')->getTemplate($layout->ampAnalyticsTemplate),
