@@ -16,14 +16,14 @@ huh_amp:
     ce_youtube_huh:
       components: ['youtube']
     mod_customnav:
-      components: ['sidebar','accordion']
+      components: ['accordion']
     mod_navigation:
       components: ['sidebar','accordion']
     mod_ampnavigation:
       components: ['sidebar','accordion']
       ampTemplate: true
     mod_customnav_amp:
-      components: ['sidebar','accordion']
+      components: ['accordion']
     slick_default: ~
     nav_default: ~
     cookiebar: ~

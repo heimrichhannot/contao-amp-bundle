@@ -1,1 +1,14 @@
-{% include '@ContaoAmp/modules/mod_navigation_amp.html.twig' %}
+{% if headline|default %}
+    <{{ hl }}>{{ headline }}</{{ hl }}>
+{% endif %}
+<a href="{{ request }}#{{ skipId }}" class="invisible">{{ skipNavigation }}</a>
+
+{% if ampRenderSubItemsAsAccordions|default %}
+    {{ items|raw }}
+{% else %}
+    {{ items|raw }}
+{% endif %}
+
+<a id="{{ skipId }}" class="invisible">&nbsp;</a>
+
+<div id="target-element"></div>

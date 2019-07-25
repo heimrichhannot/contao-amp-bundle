@@ -60,6 +60,27 @@ Since amp-sidebar must sit directly within the body element, put the navigation 
 
 If you need more control, use the [`PrepareAmpTemplateEvent`](#events). If the template will be only used in amp context, you can set `ampTemplate` to true, see [configuration](#configuration) section.
 
+### Encore
+
+If you use encore bundle, just create an amp encore entry and add it to your amp layout. You can also add or remove encore entries on the pages where amp is activated.
+
+## Templates
+
+This section will give some hints for creating amp valid templates.
+
+### Images
+
+AMP Bundle ship with an image template, that can be included. If you already use the utils bundle image template, you just need to replace the template name:
+
+```twig
+{# Before #}
+{{ include('@HeimrichHannotContaoUtils/image.html.twig', images.singleSRC) }}
+{# After #}
+{{ include('@ContaoAmp/image/image_amp.html.twig', images.singleSRC) }}
+
+```
+
+If you don't want the contao image container around, you can also include just the image element `{{ include('@ContaoAmp/picture/picture_amp.html.twig') }}`.
 
 ## Developers
 
@@ -159,6 +180,8 @@ For this you can simply add a new webpack entry in your `config.yml` as you woul
 The code in the generated file then automatically gets rendered to the `<style amp-custom>` element. Simple as that :-)
 
 ### Configuration
+
+A complete configuration example with explanation:
 
 ```yaml
 # src/Ressources/config/config.yml

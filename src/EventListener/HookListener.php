@@ -89,6 +89,8 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         if ($this->container->get('huh.utils.container')->isBundleActive('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
             $layout->encoreEntriesAmp = $layout->encoreEntries;
             $this->container->get('huh.encore.listener.hooks')->doAddEncore($page, $layout, $pageRegular, 'encoreEntriesAmp', true);
+            // remove invalid rule
+            $pageRegular->Template->encoreStylesheetsInline = preg_replace('/@charset ".*?";/m', '', $pageRegular->Template->encoreStylesheetsInline);
         }
     }
 

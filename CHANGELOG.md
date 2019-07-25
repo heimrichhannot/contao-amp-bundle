@@ -15,9 +15,11 @@ This update contains some BC breaks. If your update, you need to updated the nav
 * [BC BREAK] renamed AmpNavigationModule type to ampnavigation
 * [BC BREAK] changed bundle configuration, please see readme
 * [BC BREAK] Replaced ModifyLibrariesToLoadEvent and AfterPrepareUiElementEvent with PrepareAmpTemplateEvent
+* CustomNav now renders without sidebar
 * unset `$GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle` if amp page (don't call doAddEncore() twice)
 * [BC BREAK] renamed tl_page.amp to tl_page.enableAmp
 * changed hook entry names to huh_amp
+* remove invalid @charset rule when using encore
 * updated README
 
 #### Fixed
