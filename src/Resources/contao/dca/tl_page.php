@@ -11,16 +11,13 @@ $dca['palettes']['__selector__'][] = 'enableAmp';
 /**
  * Palettes
  */
-$dca['palettes']['regular'] = str_replace('encoreEntries', 'encoreEntries,encoreEntriesAmp', $dca['palettes']['regular']);
-$dca['palettes']['forward'] = str_replace('encoreEntries', 'encoreEntries,encoreEntriesAmp', $dca['palettes']['regular']);
 $dca['palettes']['regular'] = str_replace('includeLayout', 'includeLayout,enableAmp', $dca['palettes']['regular']);
-$dca['palettes']['forward'] = str_replace('includeLayout', 'includeLayout,enableAmp', $dca['palettes']['regular']);
 $dca['palettes']['root']    = str_replace('includeLayout', 'includeLayout,enableAmp', $dca['palettes']['root']);
 
 /**
  * Subpalettes
  */
-$dca['subpalettes']['enableAmp_active'] = 'ampLayout';
+$dca['subpalettes']['enableAmp_active'] = 'ampLayout,encoreEntriesAmp';
 
 /**
  * Fields
@@ -50,7 +47,6 @@ $fields = [
 ];
 
 $fields['encoreEntriesAmp']['label'] = &$GLOBALS['TL_LANG']['tl_page']['encoreEntriesAmp'];
+$fields['encoreEntriesAmp']['eval']['tl_class'] = 'w50';
 
 $dca['fields'] = array_merge($fields, is_array($dca['fields']) ? $dca['fields'] : []);
-
-//\Contao\System::getContainer()->get('huh.utils.dca')->addOverridableFields([])
