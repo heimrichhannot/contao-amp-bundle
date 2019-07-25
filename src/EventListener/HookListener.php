@@ -87,7 +87,8 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
 
         // encore
         if ($this->container->get('huh.utils.container')->isBundleActive('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
-            $this->container->get('huh.encore.listener.hooks')->doAddEncore($page, $layout, $pageRegular, 'encoreEntries', true);
+            $layout->encoreEntriesAmp = $layout->encoreEntries;
+            $this->container->get('huh.encore.listener.hooks')->doAddEncore($page, $layout, $pageRegular, 'encoreEntriesAmp', true);
         }
     }
 

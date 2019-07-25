@@ -49,12 +49,12 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
     public function getAmpLayoutForCurrentPage(PageModel $page): ?LayoutModel
     {
         // page has no amp support
-        if ('inactive' === $page->amp) {
+        if ('inactive' === $page->enableAmp) {
             return null;
         }
 
         // page has amp support with custom amp layout
-        if ('active' === $page->amp) {
+        if ('active' === $page->enableAmp) {
             if ($page->ampLayout > 0) {
                 return $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $page->ampLayout);
             }

@@ -3,8 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [0.2.0] - 2019-07-22
 
+This update contains some BC breaks. If your update, you need to updated the navigation module, migration your config and update your event listeners. If you use encore bundle, you now can just use the default encore entries field in your layout.
+
 #### Added
 * missing english translations
+* support for encoreEntries field in layout section
 
 #### Changed
 * renamed ModuleNavigation to AmpNavigationModule
@@ -13,10 +16,13 @@ All notable changes to this project will be documented in this file.
 * [BC BREAK] changed bundle configuration, please see readme
 * [BC BREAK] Replaced ModifyLibrariesToLoadEvent and AfterPrepareUiElementEvent with PrepareAmpTemplateEvent
 * unset `$GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle` if amp page (don't call doAddEncore() twice)
+* [BC BREAK] renamed tl_page.amp to tl_page.enableAmp
+* changed hook entry names to huh_amp
 * updated README
 
 #### Fixed
 * menu not renders as sidebar when ampRenderSubItemsAsAccordions not checked
+* dca field merge
 
 ## [0.1.2] - 2019-02-28
 

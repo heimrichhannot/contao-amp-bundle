@@ -6,8 +6,8 @@ huh_amp:
       components: ['accordion']
     ce_accordionStop:
       components: ['accordion']
-    #    - { template: ce_image, ampName: img }
-    #    - { template: image.html.twig, ampName: img }
+    ce_image: ~
+    image.html.twig: ~
     ce_player: ~
     ce_slick:
       components: ['carousel']

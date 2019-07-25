@@ -12,9 +12,6 @@ This bundle offers functionality concerning [Accelerated Mobile Pages (AMP)](htt
     - webpack/encore integration via [heimrichhannot/contao-encore-bundle](https://github.com/heimrichhannot/contao-encore-bundle)
     - manually in fe_page_amp.html5
 
-> Currently only works with [Contao Twig Templates Bundle](https://github.com/heimrichhannot/contao-twig-templates-bundle)
-
-
 ## Setup
 
 ### Installation
@@ -38,6 +35,17 @@ This bundle comes with an custom frontend module for navigation. It renders the 
 Since amp-sidebar must sit directly within the body element, put the navigation module into the header section of your template (we removed container elements for header section in our template).
 
 ### Support custom templates
+
+1. Create an .html5 and an twig template in their corresponding folders, e.g. `ce_my_content_element_amp.html5` and `ce_my_content_element_amp.html.twig`. In the html template just render the twig template by using `TemplateUtil::renderTwigTemplate()
+
+```php
+// src/Resources/contao/templates/elements/ce_my_content_element_amp.html5
+<?= System::getContainer()->get('huh.utils.template')->renderTwigTemplate($this->getName(), $this->getData()); ?>
+```
+
+```twig
+
+```
 
 1. Add the template to your bundle/project configuration. If your template should use amp components, add them 
 
@@ -178,5 +186,4 @@ huh_amp:
 ## Known limitations
 
 - currently AMP pages without a non-AMP layout are not supported
-- currently only works with twig template bundle
 - currently amp can only added to complete page trees

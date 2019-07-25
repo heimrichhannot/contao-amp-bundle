@@ -1,35 +1,38 @@
 <?php
 
-$dca = &$GLOBALS['TL_DCA']['tl_page'];
+$table = 'tl_page';
+$dca = &$GLOBALS['TL_DCA'][$table];
 
 /**
  * Selectos
  */
-$dca['palettes']['__selector__'][] = 'amp';
+$dca['palettes']['__selector__'][] = 'enableAmp';
 
 /**
  * Palettes
  */
 $dca['palettes']['regular'] = str_replace('encoreEntries', 'encoreEntries,encoreEntriesAmp', $dca['palettes']['regular']);
-$dca['palettes']['regular'] = str_replace('includeLayout', 'includeLayout,amp', $dca['palettes']['regular']);
-$dca['palettes']['root']    = str_replace('includeLayout', 'includeLayout,amp', $dca['palettes']['root']);
+$dca['palettes']['forward'] = str_replace('encoreEntries', 'encoreEntries,encoreEntriesAmp', $dca['palettes']['regular']);
+$dca['palettes']['regular'] = str_replace('includeLayout', 'includeLayout,enableAmp', $dca['palettes']['regular']);
+$dca['palettes']['forward'] = str_replace('includeLayout', 'includeLayout,enableAmp', $dca['palettes']['regular']);
+$dca['palettes']['root']    = str_replace('includeLayout', 'includeLayout,enableAmp', $dca['palettes']['root']);
 
 /**
  * Subpalettes
  */
-$dca['subpalettes']['amp_active'] = 'ampLayout';
+$dca['subpalettes']['enableAmp_active'] = 'ampLayout';
 
 /**
  * Fields
  */
 $fields = [
     'encoreEntriesAmp' => $GLOBALS['TL_DCA']['tl_page']['fields']['encoreEntries'],
-    'amp'              => [
-        'label'     => &$GLOBALS['TL_LANG']['tl_page']['amp'],
+    'enableAmp'              => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_page']['enableAmp'],
         'inputType' => 'select',
         'default'   => 'inactive',
         'options'   => ['active', 'inactive'],
-        'reference' => $GLOBALS['TL_LANG']['tl_page']['reference']['amp'],
+        'reference' => $GLOBALS['TL_LANG']['tl_page']['reference']['enableAmp'],
         'eval'      => ['includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'w50'],
         'sql'       => "char(8) NOT NULL default ''",
     ],
@@ -48,4 +51,6 @@ $fields = [
 
 $fields['encoreEntriesAmp']['label'] = &$GLOBALS['TL_LANG']['tl_page']['encoreEntriesAmp'];
 
-$dca['fields'] += $fields;
+$dca['fields'] = array_merge($fields, is_array($dca['fields']) ? $dca['fields'] : []);
+
+//\Contao\System::getContainer()->get('huh.utils.dca')->addOverridableFields([])

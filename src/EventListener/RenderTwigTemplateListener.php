@@ -190,13 +190,6 @@ class RenderTwigTemplateListener
     {
         // prepare template data for amp
         switch ($template) {
-            case 'ce_image':
-                $data = [];
-                $this->container->get('huh.utils.image')->addToTemplateData('singleSRC', 'addImage', $data, $context);
-                $context = $data;
-
-                break;
-
             case 'ce_player':
                 $files = [];
 
