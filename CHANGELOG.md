@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2019-11-25
+- fixed wrong amp url on auto_item pages
+- fixed deprecation warning with contao-encore-bundle
+
 ## [0.2.0] - 2019-07-22
 
 This update contains some BC breaks. If your update, you need to updated the navigation module, migration your config and update your event listeners. If you use encore bundle, you now can just use the default encore entries field in your layout.

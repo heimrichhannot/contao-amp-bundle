@@ -41,7 +41,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             return;
         }
 
-        $this->container->get('huh.head.tag.link_amp')->setContent($this->container->get('huh.utils.url')->addQueryString('amp=1'.($this->container->getParameter('kernel.debug') ? '#development=1' : ''), $page->getAbsoluteUrl()));
+        $this->container->get('huh.head.tag.link_amp')->setContent($this->container->get('huh.utils.url')->addQueryString('amp=1'.($this->container->getParameter('kernel.debug') ? '#development=1' : ''), $this->container->get('huh.request')->getUri()));
     }
 
     public function parseTemplate(Template $template)
@@ -88,7 +88,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         // encore
         if ($this->container->get('huh.utils.container')->isBundleActive('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
             $layout->encoreEntriesAmp = $layout->encoreEntries;
-            $this->container->get('huh.encore.listener.hooks')->doAddEncore($page, $layout, $pageRegular, 'encoreEntriesAmp', true);
+            $this->container->get('huh.encore.listener.hooks')->addEncore($page, $layout, $pageRegular, 'encoreEntriesAmp', true);
             // remove invalid rule
             $pageRegular->Template->encoreStylesheetsInline = preg_replace('/@charset ".*?";/m', '', $pageRegular->Template->encoreStylesheetsInline);
         }

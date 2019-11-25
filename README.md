@@ -209,4 +209,3 @@ huh_amp:
 ## Known limitations
 
 - currently AMP pages without a non-AMP layout are not supported
-- currently amp can only added to complete page trees
