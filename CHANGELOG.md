@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.3] - 2019-12-13
+- adapted to changes from encore bundle
+- refactored generatePageHook listener to own class
+- updated utils bundle and encore bundle minimum version
+
 ## [0.2.2] - 2019-12-13
 - don't index amp pages (maybe you need to rebuild your search index)
 

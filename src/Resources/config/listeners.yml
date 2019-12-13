@@ -20,3 +20,6 @@ services:
   HeimrichHannot\AmpBundle\EventListener\PrepareAmpTemplateListener:
     tags:
       - { name: kernel.event_listener, event: huh.amp.event.prepare_amp_template }
+
+  HeimrichHannot\AmpBundle\EventListener\GeneratePageListener:
+    public: true

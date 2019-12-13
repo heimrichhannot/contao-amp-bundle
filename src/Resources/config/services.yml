@@ -1,5 +1,4 @@
 services:
-
   _defaults:
     public: true
     autowire: true
@@ -14,15 +13,11 @@ services:
       calls:
       - ["setContainer", ["@service_container"]]
 
-  huh.amp.manager.amp_manager:
-    class: HeimrichHannot\AmpBundle\Manager\AmpManager
-    public: true
-    autowire: true
+  HeimrichHannot\AmpBundle\Manager\AmpManager: ~
+  huh.amp.manager.amp_manager: '@HeimrichHannot\AmpBundle\Manager\AmpManager'
 
-  huh.amp.util.amp_util:
-    class: HeimrichHannot\AmpBundle\Util\AmpUtil
-    public: true
-    autowire: true
+  HeimrichHannot\AmpBundle\Util\AmpUtil: ~
+  huh.amp.util.amp_util: '@HeimrichHannot\AmpBundle\Util\AmpUtil'
 
   huh.amp.util.layout_util:
     class: HeimrichHannot\AmpBundle\Util\LayoutUtil

@@ -65,35 +65,6 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         }
     }
 
-    public function generatePage(PageModel $page, LayoutModel $layout, PageRegular $pageRegular)
-    {
-        if (!$layout->addAmp) {
-            return;
-        }
-
-        $ampUtil = $this->container->get('huh.amp.util.amp_util');
-
-        // add analytics support
-        if ($layout->addAmpAnalytics) {
-            $this->container->get('huh.amp.manager.amp_manager')::addLib('analytics', $ampUtil->getComponentUrlByAmpName('analytics'));
-
-            $pageRegular->Template->ampAnalytics = $this->container->get('twig')->render(
-                $this->container->get('huh.utils.template')->getTemplate($layout->ampAnalyticsTemplate),
-                [
-                    'skip' => $ampUtil->skipAnalyticsForBackend(),
-                ]
-            );
-        }
-
-        // encore
-        if ($this->container->get('huh.utils.container')->isBundleActive('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
-            $layout->encoreEntriesAmp = $layout->encoreEntries;
-            $this->container->get('huh.encore.listener.hooks')->addEncore($page, $layout, $pageRegular, 'encoreEntriesAmp', true);
-            // remove invalid rule
-            $pageRegular->Template->encoreStylesheetsInline = preg_replace('/@charset ".*?";/m', '', $pageRegular->Template->encoreStylesheetsInline);
-        }
-    }
-
     public function modifyFrontendPage(string $buffer, string $template)
     {
         global $objPage;
