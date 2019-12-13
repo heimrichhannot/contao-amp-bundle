@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.2] - 2019-12-13
+- don't index amp pages (maybe you need to rebuild your search index)
+
 ## [0.2.1] - 2019-11-25
 - fixed wrong amp url on auto_item pages
 - fixed deprecation warning with contao-encore-bundle
