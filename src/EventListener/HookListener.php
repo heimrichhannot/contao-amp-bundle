@@ -62,6 +62,11 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
                 // switch template for amp
                 $template->setName($templateName.'_amp');
             }
+        } elseif (!$this->container->get('huh.utils.string')->startsWith($templateName, 'fe_page')) {
+            $template->setName('amp_template_not_supported');
+            if ($this->container->get('huh.utils.container')->isDev()) {
+                $template->ampOriginTemplateName = $templateName;
+            }
         }
     }
 

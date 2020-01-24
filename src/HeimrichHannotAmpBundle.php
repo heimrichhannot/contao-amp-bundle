@@ -11,7 +11,7 @@ namespace HeimrichHannot\AmpBundle;
 use HeimrichHannot\AmpBundle\DependencyInjection\AmpExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class ContaoAmpBundle extends Bundle
+class HeimrichHannotAmpBundle extends Bundle
 {
     /**
      * {@inheritdoc}
@@ -20,4 +20,6 @@ class ContaoAmpBundle extends Bundle
     {
         return new AmpExtension();
     }
+
+
 }

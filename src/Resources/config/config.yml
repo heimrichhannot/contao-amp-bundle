@@ -1,5 +1,9 @@
 huh_amp:
   templates:
+    ce_text:
+      ampTemplate: true
+    ce_html:
+      ampTemplate: true
     ce_accordionSingle:
       components: ['accordion']
     ce_accordionStart:
@@ -15,6 +19,10 @@ huh_amp:
       components: ['youtube']
     ce_youtube_huh:
       components: ['youtube']
+    mod_block:
+      ampTemplate: true
+    mod_reader:
+      ampTemplate: true
     mod_customnav:
       components: ['accordion']
     mod_navigation:

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.3.0-DEV] - 2020-01-24
+- [BREAKING] Only registered templates will be loaded
+- [BREAKING] Renamed Bundle class to HeimrichHannotAmpBundle
+- some code enhancements
+
 ## [0.2.3] - 2019-12-13
 - adapted to changes from encore bundle
 - refactored generatePageHook listener to own class

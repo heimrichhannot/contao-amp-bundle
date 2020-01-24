@@ -12,13 +12,15 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
+use Contao\ManagerPlugin\Config\ConfigPluginInterface;
 use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
-use HeimrichHannot\AmpBundle\ContaoAmpBundle;
+use HeimrichHannot\AmpBundle\HeimrichHannotAmpBundle;
 use HeimrichHannot\HeadBundle\HeimrichHannotContaoHeadBundle;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
+use Symfony\Component\Config\Loader\LoaderInterface;
 
-class Plugin implements BundlePluginInterface, ExtensionPluginInterface
+class Plugin implements BundlePluginInterface, ConfigPluginInterface
 {
     /**
      * {@inheritdoc}
@@ -32,17 +34,15 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
         }
 
         return [
-            BundleConfig::create(ContaoAmpBundle::class)->setLoadAfter($loadAfter),
+            BundleConfig::create(HeimrichHannotAmpBundle::class)->setLoadAfter($loadAfter),
         ];
     }
 
-    public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
+    /**
+     * @inheritDoc
+     */
+    public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig)
     {
-        return ContainerUtil::mergeConfigFile(
-            'huh_amp',
-            $extensionName,
-            $extensionConfigs,
-            __DIR__.'/../Resources/config/config.yml'
-        );
+        $loader->load("@HeimrichHannotAmpBundle/Resources/config/config.yml");
     }
 }

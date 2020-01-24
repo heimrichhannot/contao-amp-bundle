@@ -25,15 +25,14 @@ class AmpExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
-        $processedConfig = $this->processConfiguration($configuration, $configs);
-
+        $processedConfig = $this->processConfiguration(new Configuration(), $configs);
         $container->setParameter('huh_amp', $processedConfig);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-
         $loader->load('services.yml');
         $loader->load('listeners.yml');
         $loader->load('datacontainers.yml');
     }
+
+
 }
