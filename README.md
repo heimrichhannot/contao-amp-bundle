@@ -58,7 +58,7 @@ Since amp-sidebar must sit directly within the body element, put the navigation 
     
 1. Create an amp template for this template and give it an _amp prefix (e.g. `ce_my_content_element_amp`)
 
-If you need more control, use the [`PrepareAmpTemplateEvent`](#events). If the template will be only used in amp context, you can set `ampTemplate` to true, see [configuration](#configuration) section.
+If you need more control, use the [`PrepareAmpTemplateEvent`](#events). If the template will be only used in amp context, you can set `amp_template` to true, see [configuration](#configuration) section.
 
 ### Encore
 
@@ -76,11 +76,17 @@ AMP Bundle ship with an image template, that can be included. If you already use
 {# Before #}
 {{ include('@HeimrichHannotContaoUtils/image.html.twig', images.singleSRC) }}
 {# After #}
-{{ include('@ContaoAmp/image/image_amp.html.twig', images.singleSRC) }}
+{{ include('@HeimrichHannotAmp/image/image_amp.html.twig', images.singleSRC) }}
 
 ```
 
-If you don't want the contao image container around, you can also include just the image element `{{ include('@ContaoAmp/picture/picture_amp.html.twig') }}`.
+If you don't want the contao image container around, you can also include just the image element `{{ include('@HeimrichHannotAmp/picture/picture_amp.html.twig') }}`.
+
+### Convert html code to amp-html
+
+> Since bundle version 0.3
+
+If you use the `convert_html` option for an registered template, the resulting html code after parsing the templates will be converted to amp-html code. This may come handy for example ce_html or mod_html templates. To use this feature, you must install [lullabot/amp](https://github.com/Lullabot/amp-library) library, otherwise a warning in thrown when set this option to true. This bundle extends the library functionality with additional svg-support for img tags. Keep in mind that an automatic conversation maybe not complete or good as an manual conversation. 
 
 ## Developers
 
@@ -179,32 +185,10 @@ For this you can simply add a new webpack entry in your `config.yml` as you woul
 
 The code in the generated file then automatically gets rendered to the `<style amp-custom>` element. Simple as that :-)
 
-### Configuration
 
-A complete configuration example with explanation:
+## Documentation
 
-```yaml
-# src/Ressources/config/config.yml
-huh_amp:
-  # Add support for additional templates
-  templates:
-    my_custom_template:
-      components: ['accordion','youtube'] # amp components needed for this template
-      ampTemplate: false # set to true, if the template is already prepared for amp (don't add a _amp suffix)
-    # Examples:
-    ce_youtube:
-      components: ['youtube']
-    mod_ampnavigation:
-      components: ['sidebar','accordion']
-      ampTemplate: true
-    cookiebar: ~
-  # Add support for additional amp components
-  components:
-    accordion: { url: "https://cdn.ampproject.org/v0/amp-accordion-0.1.js" }
-    sidebar:   { url: "https://cdn.ampproject.org/v0/amp-sidebar-0.1.js" }
-    youtube:   { url: "https://cdn.ampproject.org/v0/amp-youtube-0.1.js" }
-```
-
+[Configuration](docs/configuration.md) - The complete configuration and examples
 
 ## Known limitations
 

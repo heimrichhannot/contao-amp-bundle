@@ -1,9 +1,9 @@
 huh_amp:
   templates:
     ce_text:
-      ampTemplate: true
+      amp_template: true
     ce_html:
-      ampTemplate: true
+      amp_template: true
     ce_accordionSingle:
       components: ['accordion']
     ce_accordionStart:
@@ -20,16 +20,16 @@ huh_amp:
     ce_youtube_huh:
       components: ['youtube']
     mod_block:
-      ampTemplate: true
+      amp_template: true
     mod_reader:
-      ampTemplate: true
+      amp_template: true
     mod_customnav:
       components: ['accordion']
     mod_navigation:
       components: ['sidebar','accordion']
     mod_ampnavigation:
       components: ['sidebar','accordion']
-      ampTemplate: true
+      amp_template: true
     mod_customnav_amp:
       components: ['accordion']
     slick_default: ~

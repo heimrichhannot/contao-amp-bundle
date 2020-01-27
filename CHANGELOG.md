@@ -1,10 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.3.0-DEV] - 2020-01-24
+## [0.3.0] - 2020-01-27
 - [BREAKING] Only registered templates will be loaded
-- [BREAKING] Renamed Bundle class to HeimrichHannotAmpBundle
+- [BREAKING] Renamed Bundle class to `HeimrichHannotAmpBundle` -> This means also twig namespace changed to `HeimrichHannotAmp`
+- [BREAKING] Renamed ampTemplate config key to amp_template
+- add `convert_html` config option to automatically convert html code to amp-html code** 
+- removed unused config key
 - some code enhancements
+
 
 ## [0.2.3] - 2019-12-13
 - adapted to changes from encore bundle

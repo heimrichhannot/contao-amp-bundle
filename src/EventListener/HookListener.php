@@ -58,7 +58,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         $templateName = $util->removeTrailingAmp($template->getName());
 
         if ($util->isSupportedUiElement($templateName)) {
-            if (!$this->container->getParameter('huh_amp')['templates'][$templateName]['ampTemplate']) {
+            if (!$this->container->getParameter('huh_amp')['templates'][$templateName]['amp_template']) {
                 // switch template for amp
                 $template->setName($templateName.'_amp');
             }

@@ -18,6 +18,7 @@ services:
 
   HeimrichHannot\AmpBundle\EventListener\GeneratePageListener: ~
   HeimrichHannot\AmpBundle\EventListener\ParseTemplateListener: ~
+  HeimrichHannot\AmpBundle\EventListener\ParseFrontendTemplateListener: ~
 
   HeimrichHannot\AmpBundle\EventListener\RenderTwigTemplateListener:
     public: false

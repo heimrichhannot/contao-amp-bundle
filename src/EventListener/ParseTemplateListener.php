@@ -53,7 +53,7 @@ class ParseTemplateListener
         $templateName = $util->removeTrailingAmp($template->getName());
 
         if ($util->isSupportedUiElement($templateName)) {
-            if (!$this->bundleConfig['templates'][$templateName]['ampTemplate']) {
+            if (!$this->bundleConfig['templates'][$templateName]['amp_template']) {
                 // switch template for amp
                 $template->setName($templateName.'_amp');
             }

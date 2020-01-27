@@ -44,8 +44,8 @@ class AmpUtil
      */
     public function isAmpTemplate(string $template): bool
     {
-        if (isset($this->ampBundleConfig['templates'][$template]['ampTemplate'])) {
-            return true === $this->ampBundleConfig['templates'][$template]['ampTemplate'];
+        if (isset($this->ampBundleConfig['templates'][$template]['amp_template'])) {
+            return true === $this->ampBundleConfig['templates'][$template]['amp_template'];
         }
 
         return false;
