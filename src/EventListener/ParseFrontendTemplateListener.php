@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
- *
+
+/*
  * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\AmpBundle\EventListener;
-
 
 use Contao\Controller;
 use Contao\Environment;
@@ -19,7 +15,6 @@ use Contao\PageModel;
 use HeimrichHannot\AmpBundle\AmpLibrary\SvgImgTagTransformPass;
 use Lullabot\AMP\AMP;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 class ParseFrontendTemplateListener
 {
@@ -38,13 +33,12 @@ class ParseFrontendTemplateListener
         $this->container = $container;
     }
 
-
     /**
      * @Hook("parseFrontendTemplate")
      */
     public function onParseFrontendTemplate(string $buffer, string $template): string
     {
-        /** @var PageModel $objPage */
+        /* @var PageModel $objPage */
         global $objPage;
         $layout = LayoutModel::findByPk($objPage->layout);
 
@@ -52,10 +46,11 @@ class ParseFrontendTemplateListener
             return $buffer;
         }
 
-        if (in_array($template, array_keys($this->bundleConfig['templates'])) && ($this->bundleConfig['templates'][$template]['convert_html'] === true)) {
+        if (\in_array($template, array_keys($this->bundleConfig['templates'])) && (true === $this->bundleConfig['templates'][$template]['convert_html'])) {
             if (!class_exists('\Lullabot\AMP\AMP')) {
-                trigger_error("huh_amp.templates.[template].convert_html is set, but necassary Library lullabot/amp is not installed. HTML Code could not be converted to AMP-HTML code.",
+                trigger_error('huh_amp.templates.[template].convert_html is set, but necassary Library lullabot/amp is not installed. HTML Code could not be converted to AMP-HTML code.',
                     E_USER_NOTICE);
+
                 return $buffer;
             }
             $rootUrl = Environment::get('url');
