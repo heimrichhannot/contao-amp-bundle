@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -64,6 +64,7 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
             }
         } elseif (!$this->container->get('huh.utils.string')->startsWith($templateName, 'fe_page')) {
             $template->setName('amp_template_not_supported');
+
             if ($this->container->get('huh.utils.container')->isDev()) {
                 $template->ampOriginTemplateName = $templateName;
             }

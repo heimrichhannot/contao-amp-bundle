@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
- *
+
+/*
  * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\AmpBundle\EventListener;
-
 
 use Contao\Template;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -28,7 +24,8 @@ class ParseTemplateListener
 
     /**
      * ParseTemplateListener constructor.
-     * @param array $bundleConfig
+     *
+     * @param array              $bundleConfig
      * @param ContainerInterface $container
      */
     public function __construct(array $bundleConfig, ContainerInterface $container)
@@ -36,7 +33,6 @@ class ParseTemplateListener
         $this->bundleConfig = $bundleConfig;
         $this->container = $container;
     }
-
 
     /**
      * @Hook("parseTemplate")
@@ -63,6 +59,7 @@ class ParseTemplateListener
             }
         } elseif (!$this->container->get('huh.utils.string')->startsWith($templateName, 'fe_page')) {
             $template->setName('amp_template_not_supported');
+
             if ($this->container->get('huh.utils.container')->isDev()) {
                 $template->ampOriginTemplateName = $templateName;
             }
