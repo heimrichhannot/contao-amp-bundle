@@ -1,6 +1,6 @@
 <figure class="image_container{{ floatClass|default('') }}{{ picture.img.class|default() ? ((' figure-') ~ (picture.img.class|trim|split(' ')|join(' figure-'))) : '' }}"{% if margin|default %} style="{{ margin }}"{% endif %}>
     {% if href|default %}
-    <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes|raw }}>
+    <a href="{{ href }}"{% if linkTitle|default %} title="{{ linkTitle }}"{% endif %}{{ attributes|default|raw }}>
         {% endif %}
 
         {% include '@HeimrichHannotAmp/picture/picture_amp.html.twig' with picture %}
