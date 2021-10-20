@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.3.2] - 2021-10-20
+- Fixed: dca fields not correctly added to dca
+
+## [0.3.1] - 2020-03-04
+- Fixed: added default filter in image template
+
 ## [0.3.0] - 2020-01-27
 - [BREAKING] Only registered templates will be loaded
 - [BREAKING] Renamed Bundle class to `HeimrichHannotAmpBundle` -> This means also twig namespace changed to `HeimrichHannotAmp`
