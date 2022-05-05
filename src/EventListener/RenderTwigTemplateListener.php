@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -50,8 +50,8 @@ class RenderTwigTemplateListener
 
             /** @var PrepareAmpTemplateEvent $prepareAmpTemplateEvent */
             $prepareAmpTemplateEvent = $this->eventDispatcher->dispatch(
-                PrepareAmpTemplateEvent::NAME,
-                new PrepareAmpTemplateEvent($template, $context, $componentsToLoad, $layout)
+                new PrepareAmpTemplateEvent($template, $context, $componentsToLoad, $layout),
+                PrepareAmpTemplateEvent::NAME
             );
             $componentsToLoad = $prepareAmpTemplateEvent->getComponentsToLoad();
             $context = $prepareAmpTemplateEvent->getContext();
@@ -79,10 +79,6 @@ class RenderTwigTemplateListener
 
     /**
      * Prepare slick context.
-     *
-     * @param array $context
-     *
-     * @return array
      */
     public function prepareSlickContext(array $context = []): array
     {
@@ -137,10 +133,6 @@ class RenderTwigTemplateListener
 
     /**
      * Prepare nav item context.
-     *
-     * @param array $context
-     *
-     * @return array
      */
     public function prepareNavItemsContext(array $context = []): array
     {
@@ -180,11 +172,6 @@ class RenderTwigTemplateListener
 
     /**
      * Prepare context for default elements.
-     *
-     * @param string $template
-     * @param array  $context
-     *
-     * @return array
      */
     protected function prepareBaseContext(string $template, array $context = []): array
     {
