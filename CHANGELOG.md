@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2022-05-05
+- Changed: minimum contao version now 4.9
+- Changed: allow php 8
+- Fixed: symfony 5 compatibility
+
 ## [0.3.2] - 2021-10-20
 - Fixed: dca fields not correctly added to dca
 

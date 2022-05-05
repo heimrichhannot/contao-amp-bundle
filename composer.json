@@ -4,11 +4,12 @@
   "description": "This bundle offers functionality concerning \"Accelerated Mobile Pages\" (AMP) for the Contao CMS.",
   "license": "LGPL-3.0-or-later",
   "require": {
-    "php": "^7.1",
-    "contao/core-bundle": "^4.4",
+    "php": "^7.1 || ^8.0",
+    "contao/core-bundle": "^4.9",
     "heimrichhannot/contao-head-bundle": "^1.1",
     "heimrichhannot/contao-request-bundle": "^1.0",
-    "heimrichhannot/contao-utils-bundle": "^2.7"
+    "heimrichhannot/contao-utils-bundle": "^2.7",
+    "symfony/event-dispatcher-contracts": "^1.0 || ^2.0 || ^3.0"
   },
   "require-dev": {
     "contao/test-case": "1.1.*",
