@@ -1,26 +1,31 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\AmpBundle\EventListener;
 
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
 use Contao\Template;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
+class HookListener implements ContainerAwareInterface
 {
-    use FrameworkAwareTrait;
     use ContainerAwareTrait;
+
+    private Utils $utils;
+
+    public function __construct(Utils $utils)
+    {
+        $this->utils = $utils;
+    }
 
     public function getPageLayout(PageModel $page, LayoutModel &$layout, PageRegular $pageRegular)
     {
@@ -71,11 +76,15 @@ class HookListener implements FrameworkAwareInterface, ContainerAwareInterface
         }
     }
 
-    public function modifyFrontendPage(string $buffer, string $template)
+    public function modifyFrontendPage(string $buffer, string $template): string
     {
-        global $objPage;
+        if (!$this->utils->container()->isFrontend()) {
+            return $buffer;
+        }
 
-        if (!$this->container->get('huh.amp.util.layout_util')->isAmpLayout($objPage->layout)) {
+        $objPage = $this->utils->request()->getCurrentPageModel();
+
+        if (!$objPage || !$this->container->get('huh.amp.util.layout_util')->isAmpLayout((int) $objPage->layout ?? 0)) {
             return $buffer;
         }
 
