@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.3] - 2022-10-25
+- Fixed: deprecated symfony class
+
 ## [0.4.2] - 2022-05-16
 - Changed: minumum php version is now 7.4
 - Fixed: exception in backend in contao 4.13

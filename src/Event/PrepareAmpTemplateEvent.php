@@ -9,7 +9,7 @@
 namespace HeimrichHannot\AmpBundle\Event;
 
 use Contao\LayoutModel;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class PrepareAmpTemplateEvent extends Event
 {
