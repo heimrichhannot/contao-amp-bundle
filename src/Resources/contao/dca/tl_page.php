@@ -36,7 +36,7 @@ $fields = [
         'default' => 'inactive',
         'options' => ['active', 'inactive'],
         'reference' => $GLOBALS['TL_LANG']['tl_page']['reference']['enableAmp'],
-        'eval' => ['includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'w50'],
+        'eval' => ['includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'w50', 'exclude' => true],
         'sql' => "char(8) NOT NULL default ''",
     ],
     'ampLayout' => [

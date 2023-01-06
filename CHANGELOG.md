@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.4] - 2023-01-06
+- Changed: exclude tl_page.enableAmp field
+- Changed: removed unused test setup
+
 ## [0.4.3] - 2022-10-25
 - Fixed: deprecated symfony class
 
