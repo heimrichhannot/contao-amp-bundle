@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -34,6 +34,7 @@ $fields = [
         'label' => &$GLOBALS['TL_LANG']['tl_page']['enableAmp'],
         'inputType' => 'select',
         'default' => 'inactive',
+        'filter' => true,
         'options' => ['active', 'inactive'],
         'reference' => $GLOBALS['TL_LANG']['tl_page']['reference']['enableAmp'],
         'eval' => ['includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'w50', 'exclude' => true],

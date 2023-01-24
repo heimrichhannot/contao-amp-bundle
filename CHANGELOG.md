@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2023-01-24
+- Changed: removed request bundle dependency
+
 ## [0.4.4] - 2023-01-06
 - Changed: exclude tl_page.enableAmp field
 - Changed: removed unused test setup

@@ -1,16 +1,13 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\AmpBundle\EventListener;
 
-use Contao\LayoutModel;
-use Contao\PageModel;
-use Contao\PageRegular;
 use Contao\Template;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -20,33 +17,11 @@ class HookListener implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    private Utils $utils;
+    private Utils              $utils;
 
     public function __construct(Utils $utils)
     {
         $this->utils = $utils;
-    }
-
-    public function getPageLayout(PageModel $page, LayoutModel &$layout, PageRegular $pageRegular)
-    {
-        if (null == ($ampLayout = $this->container->get('huh.amp.util.layout_util')->getAmpLayoutForCurrentPage($page))) {
-            return;
-        }
-
-        if ($this->container->get('huh.request')->getGet('amp')) {
-            $layout = $ampLayout;
-            $page->layout = $layout->id;
-            $this->container->get('huh.head.tag.base')->setContent('/');
-            $this->container->get('huh.amp.manager.amp_manager')->setAmpActive(true);
-
-            if (isset($GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle'])) {
-                unset($GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle']);
-            }
-
-            return;
-        }
-
-        $this->container->get('huh.head.tag.link_amp')->setContent($this->container->get('huh.utils.url')->addQueryString('amp=1'.($this->container->getParameter('kernel.debug') ? '#development=1' : ''), $this->container->get('huh.request')->getUri()));
     }
 
     public function parseTemplate(Template $template)
