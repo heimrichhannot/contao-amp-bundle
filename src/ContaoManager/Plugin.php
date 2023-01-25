@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -14,6 +14,7 @@ use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Config\ConfigPluginInterface;
 use HeimrichHannot\AmpBundle\HeimrichHannotAmpBundle;
+use HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle;
 use HeimrichHannot\HeadBundle\HeimrichHannotContaoHeadBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
@@ -22,12 +23,15 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface
     /**
      * {@inheritdoc}
      */
-    public function getBundles(ParserInterface $parser)
+    public function getBundles(ParserInterface $parser): array
     {
-        $loadAfter = [ContaoCoreBundle::class, HeimrichHannotContaoHeadBundle::class];
+        $loadAfter = [
+            ContaoCoreBundle::class,
+            HeimrichHannotContaoHeadBundle::class,
+        ];
 
-        if (class_exists('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
-            $loadAfter[] = 'HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle';
+        if (class_exists(HeimrichHannotContaoEncoreBundle::class)) {
+            $loadAfter[] = HeimrichHannotContaoEncoreBundle::class;
         }
 
         return [

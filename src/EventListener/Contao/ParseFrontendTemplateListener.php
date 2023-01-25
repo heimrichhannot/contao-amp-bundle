@@ -8,7 +8,9 @@
 
 namespace HeimrichHannot\AmpBundle\EventListener\Contao;
 
+use Contao\Controller;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\Environment;
 use Contao\FrontendTemplate;
 use HeimrichHannot\AmpBundle\AmpLibrary\SvgImgTagTransformPass;
 use HeimrichHannot\AmpBundle\Util\LayoutUtil;
@@ -42,11 +44,11 @@ class ParseFrontendTemplateListener
 
         if (\in_array(
             $template,
-            array_keys($bundleConfig['templates'])) && (true === $bundleConfig['templates'][$template]['convert_html'])
+            array_keys($bundleConfig['templates'])) && (true === $bundleConfig['templates'][$templateName]['convert_html'])
         ) {
             if (!class_exists('\Lullabot\AMP\AMP')) {
                 trigger_error('huh_amp.templates.[template].convert_html is set, but necassary Library lullabot/amp is not installed. HTML Code could not be converted to AMP-HTML code.',
-                    \E_USER_NOTICE);
+                    \E_USER_WARNING);
 
                 return $buffer;
             }
@@ -64,8 +66,6 @@ class ParseFrontendTemplateListener
             $diff = $amp->getInputOutputHtmlDiff();
             $warning = $amp->warningsHumanText();
         }
-
-        return $buffer;
 
         return $buffer;
     }

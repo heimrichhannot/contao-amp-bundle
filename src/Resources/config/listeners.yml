@@ -2,8 +2,6 @@ services:
   _defaults:
     autowire: true
     public: true
-    bind:
-      $bundleConfig: '%huh_amp%'
 
   _instanceof:
     Contao\CoreBundle\Framework\FrameworkAwareInterface:
@@ -16,13 +14,6 @@ services:
   huh.amp.event_listener.hook_listener:
     class: HeimrichHannot\AmpBundle\EventListener\HookListener
 
-  HeimrichHannot\AmpBundle\EventListener\ParseTemplateListener: ~
-  HeimrichHannot\AmpBundle\EventListener\ParseFrontendTemplateListener: ~
-
-  HeimrichHannot\AmpBundle\EventListener\RenderTwigTemplateListener:
-    public: false
-    tags:
-      - { name: kernel.event_listener, event: huh.utils.template.render, method: onRenderTemplate }
   HeimrichHannot\AmpBundle\EventListener\PrepareAmpTemplateListener:
     public: false
     tags:

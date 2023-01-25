@@ -1,80 +1,114 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\AmpBundle\EventListener;
+namespace HeimrichHannot\AmpBundle\EventListener\Contao;
 
+use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\Template;
 use HeimrichHannot\AmpBundle\Event\PrepareAmpTemplateEvent;
-use HeimrichHannot\UtilsBundle\Event\RenderTwigTemplateEvent;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use HeimrichHannot\AmpBundle\Manager\AmpManager;
+use HeimrichHannot\AmpBundle\Util\AmpUtil;
+use HeimrichHannot\AmpBundle\Util\LayoutUtil;
+use HeimrichHannot\SlickBundle\HeimrichHannotContaoSlickBundle;
+use HeimrichHannot\TwigSupportBundle\EventListener\RenderListener;
+use HeimrichHannot\UtilsBundle\Util\Utils;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class RenderTwigTemplateListener
+/**
+ * @Hook("parseTemplate")
+ */
+class ParseTemplateListener
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private AmpUtil                  $ampUtil;
+    private LayoutUtil               $layoutUtil;
+    private Utils                    $utils;
+    private RequestStack             $requestStack;
+    private EventDispatcherInterface $eventDispatcher;
+    private AmpManager               $ampManager;
 
-    public function __construct(ContainerInterface $container, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->container = $container;
+    public function __construct(
+        AmpUtil $ampUtil,
+        LayoutUtil $layoutUtil,
+        Utils $utils,
+        RequestStack $requestStack,
+        EventDispatcherInterface $eventDispatcher,
+        AmpManager $ampManager
+    ) {
+        $this->ampUtil = $ampUtil;
+        $this->layoutUtil = $layoutUtil;
+        $this->utils = $utils;
+        $this->requestStack = $requestStack;
         $this->eventDispatcher = $eventDispatcher;
+        $this->ampManager = $ampManager;
     }
 
-    public function onRenderTemplate(RenderTwigTemplateEvent $event, string $eventName, EventDispatcherInterface $dispatcher)
+    public function __invoke(Template $template): void
     {
-        global $objPage;
-
-        if (null == $objPage || null === ($layout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $objPage->layout))
-            || !$this->container->get('huh.amp.util.layout_util')->isAmpLayout($layout->id)) {
+        if (!$this->layoutUtil->isAmpActive()) {
             return;
         }
 
-        $util = $this->container->get('huh.amp.util.amp_util');
-        $context = $event->getContext();
-        $template = $util->removeTrailingAmp($event->getTemplate());
+        $templateName = $template->getName();
+        $templateContext = $template->getData();
+        $twigProxy = false;
 
-        $context = $this->prepareBaseContext($template, $context);
+        if (str_starts_with($templateName, 'fe_page')) {
+            return;
+        }
 
-        if ($util->isSupportedUiElement($template)) {
-            $componentsToLoad = $util->getComponentsByTemplateName($template);
+        // Twig support bundle support
+        if ('twig_template_proxy' === $templateName && class_exists(RenderListener::class)) {
+            $templateName = $template->{RenderListener::TWIG_TEMPLATE};
+            $templateContext = $template->{RenderListener::TWIG_CONTEXT};
+            $twigProxy = true;
+        }
+
+        $templateName = $this->ampUtil->removeTrailingAmp($templateName);
+
+        if ($this->ampUtil->isSupportedUiElement($templateName)) {
+            if (!$this->ampUtil->isAmpTemplate($templateName)) {
+                $templateName = $templateName.'_amp';
+            }
+
+            $componentsToLoad = $this->ampUtil->getComponentsByTemplateName($templateName);
+            $layout = $this->layoutUtil->getAmpLayoutForCurrentPage();
 
             /** @var PrepareAmpTemplateEvent $prepareAmpTemplateEvent */
             $prepareAmpTemplateEvent = $this->eventDispatcher->dispatch(
-                new PrepareAmpTemplateEvent($template, $context, $componentsToLoad, $layout),
+                new PrepareAmpTemplateEvent($templateName, $templateContext, $componentsToLoad, $layout),
                 PrepareAmpTemplateEvent::NAME
             );
             $componentsToLoad = $prepareAmpTemplateEvent->getComponentsToLoad();
-            $context = $prepareAmpTemplateEvent->getContext();
-            $template = $prepareAmpTemplateEvent->getTemplate();
+            $templateContext = $prepareAmpTemplateEvent->getContext();
+            $templateName = $prepareAmpTemplateEvent->getTemplate();
 
             foreach ($componentsToLoad as $lib) {
-                if ($url = $util->getComponentUrlByAmpName($lib)) {
-                    $this->container->get('huh.amp.manager.amp_manager')::addLib($lib, $url);
+                if ($url = $this->ampUtil->getComponentUrlByAmpName($lib)) {
+                    $this->ampManager::addLib($lib, $url);
                 }
+            }
+        } else {
+            if ($this->utils->container()->isDev()) {
+                $templateContext['ampOriginTemplateName'] = $templateName;
             }
 
-            if (!$util->isAmpTemplate($template)) {
-                if (false !== ($extensionStart = strpos($template, '.'))) {
-                    // ignore template extension
-                    $name = substr($template, 0, $extensionStart);
-                    $extension = substr($template, $extensionStart, \strlen($template));
-                    $event->setTemplate($name.'_amp'.$extension);
-                } else {
-                    $event->setTemplate($template.'_amp');
-                }
-            }
+            $templateName = 'amp_template_not_supported';
+            $twigProxy = false;
         }
-        $event->setContext($context);
+
+        if ($twigProxy) {
+            $template->{RenderListener::TWIG_TEMPLATE} = $templateName;
+            $template->{RenderListener::TWIG_CONTEXT} = $templateContext;
+        } else {
+            $template->setName($templateName);
+            $template->setData($templateContext);
+        }
     }
 
     /**
@@ -82,7 +116,7 @@ class RenderTwigTemplateListener
      */
     public function prepareSlickContext(array $context = []): array
     {
-        if (!$this->container->get('huh.utils.container')->isBundleActive('HeimrichHannot\SlickBundle\HeimrichHannotContaoSlickBundle')) {
+        if (!class_exists(HeimrichHannotContaoSlickBundle::class)) {
             return $context;
         }
 
@@ -142,10 +176,12 @@ class RenderTwigTemplateListener
 
         global $objPage;
 
+        $currentUrl = $this->utils->url()->removeQueryStringParameter('amp');
+
         foreach ($context['items'] as &$item) {
             $trail = \in_array($item['id'], $objPage->trail);
 
-            if (($objPage->id == $item['id'] || ('forward' == $item['type'] && $objPage->id == $item['jumpTo'])) && $item['href'] == $this->container->get('huh.utils.url')->removeQueryString(['amp'], \Environment::get('request'))) {
+            if (($objPage->id == $item['id'] || ('forward' == $item['type'] && $objPage->id == $item['jumpTo'])) && $item['href'] == $currentUrl) {
                 // Mark active forward pages (see #4822)
                 $strClass = (('forward' == $item['type'] && $objPage->id == $item['jumpTo']) ? 'forward'.($trail ? ' trail' : '') : 'active').(('' != $item['subitems']) ? ' submenu' : '').($item['protected'] ? ' protected' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
 
@@ -173,7 +209,7 @@ class RenderTwigTemplateListener
     /**
      * Prepare context for default elements.
      */
-    protected function prepareBaseContext(string $template, array $context = []): array
+    private function prepareBaseContext(string $template, array $context = []): array
     {
         // prepare template data for amp
         switch ($template) {
@@ -184,7 +220,7 @@ class RenderTwigTemplateListener
                     foreach ($context['files'] as $file) {
                         $files[] = [
                             'mime' => $file->mime,
-                            'path' => $this->container->get('request_stack')->getCurrentRequest()->getUriForPath($file->path),
+                            'path' => $this->requestStack->getCurrentRequest()->getUriForPath($file->path),
                             'title' => $file->title,
                         ];
                     }
@@ -195,13 +231,13 @@ class RenderTwigTemplateListener
                 break;
 
             case 'ce_accordionSingle':
-                $this->container->get('huh.utils.accordion')->structureAccordionSingle($context);
+                $this->utils->accordion()->structureAccordionSingle($context);
 
                 break;
 
             case 'ce_accordionStart':
             case 'ce_accordionStop':
-                $this->container->get('huh.utils.accordion')->structureAccordionStartStop($context);
+                $this->utils->accordion()->structureAccordionStartStop($context);
 
                 break;
 

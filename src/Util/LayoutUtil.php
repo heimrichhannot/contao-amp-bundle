@@ -27,7 +27,8 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
     private Utils        $utils;
     private RequestStack $requestStack;
 
-    private bool $ampActive;
+    private bool  $ampActive;
+    private array $ampLayout = [];
 
     public function __construct(Utils $utils, RequestStack $requestStack)
     {
@@ -53,9 +54,15 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
     public function isAmpActive(): bool
     {
         if (!isset($this->ampActive)) {
+            if (!$this->utils->container()->isFrontend()) {
+                $this->ampActive = false;
+
+                return $this->ampActive;
+            }
+
             $request = $this->requestStack->getCurrentRequest();
 
-            if (!$request) {
+            if (!$request || !$request->query->has('amp')) {
                 $this->ampActive = false;
 
                 return $this->ampActive;
@@ -66,7 +73,11 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
 
             if ($layout) {
                 $this->ampActive = true;
+
+                return $this->ampActive;
             }
+
+            $this->ampActive = false;
         }
 
         return $this->ampActive;
@@ -80,26 +91,50 @@ class LayoutUtil implements FrameworkAwareInterface, ContainerAwareInterface
     /**
      * Get amp page layout based on current page.
      */
-    public function getAmpLayoutForCurrentPage(PageModel $page): ?LayoutModel
+    public function getAmpLayoutForCurrentPage(PageModel $page = null): ?LayoutModel
     {
+        if (!$page) {
+            $page = $this->utils->request()->getCurrentPageModel();
+        }
+
+        if (isset($this->ampLayout[$page->id])) {
+            $layout = $this->ampLayout[$page->id];
+
+            if (null !== $layout) {
+                $layout = LayoutModel::findByPk($layout);
+            }
+
+            return $layout;
+        }
+
         // page has no amp support
         if ('inactive' === $page->enableAmp) {
+            $this->ampLayout[$page->id] = null;
+
             return null;
         }
 
         // page has amp support with custom amp layout
         if ('active' === $page->enableAmp) {
             if ($page->ampLayout > 0) {
-                return $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $page->ampLayout);
+                $layout = LayoutModel::findByPk($page->ampLayout);
+                $this->ampLayout[$page->id] = ($layout ? $layout->id : null);
+
+                return $layout;
             }
+            $this->ampLayout[$page->id] = null;
 
             return null;
         }
 
         // get amp layout from parent amp layouts
-        if ($page->pid && null !== ($layout = $this->getAmpLayoutForCurrentPage($this->container->get('huh.utils.model')->findModelInstanceByPk('tl_page', $page->pid)))) {
+        if ($page->pid && null !== ($layout = $this->getAmpLayoutForCurrentPage(PageModel::findByPk($page->pid)))) {
+            $this->ampLayout[$page->id] = $layout->id;
+
             return $layout;
         }
+
+        $this->ampLayout[$page->id] = null;
 
         return null;
     }
