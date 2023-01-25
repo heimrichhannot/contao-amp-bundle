@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -9,6 +9,7 @@
 namespace HeimrichHannot\AmpBundle\EventListener;
 
 use Contao\Template;
+use HeimrichHannot\TwigSupportBundle\EventListener\RenderListener;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ParseTemplateListener
@@ -24,9 +25,6 @@ class ParseTemplateListener
 
     /**
      * ParseTemplateListener constructor.
-     *
-     * @param array              $bundleConfig
-     * @param ContainerInterface $container
      */
     public function __construct(array $bundleConfig, ContainerInterface $container)
     {
@@ -51,6 +49,10 @@ class ParseTemplateListener
         $util = $this->container->get('huh.amp.util.amp_util');
 
         $templateName = $util->removeTrailingAmp($template->getName());
+
+        if ('twig_template_proxy' === $templateName) {
+            $templateName = $template->{RenderListener::TWIG_TEMPLATE};
+        }
 
         if ($util->isSupportedUiElement($templateName)) {
             if (!$this->bundleConfig['templates'][$templateName]['amp_template']) {

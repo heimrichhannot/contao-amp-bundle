@@ -16,7 +16,6 @@ services:
   huh.amp.event_listener.hook_listener:
     class: HeimrichHannot\AmpBundle\EventListener\HookListener
 
-  HeimrichHannot\AmpBundle\EventListener\GeneratePageListener: ~
   HeimrichHannot\AmpBundle\EventListener\ParseTemplateListener: ~
   HeimrichHannot\AmpBundle\EventListener\ParseFrontendTemplateListener: ~
 

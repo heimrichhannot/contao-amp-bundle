@@ -8,7 +8,6 @@
 
 namespace HeimrichHannot\AmpBundle\EventListener;
 
-use Contao\Template;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -22,33 +21,6 @@ class HookListener implements ContainerAwareInterface
     public function __construct(Utils $utils)
     {
         $this->utils = $utils;
-    }
-
-    public function parseTemplate(Template $template)
-    {
-        global $objPage;
-
-        if (null === ($layout = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_layout', $objPage->layout))
-            || !$this->container->get('huh.amp.util.layout_util')->isAmpLayout($layout->id)) {
-            return;
-        }
-
-        $util = $this->container->get('huh.amp.util.amp_util');
-
-        $templateName = $util->removeTrailingAmp($template->getName());
-
-        if ($util->isSupportedUiElement($templateName)) {
-            if (!$this->container->getParameter('huh_amp')['templates'][$templateName]['amp_template']) {
-                // switch template for amp
-                $template->setName($templateName.'_amp');
-            }
-        } elseif (!$this->container->get('huh.utils.string')->startsWith($templateName, 'fe_page')) {
-            $template->setName('amp_template_not_supported');
-
-            if ($this->container->get('huh.utils.container')->isDev()) {
-                $template->ampOriginTemplateName = $templateName;
-            }
-        }
     }
 
     public function modifyFrontendPage(string $buffer, string $template): string

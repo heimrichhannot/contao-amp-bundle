@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -12,6 +12,7 @@ use Contao\FrontendTemplate;
 use Contao\ModuleNavigation;
 use Contao\ModuleSitemap;
 use Contao\PageModel;
+use Contao\StringUtil;
 use Contao\System;
 
 /**
@@ -27,7 +28,7 @@ class AmpNavigationModule extends ModuleNavigation
     protected function renderNavigation($pid, $level = 1, $host = null, $language = null)
     {
         // Get all active subpages
-        $objSubpages = \PageModel::findPublishedSubpagesWithoutGuestsByPid($pid, $this->showHidden, $this instanceof ModuleSitemap);
+        $objSubpages = PageModel::findPublishedSubpagesWithoutGuestsByPid($pid, $this->showHidden, $this instanceof ModuleSitemap);
 
         if (null === $objSubpages) {
             return '';
@@ -48,10 +49,10 @@ class AmpNavigationModule extends ModuleNavigation
         }
 
         /** @var FrontendTemplate|object $objTemplate */
-        $objTemplate = new \FrontendTemplate($this->navigationTpl);
+        $objTemplate = new FrontendTemplate($this->navigationTpl);
 
         $objTemplate->pid = $pid;
-        $objTemplate->type = \get_class($this);
+        $objTemplate->type = static::class;
         $objTemplate->cssID = $this->cssID; // see #4897
         $objTemplate->level = 'level_'.$level++;
 
@@ -66,7 +67,7 @@ class AmpNavigationModule extends ModuleNavigation
             }
 
             $subitems = '';
-            $_groups = \StringUtil::deserialize($objSubpage->groups);
+            $_groups = StringUtil::deserialize($objSubpage->groups);
 
             // Override the domain (see #3765)
             if (null !== $host) {
@@ -88,7 +89,7 @@ class AmpNavigationModule extends ModuleNavigation
                         $href = $objSubpage->url;
 
                         if (0 === strncasecmp($href, 'mailto:', 7)) {
-                            $href = \StringUtil::encodeEmail($href);
+                            $href = StringUtil::encodeEmail($href);
                         }
 
                         break;
@@ -146,8 +147,8 @@ class AmpNavigationModule extends ModuleNavigation
 
                 $row['subitems'] = $subitems;
                 $row['class'] = trim($strClass);
-                $row['title'] = \StringUtil::specialchars($objSubpage->title, true);
-                $row['pageTitle'] = \StringUtil::specialchars($objSubpage->pageTitle, true);
+                $row['title'] = StringUtil::specialchars($objSubpage->title, true);
+                $row['pageTitle'] = StringUtil::specialchars($objSubpage->pageTitle, true);
                 $row['link'] = $objSubpage->title;
                 $row['href'] = $href;
                 $row['nofollow'] = (0 === strncmp($objSubpage->robots, 'noindex,nofollow', 16));

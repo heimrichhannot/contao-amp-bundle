@@ -7,7 +7,6 @@
  */
 
 $GLOBALS['TL_HOOKS']['parseTemplate']['huh_amp'] = [\HeimrichHannot\AmpBundle\EventListener\ParseTemplateListener::class, 'onParseTemplate'];
-$GLOBALS['TL_HOOKS']['generatePage']['huh_amp'] = [\HeimrichHannot\AmpBundle\EventListener\GeneratePageListener::class, 'onGeneratePage'];
 $GLOBALS['TL_HOOKS']['parseFrontendTemplate']['huh_amp'] = [\HeimrichHannot\AmpBundle\EventListener\ParseFrontendTemplateListener::class, 'onParseFrontendTemplate'];
 $GLOBALS['TL_HOOKS']['modifyFrontendPage']['huh_amp'] = ['huh.amp.event_listener.hook_listener', 'modifyFrontendPage'];
 
