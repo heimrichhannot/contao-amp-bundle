@@ -11,6 +11,7 @@ namespace HeimrichHannot\AmpBundle\EventListener\Contao;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Template;
 use HeimrichHannot\AmpBundle\Event\PrepareAmpTemplateEvent;
+use HeimrichHannot\AmpBundle\FrontendModule\AmpNavigationModule;
 use HeimrichHannot\AmpBundle\Manager\AmpManager;
 use HeimrichHannot\AmpBundle\Util\AmpUtil;
 use HeimrichHannot\AmpBundle\Util\LayoutUtil;
@@ -20,9 +21,6 @@ use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @Hook("parseTemplate")
- */
 class ParseTemplateListener
 {
     private AmpUtil                  $ampUtil;
@@ -48,6 +46,9 @@ class ParseTemplateListener
         $this->ampManager = $ampManager;
     }
 
+    /**
+     * @Hook("parseTemplate")
+     */
     public function __invoke(Template $template): void
     {
         if (!$this->layoutUtil->isAmpActive()) {
@@ -72,11 +73,14 @@ class ParseTemplateListener
         $templateName = $this->ampUtil->removeTrailingAmp($templateName);
 
         if ($this->ampUtil->isSupportedUiElement($templateName)) {
+            $componentsToLoad = $this->ampUtil->getComponentsByTemplateName($templateName);
+            $componentsToLoad = $this->prepareDynamicComponents($templateName, $templateContext, $componentsToLoad);
+            $templateContext = $this->prepareBaseContext($templateName, $templateContext);
+
             if (!$this->ampUtil->isAmpTemplate($templateName)) {
                 $templateName = $templateName.'_amp';
             }
 
-            $componentsToLoad = $this->ampUtil->getComponentsByTemplateName($templateName);
             $layout = $this->layoutUtil->getAmpLayoutForCurrentPage();
 
             /** @var PrepareAmpTemplateEvent $prepareAmpTemplateEvent */
@@ -84,6 +88,12 @@ class ParseTemplateListener
                 new PrepareAmpTemplateEvent($templateName, $templateContext, $componentsToLoad, $layout),
                 PrepareAmpTemplateEvent::NAME
             );
+
+            $prepareAmpTemplateEvent = $this->eventDispatcher->dispatch(
+                $prepareAmpTemplateEvent,
+                PrepareAmpTemplateEvent::class
+            );
+
             $componentsToLoad = $prepareAmpTemplateEvent->getComponentsToLoad();
             $templateContext = $prepareAmpTemplateEvent->getContext();
             $templateName = $prepareAmpTemplateEvent->getTemplate();
@@ -170,13 +180,15 @@ class ParseTemplateListener
      */
     public function prepareNavItemsContext(array $context = []): array
     {
+        return $context;
+
         if (!\is_array($context['items'])) {
             return $context;
         }
 
         global $objPage;
 
-        $currentUrl = $this->utils->url()->removeQueryStringParameter('amp');
+        $currentUrl = $this->utils->url()->makeUrlRelative($this->utils->url()->removeQueryStringParameter('amp'));
 
         foreach ($context['items'] as &$item) {
             $trail = \in_array($item['id'], $objPage->trail);
@@ -204,6 +216,32 @@ class ParseTemplateListener
         }
 
         return $context;
+    }
+
+    /**
+     * @Hook("parseTemplate", priority=100)
+     */
+    public function prepareNavigationModule(Template $template): void
+    {
+        if (!$this->layoutUtil->isAmpActive() || !str_starts_with($template->getName(), 'nav_')) {
+            return;
+        }
+
+        /** @var AmpNavigationModule $module */
+        $module = $template->module;
+
+        if (!$module || !$module instanceof AmpNavigationModule) {
+            return;
+        }
+        $template->moduleData = $module->getModel()->row();
+
+        $context = $template->getData();
+
+        foreach ($context['items'] as &$item) {
+            $item['href'] = $this->utils->url()->addQueryStringParameterToUrl('amp=1', $item['href']).($this->utils->container()->isDev() ? '#development=1' : '');
+        }
+
+        $template->setData($context);
     }
 
     /**
@@ -246,12 +284,23 @@ class ParseTemplateListener
 
                 break;
 
-            case 'nav_default':
-                $context = $this->prepareNavItemsContext($context);
-
                 break;
         }
 
         return $context;
+    }
+
+    private function prepareDynamicComponents(string $templateName, array $templateContext, array $componentsToLoad): array
+    {
+        switch ($templateName) {
+            case 'ce_player':
+                if ($templateContext['isVideo']) {
+                    $componentsToLoad[] = 'video';
+                } else {
+                    $componentsToLoad[] = 'audio';
+                }
+        }
+
+        return $componentsToLoad;
     }
 }

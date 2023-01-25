@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -13,24 +13,13 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class PrepareAmpTemplateEvent extends Event
 {
-    const NAME = 'huh.amp.event.prepare_amp_template';
+    /** @deprecated Use FQCN as event name instead. Will be removed in a future major version. */
+    public const NAME = 'huh.amp.event.prepare_amp_template';
 
-    /**
-     * @var string
-     */
-    private $template;
-    /**
-     * @var array
-     */
-    private $context;
-    /**
-     * @var array
-     */
-    private $componentsToLoad;
-    /**
-     * @var LayoutModel
-     */
-    private $layout;
+    private string $template;
+    private array $context;
+    private array $componentsToLoad;
+    private LayoutModel $layout;
 
     /**
      * PrepareAmpTemplate constructor.
@@ -48,57 +37,36 @@ class PrepareAmpTemplateEvent extends Event
         $this->layout = $layout;
     }
 
-    /**
-     * @return string
-     */
     public function getTemplate(): string
     {
         return $this->template;
     }
 
-    /**
-     * @return array
-     */
     public function getContext(): array
     {
         return $this->context;
     }
 
-    /**
-     * @param array $context
-     */
     public function setContext(array $context): void
     {
         $this->context = $context;
     }
 
-    /**
-     * @return array
-     */
     public function getComponentsToLoad(): array
     {
         return $this->componentsToLoad;
     }
 
-    /**
-     * @param array $componentsToLoad
-     */
     public function setComponentsToLoad(array $componentsToLoad): void
     {
         $this->componentsToLoad = $componentsToLoad;
     }
 
-    /**
-     * @return LayoutModel
-     */
     public function getLayout(): LayoutModel
     {
         return $this->layout;
     }
 
-    /**
-     * @param string $template
-     */
     public function setTemplate(string $template): void
     {
         $this->template = $template;
