@@ -122,9 +122,35 @@ class ParseTemplateListener
     }
 
     /**
+     * @Hook("parseTemplate", priority=100)
+     */
+    public function prepareNavigationModule(Template $template): void
+    {
+        if (!$this->layoutUtil->isAmpActive() || !str_starts_with($template->getName(), 'nav_')) {
+            return;
+        }
+
+        /** @var AmpNavigationModule $module */
+        $module = $template->module;
+
+        if (!$module || !$module instanceof AmpNavigationModule) {
+            return;
+        }
+        $template->moduleData = $module->getModel()->row();
+
+        $context = $template->getData();
+
+        foreach ($context['items'] as &$item) {
+            $item['href'] = $this->utils->url()->addQueryStringParameterToUrl('amp=1', $item['href']).($this->utils->container()->isDev() ? '#development=1' : '');
+        }
+
+        $template->setData($context);
+    }
+
+    /**
      * Prepare slick context.
      */
-    public function prepareSlickContext(array $context = []): array
+    private function prepareSlickContext(array $context = []): array
     {
         if (!class_exists(HeimrichHannotContaoSlickBundle::class)) {
             return $context;
@@ -173,75 +199,6 @@ class ParseTemplateListener
         $context['ampImages'] = $images;
 
         return $context;
-    }
-
-    /**
-     * Prepare nav item context.
-     */
-    public function prepareNavItemsContext(array $context = []): array
-    {
-        return $context;
-
-        if (!\is_array($context['items'])) {
-            return $context;
-        }
-
-        global $objPage;
-
-        $currentUrl = $this->utils->url()->makeUrlRelative($this->utils->url()->removeQueryStringParameter('amp'));
-
-        foreach ($context['items'] as &$item) {
-            $trail = \in_array($item['id'], $objPage->trail);
-
-            if (($objPage->id == $item['id'] || ('forward' == $item['type'] && $objPage->id == $item['jumpTo'])) && $item['href'] == $currentUrl) {
-                // Mark active forward pages (see #4822)
-                $strClass = (('forward' == $item['type'] && $objPage->id == $item['jumpTo']) ? 'forward'.($trail ? ' trail' : '') : 'active').(('' != $item['subitems']) ? ' submenu' : '').($item['protected'] ? ' protected' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
-
-                $item['isActive'] = true;
-                $item['isTrail'] = false;
-            } // Regular page
-            else {
-                $strClass = (('' != $item['subitems']) ? 'submenu' : '').($item['protected'] ? ' protected' : '').($trail ? ' trail' : '').(('' != $item['cssClass']) ? ' '.$item['cssClass'] : '');
-
-                // Mark pages on the same level (see #2419)
-                if ($item['pid'] == $objPage->pid) {
-                    $strClass .= ' sibling';
-                }
-
-                $item['isActive'] = false;
-                $item['isTrail'] = $trail;
-            }
-
-            $item['class'] = trim($strClass);
-        }
-
-        return $context;
-    }
-
-    /**
-     * @Hook("parseTemplate", priority=100)
-     */
-    public function prepareNavigationModule(Template $template): void
-    {
-        if (!$this->layoutUtil->isAmpActive() || !str_starts_with($template->getName(), 'nav_')) {
-            return;
-        }
-
-        /** @var AmpNavigationModule $module */
-        $module = $template->module;
-
-        if (!$module || !$module instanceof AmpNavigationModule) {
-            return;
-        }
-        $template->moduleData = $module->getModel()->row();
-
-        $context = $template->getData();
-
-        foreach ($context['items'] as &$item) {
-            $item['href'] = $this->utils->url()->addQueryStringParameterToUrl('amp=1', $item['href']).($this->utils->container()->isDev() ? '#development=1' : '');
-        }
-
-        $template->setData($context);
     }
 
     /**

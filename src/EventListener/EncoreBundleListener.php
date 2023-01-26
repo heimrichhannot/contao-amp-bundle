@@ -13,6 +13,7 @@ use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
 use Contao\StringUtil;
+use HeimrichHannot\AmpBundle\Util\LayoutUtil;
 use HeimrichHannot\EncoreBundle\Asset\EntrypointCollectionFactory;
 use HeimrichHannot\EncoreBundle\Asset\GlobalContaoAsset;
 use HeimrichHannot\EncoreBundle\Asset\TemplateAssetGenerator;
@@ -27,16 +28,18 @@ class EncoreBundleListener implements EventSubscriberInterface, ServiceSubscribe
 {
     private ContainerInterface $container;
     private RequestStack       $requestStack;
+    private LayoutUtil         $layoutUtil;
 
-    public function __construct(ContainerInterface $container, RequestStack $requestStack)
+    public function __construct(ContainerInterface $container, RequestStack $requestStack, LayoutUtil $layoutUtil)
     {
         $this->container = $container;
         $this->requestStack = $requestStack;
+        $this->layoutUtil = $layoutUtil;
     }
 
     public function onEncoreEnabledEvent(EncoreEnabledEvent $event): void
     {
-        if ($event->getRequest()->query->has('amp')) {
+        if ($this->layoutUtil->isAmpActive()) {
             $event->setEnabled(false);
         }
     }
@@ -49,8 +52,6 @@ class EncoreBundleListener implements EventSubscriberInterface, ServiceSubscribe
         if (!$layout->addAmp || !class_exists(TemplateAssetGenerator::class) || !$this->container->has(TemplateAssetGenerator::class) || !$this->container->has(EntrypointCollectionFactory::class)) {
             return;
         }
-
-        $entrypoints = StringUtil::deserialize($layout->encoreEntries, true);
 
         /** @var EntrypointCollectionFactory $collectionFactory */
         $collectionFactory = $this->container->get(EntrypointCollectionFactory::class);

@@ -13,14 +13,8 @@ services:
       calls:
       - ["setContainer", ["@service_container"]]
 
-  HeimrichHannot\AmpBundle\EventListener\Contao\:
-    resource: '../../EventListener/Contao/*'
-    public: false
-    autowire: true
-    autoconfigure: true
-
-  HeimrichHannot\AmpBundle\EventListener\:
-    resource: '../../EventListener/{EncoreBundleListener.php}'
+  HeimrichHannot\AmpBundle\:
+    resource: '../../{EventListener}/*'
     public: false
     autowire: true
     autoconfigure: true
