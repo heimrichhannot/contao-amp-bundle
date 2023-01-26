@@ -36,33 +36,33 @@ Since amp-sidebar must sit directly within the body element, put the navigation 
 
 ### Support custom templates
 
-1. Create an .html5 and an twig template in their corresponding folders, e.g. `ce_my_content_element_amp.html5` and `ce_my_content_element_amp.html.twig`. In the html template just render the twig template by using `TemplateUtil::renderTwigTemplate()
+1. To create an amp version for any template, create a new template file with the same name and add `_amp` as suffix, e.g. `ce_my_content_element_amp.html5` or `ce_my_content_element_amp.html.twig`.
 
-```php
-// src/Resources/contao/templates/elements/ce_my_content_element_amp.html5
-<?= System::getContainer()->get('huh.utils.template')->renderTwigTemplate($this->getName(), $this->getData()); ?>
-```
-
-```twig
-
-```
-
-1. Add the template to your bundle/project configuration. If your template should use amp components, add them 
+1. Register the template in your project config
 
     ```yaml
+    # /config/config.yaml
+    huh_amp:
+      templates:
+        ce_my_content_element: ~
+    ```
+   
+1. If your template/element needs amp components to work, update your configuration accordingly:
+
+    ```yaml
+    # /config/config.yaml
     huh_amp:
       templates:
         ce_my_content_element:
           components: ['accordion','youtube']
     ```
-    
-1. Create an amp template for this template and give it an _amp prefix (e.g. `ce_my_content_element_amp`)
 
-If you need more control, use the [`PrepareAmpTemplateEvent`](#events). If the template will be only used in amp context, you can set `amp_template` to true, see [configuration](#configuration) section.
+If you need more control about template context or components, use the [`PrepareAmpTemplateEvent`](#events). 
+If the element template is amp compatible without modifications or your element will be only used in amp context, you can set `huh_amp.template.[template].amp_template` to true, see [configuration](#configuration) section.
 
-### Encore
+### Encore Bundle
 
-If you use encore bundle, just create an amp encore entry and add it to your amp layout. You can also add or remove encore entries on the pages where amp is activated.
+If you use encore bundle, just create an amp encore entry and add it to your amp layout. Only css assets from the layout will be added.
 
 ## Templates
 
@@ -86,33 +86,33 @@ If you don't want the contao image container around, you can also include just t
 
 > Since bundle version 0.3
 
-If you use the `convert_html` option for an registered template, the resulting html code after parsing the templates will be converted to amp-html code. This may come handy for example ce_html or mod_html templates. To use this feature, you must install [lullabot/amp](https://github.com/Lullabot/amp-library) library, otherwise a warning in thrown when set this option to true. This bundle extends the library functionality with additional svg-support for img tags. Keep in mind that an automatic conversation maybe not complete or good as an manual conversation. 
+If you use the `convert_html` option for a registered template, the resulting html code after parsing the templates will be converted to amp-html code. This may come handy for example ce_html or mod_html templates. To use this feature, you must install [lullabot/amp](https://github.com/Lullabot/amp-library) library, otherwise a warning in thrown when set this option to true. This bundle extends the library functionality with additional svg-support for img tags. Keep in mind that an automatic conversation maybe not complete or good as a manual conversation. 
 
 ## Developers
 
 ### Events
 
-Class | Name | Description
------ | ---- | -----------
-PrepareAmpTemplateEvent | huh.amp.event.prepare_amp_template | Prepare template, add/change amp components, change the template name.
+| Class                   | Description                                                            |
+|-------------------------|------------------------------------------------------------------------|
+| PrepareAmpTemplateEvent | Prepare template, add/change amp components, change the template name. |
 
 ### Supported content elements
 
-Contao content element | Contao template | AMP component | AMP template | Notes
----------------------- | --------------- | ------------- | ------------ | -----
-`ContentAccordion` | `ce_accordionSingle.html5` | accordion | `ce_accordionSingle_amp.html.twig` | single element accordions
-`ContentAccordionStart` | `ce_accordionStart.html5` | accordion | `ce_accordionStart_amp.html.twig` |
-`ContentAccordionStop` | `ce_accordionStop.html5` | accordion | `ce_accordionStop_amp.html.twig` |
-`ContentImage` | `ce_image.html5` | image | `ce_image_amp.html.twig` |
-`ContentMedia` | `ce_player.html5` | audio or video | `ce_player_amp.html.twig` | aka "Audio/Video"; if `isVideo` is set in the template, the amp component "video" is used
-`ContentYouTube` | `ce_youtube.html5` | youtube | `ce_youtube_amp.html.twig` or `ce_youtube_amp_huh.html.twig` | core content element or [heimrichhannot/contao-youtube-bundle](https://github.com/heimrichhannot/contao-youtube-bundle)
-`ContentSlick` | `ce_slick.html5` | carousel | `ce_slick_amp.html.twig` | [heimrichhannot/contao-slick-bundle](https://github.com/heimrichhannot/contao-slick-bundle)
+| Contao content element  | Contao template            | AMP component  | Notes                                                                                                                   |
+|-------------------------|----------------------------|----------------|-------------------------------------------------------------------------------------------------------------------------|
+| `ContentAccordion`      | `ce_accordionSingle.html5` | accordion      | single element accordions                                                                                               |
+| `ContentAccordionStart` | `ce_accordionStart.html5`  | accordion      |                                                                                                                         |
+| `ContentAccordionStop`  | `ce_accordionStop.html5`   | accordion      |                                                                                                                         |
+| `ContentImage`          | `ce_image.html5`           | image          |                                                                                                                         |
+| `ContentMedia`          | `ce_player.html5`          | audio or video | aka "Audio/Video"; if `isVideo` is set in the template, the amp component "video" is used                               |
+| `ContentYouTube`        | `ce_youtube.html5`         | youtube        | core content element or [heimrichhannot/contao-youtube-bundle](https://github.com/heimrichhannot/contao-youtube-bundle) |
+| `ContentSlick`          | `ce_slick.html5`           | carousel       | [heimrichhannot/contao-slick-bundle](https://github.com/heimrichhannot/contao-slick-bundle)                             |
 
 ### Supported modules
 
-Contao module | Contao template | AMP component | AMP template | Notes
----------------------- | --------------- | ------------- | ------------ | -----
-`ModuleNavigation` | `mod_navigation.html5` | sidebar + accordion | `mod_navigation_amp.html.twig` |
+| Contao module      | Contao template        | AMP component       |
+|--------------------|------------------------|---------------------|
+| `ModuleNavigation` | `mod_navigation.html5` | sidebar + accordion |
 
 ### AMP Validation
 
@@ -120,7 +120,7 @@ You can validate your AMP page by appending `#development=1` to your url.
 
 Things to consider:
 
-- If you do that in dev mode (by using `app_dev.php`), you'll get validation errors concerning the position of custom CSS tag and that custom JS is not allowed. Both of the errors are due to the symfony debug toolbar and should disappear in production mode.
+- If you do that in dev mode, you'll get validation errors concerning the position of custom CSS tag and that custom JS is not allowed. Both of the errors are due to the symfony debug toolbar and should disappear in production mode.
 - When developing a website you might do that in localhost or some kind of custom domain. So you can ignore the error "The attribute 'href' in tag 'base' is set to the invalid value [...]" becuase in production mode it will disappear.
 - Take care of your generated CSS: it shouldn't contain any source map files, because these will significantly increase the size of the CSS
 
@@ -176,15 +176,6 @@ For non-amp version simply add the following css rules and attach `.img-fluid` c
     height: auto;
 }
 ```
-
-### Usage with heimrichhannot/contao-encore-bundle
-
-This bundle supports the integration of webpack encore using [heimrichhannot/contao-encore-bundle](https://github.com/heimrichhannot/contao-encore-bundle).
-
-For this you can simply add a new webpack entry in your `config.yml` as you would normally within `contao-encore-bundle` and assign it to your AMP layout.
-
-The code in the generated file then automatically gets rendered to the `<style amp-custom>` element. Simple as that :-)
-
 
 ## Documentation
 
