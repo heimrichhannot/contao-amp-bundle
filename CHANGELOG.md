@@ -1,8 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2023-01-24
+## [0.4.5] - 2023-01-26
+- Changed: refactored templates support to be compatible contao-core- and twig-support-bundle-templates ([#4])
+- Changed: fixed and updated encore bundle support ([#4])
+- Changed: update dependencies ([#4])
+- Changed: a lot of refactoring and cleanup ([#4])
 - Changed: removed request bundle dependency
+- Fixed: head bundle integration ([#4])
 
 ## [0.4.4] - 2023-01-06
 - Changed: exclude tl_page.enableAmp field
@@ -89,3 +94,6 @@ This update contains some BC breaks. If your update, you need to updated the nav
 
 #### Added
 * initial version that supports html5 and twig templates
+
+
+[#4]: https://github.com/heimrichhannot/contao-amp-bundle/pull/4
