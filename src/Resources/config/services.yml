@@ -13,12 +13,11 @@ services:
       calls:
       - ["setContainer", ["@service_container"]]
 
-  HeimrichHannot\AmpBundle\EventListener\Contao\:
-    resource: '../../EventListener/Contao/*'
+  HeimrichHannot\AmpBundle\:
+    resource: '../../{EventListener}/*'
     public: false
     autowire: true
     autoconfigure: true
-
 
   HeimrichHannot\AmpBundle\Manager\AmpManager: ~
   huh.amp.manager.amp_manager: '@HeimrichHannot\AmpBundle\Manager\AmpManager'
@@ -30,6 +29,7 @@ services:
     class: HeimrichHannot\AmpBundle\Util\LayoutUtil
     public: true
     autowire: true
+  HeimrichHannot\AmpBundle\Util\LayoutUtil: '@huh.amp.util.layout_util'
 
   huh.head.tag.link_amp:
     class: HeimrichHannot\AmpBundle\Tag\Link\LinkAmp

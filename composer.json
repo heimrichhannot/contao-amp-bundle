@@ -7,12 +7,17 @@
     "php": "^7.4 || ^8.0",
     "contao/core-bundle": "^4.9",
     "heimrichhannot/contao-head-bundle": "^1.7",
-    "heimrichhannot/contao-utils-bundle": "^2.7",
+    "heimrichhannot/contao-twig-support-bundle": "^1.5",
+    "heimrichhannot/contao-utils-bundle": "^2.225",
+    "matthiasmullie/minify" : "^1.3",
+    "psr/container": "^1.0 || ^2.0",
     "symfony/event-dispatcher-contracts": "^1.0 || ^2.0 || ^3.0",
-    "symfony/http-foundation": "^4.4 || ^5.4"
+    "symfony/http-foundation": "^4.4 || ^5.4",
+    "symfony/polyfill-php80": "^1.27",
+    "symfony/service-contracts": "^1.0 || ^2.0 || ^3.0"
   },
-  "suggest": {
-    "heimrichhannot/contao-encore-bundle": "^1.4.1"
+  "conflict": {
+    "heimrichhannot/contao-encore-bundle": "<1.18"
   },
   "autoload": {
     "psr-4": {
@@ -20,7 +25,6 @@
     }
   },
   "extra": {
-    "contao-manager-plugin": "HeimrichHannot\\AmpBundle\\ContaoManager\\Plugin",
-    "foxy": true
+    "contao-manager-plugin": "HeimrichHannot\\AmpBundle\\ContaoManager\\Plugin"
   }
 }

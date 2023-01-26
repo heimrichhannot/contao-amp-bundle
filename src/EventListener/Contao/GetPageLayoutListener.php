@@ -40,7 +40,7 @@ class GetPageLayoutListener
         $this->utils = $utils;
     }
 
-    public function __invoke(PageModel $pageModel, LayoutModel $layout, PageRegular $pageRegular): void
+    public function __invoke(PageModel $pageModel, LayoutModel &$layout, PageRegular $pageRegular): void
     {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -50,13 +50,11 @@ class GetPageLayoutListener
 
         if ($request->query->has('amp')) {
             $layout = $ampLayout;
+            $layout->setRow($ampLayout->row());
+
             $pageModel->layout = $layout->id;
             $this->headTagManager->setBaseTag('/');
             $this->ampManager->setAmpActive(true);
-
-            if (isset($GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle'])) {
-                unset($GLOBALS['TL_HOOKS']['generatePage']['huh.encore-bundle']);
-            }
 
             return;
         }

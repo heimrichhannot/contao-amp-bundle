@@ -1,5 +1,7 @@
 huh_amp:
   templates:
+    ce_table:
+      amp_template: true
     ce_text:
       amp_template: true
     ce_html:
